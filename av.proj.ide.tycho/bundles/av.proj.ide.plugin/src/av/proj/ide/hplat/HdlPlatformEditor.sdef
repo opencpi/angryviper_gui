@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definition>
+    <editor-page>
+        <id>HdlPlatformEditorPage</id>
+        <element-type>av.proj.ide.hplat.HdlPlatform</element-type>
+        <page-header-text>HDL Platform Editor</page-header-text>
+        <root-node>
+            <node>
+                <label>HdlPlatform</label>
+                <section>
+                    <label>HdlPlatform</label>
+                    <description>Modify this HDL Platform XML document.</description>
+                    <content>
+                        <property-editor>Spec</property-editor>
+                        <property-editor>Language</property-editor>
+                        <split-form>
+                            <scale-vertically>true</scale-vertically>
+                            <block>
+                                <content>
+                                    <section>
+                                        <content>
+                                            <property-editor>Metadata</property-editor>
+                                            <property-editor>Timebase</property-editor>
+                                            <property-editor>SdpRead</property-editor>
+                                            <property-editor>TimeServerRead</property-editor>
+                                        </content>
+                                        <label>Required</label>
+                                        <collapsible>false</collapsible>
+                                    </section>
+                                </content>
+                            </block>
+                            <block>
+                                <content>
+                                    <section>
+                                        <content>
+                                            <property-editor>Cpmaster</property-editor>
+                                        </content>
+                                        <label>Add CP Master Port</label>
+                                    </section>
+                                </content>
+                            </block>
+                        </split-form>
+                        <section>
+                            <label>Platform Properties</label>
+                            <collapsible>false</collapsible>
+                            <content>
+                                <property-editor>
+                                    <child-property>Name</child-property>
+                                    <property>SpecProperties</property>
+                                    <child-property>Value</child-property>
+                                    <documentation>
+                                        <title>Note</title>
+                                        <content>The platform name/value is required. &lt;br/&gt; An sdp_width property must be defined for the SDP.</content>
+                                    </documentation>
+                                </property-editor>
+                                <label>Note: The platform name/value is required. An sdp_width property must be defined for the SDP.</label>
+                            </content>
+                        </section>
+                    </content>
+                </section>
+
+                <node>
+                    <label>Spec Properties</label>
+                    <section>
+                        <label>SpecProperties</label>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add a specproperty</label>
+                            </actuator>
+                            <separator></separator>
+                            <section>
+                                <label>List</label>
+                                <content>
+                                    <property-editor>
+                                        <child-property>Name</child-property>
+                                        <property>SpecProperties</property>
+                                        <child-property>Value</child-property>
+                                    </property-editor>
+                                </content>
+                            </section>
+                        </content>
+                        <description>Add a specproperty to the platform</description>
+                    </section>
+                    <node-factory>
+                        <property>SpecProperties</property>
+                        <case>
+                            <label>${ Name == null ? &quot;&lt;spec property&gt;&quot; : Name }</label>
+                            <section>
+                                <label>SpecProperty</label>
+                                <content>
+                                    <property-editor>Name</property-editor>
+                                    <property-editor>Value</property-editor>
+                                </content>
+                            </section>
+                        </case>
+                    </node-factory>
+                </node>
+
+                <node>
+                    <label>Augment SDP</label>
+                    <property>sdp</property>
+                    <section>
+                        <label>SDP Element</label>
+                        <description>Modify the existing SDP entry.</description>
+                        <content>
+                            <property-editor>Master</property-editor>
+                            <property-editor>Count</property-editor>
+                            <property-editor>Name</property-editor>
+                        </content>
+                    </section>
+                </node>
+                
+                <node>
+                    <label>Platform Devices</label>
+                    <section>
+                        <label>Devices</label>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add a Device</label>
+                            </actuator>
+                        </content>
+                        <description>Add a Device to the platform</description>
+                    </section>
+                    <node-factory>
+                        <property>Devices</property>
+                        <case>
+                            <label>${ worker == null ? &quot;&lt;Device&gt;&quot; : worker }</label>
+                            <section>
+                                <label>Device</label>
+                                <property>Device</property>
+                                
+                                    <label>Device Element</label>
+                                    <description>Add a device entry.</description>
+                                    <content>
+                                      <property-editor>Worker</property-editor>
+                                    
+                                      <section>
+                                          <label>Device Properties</label>
+                                          <content>
+                                              <property-editor>
+                                                <property>Properties</property>
+                                                <child-property>Name</child-property>
+                                                <child-property>Value</child-property>
+                                              </property-editor>
+                                          </content>
+                                      </section>
+                                      <section>
+                                          <label>Device Signals</label>
+                                          <content>
+                                              <property-editor>
+                                                  <property>Signals</property>
+                                                <child-property>Name</child-property>
+                                                <child-property>Platform</child-property>
+                                              </property-editor>
+                                          </content>
+                                      </section>
+                                    </content>
+                            </section>
+                        </case>
+                    </node-factory>
+                </node>
+
+            <node>
+                <label>Platform Slots</label>
+                <section>
+                    <label>Slots</label>
+                    <content>
+                        <actuator>
+                            <action-id>Sapphire.Add</action-id>
+                            <label>Add a Slot</label>
+                        </actuator>
+                    </content>
+                    <description>Add a Slot to the platform</description>
+                </section>
+                <node-factory>
+                    <property>Slots</property>
+                    <case>
+                        <label>${ name == null ? &quot;&lt;Slot&gt;&quot; : name }</label>
+                        <section>
+                            <label>Slot</label>
+                            <property>Slot</property>
+                            
+                                <label>Slot Element</label>
+                                <description>Add a slot entry.</description>
+                                <content>
+                                    <property-editor>Name</property-editor>
+                                    <property-editor>Type</property-editor>
+                                    <property-editor>
+                                      <property>Signal</property>
+                                        <child-property>Slot</child-property>
+                                        <child-property>Platform</child-property>
+                                    </property-editor>
+                                </content>
+                        </section>
+                    </case>
+                </node-factory>
+            </node>
+           
+                <node>
+                    <label>Platform Signals</label>
+                    <section>
+                        <label>Signals</label>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add Signal</label>
+                            </actuator>
+                            <section>
+                                <label>List</label>
+                                <content>
+                                    <property-editor>
+                                        <child-property>Name</child-property>
+                                        <child-property>Direction</child-property>
+                                        <property>Signals</property>
+                                        <child-property>Width</child-property>
+                                    </property-editor>
+                                    <detail-section>
+                                        <property>Signals</property>
+                                        <case>
+                                            <element-type>av.proj.ide.common.Signal</element-type>
+                                            <content>
+                                                <section>
+                                                    <label>Direction</label>
+                                                    <content>
+                                                        <property-editor>
+                                        <property>Direction</property>
+                                        <style>Sapphire.PropertyEditor.RadioButtonGroup.Horizontal</style>
+                                                        </property-editor>
+                                                        <include>SignalCharacteristicsForm</include>
+                                                    </content>
+                                                </section>
+                                            </content>
+                                        </case>
+                                    </detail-section>
+                                </content>
+                            </section>
+                        </content>
+                    </section>
+                    <node-factory>
+                        <case>
+                            <section>
+                                <label>Signal Direction</label>
+                                <content>
+                                    <property-editor>
+                                        <property>Direction</property>
+                                        <style>Sapphire.PropertyEditor.RadioButtonGroup.Horizontal</style>
+                                    </property-editor>
+                                    <include>SignalCharacteristicsForm</include>
+                                </content>
+                            </section>
+                            <label>${ input != null ? input : (output != null ? output : (bidirectional != null ? bidirectional : ( inout != null ? inout : &quot;&lt;signal&gt;&quot; )))}</label>
+                            <element-type>av.proj.ide.common.Signal</element-type>
+                        </case>
+                        <property>Signals</property>
+                    </node-factory>
+                </node>
+                
+            </node>
+        </root-node>
+    </editor-page>
+    <import>
+        <package>av.proj.ide.hplat</package>
+    </import>
+    <form>
+        <id>SignalCharacteristicsForm</id>
+        <content>
+            <section>
+                <label>General</label>
+                <content>
+                    <property-editor>
+                        <child-property>Input</child-property>
+                        <property>Input</property>
+                        <visible-when>${ Direction == 'INPUT' }</visible-when>
+                    </property-editor>
+                    <property-editor>
+                        <visible-when>${ Direction == 'OUTPUT' }</visible-when>
+                        <property>Output</property>
+                    </property-editor>
+                    <property-editor>
+                        <visible-when>${ Direction == 'BIDIRECTIONAL' }</visible-when>
+                        <property>Bidirectional</property>
+                    </property-editor>
+                    <property-editor>
+                        <visible-when>${ Direction == 'INOUT' }</visible-when>
+                        <property>Inout</property>
+                    </property-editor>
+                </content>
+            </section>
+            <section>
+                <label>Signal Details</label>
+                <scroll-vertically>true</scroll-vertically>
+                <visible-when>${ Direction != 'NOTSET' }</visible-when>
+                <content>
+                    <property-editor>
+                        <visible-when>${ Direction != 'NOTSET' }</visible-when>
+                        <property>Width</property>
+                    </property-editor>
+                    <property-editor>
+                        <visible-when>${ Direction != 'NOTSET' &amp;&amp; Direction != 'INOUT'}</visible-when>
+                        <property>Differential</property>
+                    </property-editor>
+                    <section>
+                        <content>
+                            <property-editor>In</property-editor>
+                            <property-editor>Out</property-editor>
+                            <property-editor>
+                              <property>Oe</property>
+                              <hint><name>aux.text</name><value>Use %s in format string--signal name is put there; e.g. %s_IN</value></hint>
+                            </property-editor>
+                        </content>
+                        <label>Override In/Out Default Naming Convention</label>
+                        <visible-when>${ Direction == 'INOUT' }</visible-when>
+                    </section>
+                    <section>
+                        <content>
+                            <property-editor>Pos</property-editor>
+                            <property-editor>
+                              <property>Neg</property>
+                              <hint><name>aux.text</name><value>Use %s in format string--signal name is put there; e.g. %s_POS</value></hint>
+                            </property-editor>
+                        </content>
+                        <label>Override Differential Signal Pos/Neg Naming Convention</label>
+                        <visible-when>${ Differential == true }</visible-when>
+                    </section>
+                </content>
+            </section>
+        </content>
+    </form>
+</definition>

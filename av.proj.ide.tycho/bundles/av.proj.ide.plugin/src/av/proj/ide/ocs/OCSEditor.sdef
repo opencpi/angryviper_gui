@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definition>
+    <import>
+        <package>av.proj.ide</package>
+        <package>av.proj.ide.ocs</package>
+    </import>
+    
+    <editor-page>
+        <id>OCSEditorPage</id>
+        <element-type>av.proj.ide.ocs.ComponentSpec</element-type>
+        <initial-selection>ComponentSpec</initial-selection>
+        <page-header-text>OCS Editor</page-header-text>
+        <root-node>
+            <node>
+                <label>${ Name == null ? &quot;ComponentSpec&quot; : Name }</label>
+                <section>
+                	<description>Modify attributes of the ComponentSpec element.</description>
+                    <content>
+                    	<section>
+                    		<label>Advanced Attributes</label>
+                    		<content>
+                    			<property-editor>Name</property-editor>
+		                    	<property-editor>
+		                    		<property>NoControl</property>
+		                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+		                    		<hint>
+		                    			<name>checkbox.layout</name>
+		                    			<value>leading.label</value>
+		                    		</hint>
+		                    	</property-editor>
+                    		</content>
+                    		<collapsible>true</collapsible>
+	                    	<collapsed-initially>true</collapsed-initially>
+                    	</section>
+                    </content>
+                </section>
+                <!-- ComponentSpec Properties -->
+                <node>
+            		<label>Properties</label>
+            		<section>
+            			<label>Properties</label>
+            			<description>Add a property to your spec xml.</description>
+            			<content>
+            				<actuator>
+            					<action-id>Sapphire.Add</action-id>
+            					<action-handler-id>Sapphire.Add.Property</action-handler-id>
+            					<label>Add a Property</label>
+            				</actuator>
+            				<actuator>
+            					<action-id>Sapphire.Add</action-id>
+            					<action-handler-id>Sapphire.Add.PropertiesFile</action-handler-id>
+            					<label>Add a Properties File Reference</label>
+            				</actuator>
+            			</content>
+            		</section>
+            		<node-factory>
+            			<property>ComponentSpecProperties</property>
+            			<case>
+            				<element-type>Property</element-type>
+            				<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
+            				<section>
+            					<label>Property</label>
+            					<description>Modify attributes of this Property.</description>
+            					<content>
+            						<actuator>
+	               						<action-id>Sapphire.Add</action-id>
+	               						<label>Add a Member</label>
+	               					</actuator>
+            						<property-editor>Name</property-editor>
+                                	<property-editor>Type</property-editor>
+                                    <property-editor>
+                                        <visible-when>${ Type == &quot;string&quot; }</visible-when>
+                                        <property>StringLength</property>
+                                    </property-editor>
+                                    <property-editor>
+                                    	<visible-when>${ Type == &quot;enum&quot; }</visible-when>
+                                    	<property>Enums</property>
+                                    </property-editor>
+                                    <property-editor>Default</property-editor>
+                                	<!--<property-editor>ArrayLength</property-editor>-->
+                                	<property-editor>SequenceLength</property-editor>
+                                	<property-editor>ArrayDimensions</property-editor>
+                                    <property-editor>
+                    					<property>Parameter</property>
+                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    					<hint>
+                    						<name>checkbox.layout</name>
+                    						<value>leading.label</value>
+                    					</hint>
+                    				</property-editor>
+                                    <section>
+               							<label>Accessibility</label>
+               							<content>
+               								<property-editor>
+                    							<property>Readable</property>
+                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    							<hint>
+                    								<name>checkbox.layout</name>
+                    								<value>leading.label</value>
+                    							</hint>
+                    						</property-editor>
+               								<property-editor>
+                    							<property>Volatile</property>
+                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    							<hint>
+                    								<name>checkbox.layout</name>
+                    								<value>leading.label</value>
+                    							</hint>
+                    						</property-editor>
+               								<property-editor>
+                    							<property>Writable</property>
+                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    							<hint>
+                    								<name>checkbox.layout</name>
+                    								<value>leading.label</value>
+                    							</hint>
+                    						</property-editor>
+               								<property-editor>
+                    							<property>Initial</property>
+                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    							<hint>
+                    								<name>checkbox.layout</name>
+                    								<value>leading.label</value>
+                    							</hint>
+                    						</property-editor>              								
+               							</content>
+               						</section>
+            					</content>
+            				</section>
+            				<node-factory>
+            					<property>Members</property>
+            					<case>
+               						<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+               						<section>
+               							<label>Member</label>
+               							<description>Modify attributes of this member.</description>
+               							<content>
+               								<actuator>
+	               								<action-id>Sapphire.Add</action-id>
+				               					<label>Add a Member</label>
+				               				</actuator>
+               								<property-editor>Name</property-editor>
+               								<property-editor>Type</property-editor>
+               								<property-editor>
+               									<property>Enums</property>
+               									<visible-when>${ Type == &quot;enum&quot; }</visible-when>
+               								</property-editor>
+               								<property-editor>
+               									<property>StringLength</property>
+               									<visible-when>${ Type == &quot;string&quot; }</visible-when>
+               								</property-editor>
+               								<property-editor>Default</property-editor>
+               								<property-editor>SequenceLength</property-editor>
+               								<property-editor>ArrayDimensions</property-editor>
+               							</content>
+               						</section>
+               						<node-factory>
+               							<property>Members</property>
+               							<case>
+               								<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+			               					<section>
+			               						<label>Member</label>
+			               						<description>Modify attributes of this member.</description>
+			               						<content>
+			               							<property-editor>Name</property-editor>
+			               							<property-editor>Type</property-editor>
+			               							<property-editor>
+			               								<property>Enums</property>
+			               								<visible-when>${ Type == &quot;enum&quot; }</visible-when>
+			               							</property-editor>
+			               							<property-editor>
+			               								<property>StringLength</property>
+			               								<visible-when>${ Type == &quot;string&quot; }</visible-when>
+			               							</property-editor>
+			               							<property-editor>Default</property-editor>
+			               							<property-editor>SequenceLength</property-editor>
+			               							<property-editor>ArrayDimensions</property-editor>
+			               						</content>
+			               					</section>
+               							</case>
+               							<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+               						</node-factory>
+               					</case>
+               					<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+            				</node-factory>
+            			</case>
+            			<case>
+            				<element-type>PropertiesFile</element-type>
+            				<label>Properties File Reference</label>
+            				<section>
+            					<label>Properties File Reference</label>
+            					<content>
+            						<property-editor>href</property-editor>
+            					</content>
+            				</section>
+            			</case>
+            		</node-factory>
+            	</node>
+            	<!-- Properties Element -->
+            	<!--
+                <node>
+                    <label>Properties Elements</label>
+                    <section>
+                		<description>This is deprecated. Use Properties node above to add properties to your spec.</description>
+                    	<content>
+                        	<actuator>
+                            	<action-id>Sapphire.Add</action-id>
+                            	<label>Add a property.</label>
+                        	</actuator>
+                   	 	</content>
+                	</section>
+                	<node-factory>
+                		<property>Properties</property>
+                    	<case>
+                        	<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
+                        	<section>
+                            	<label>property</label>
+                            	<description>Modify attributes of this property.</description>
+                            	<content>
+                                    <property-editor>Name</property-editor>
+                                	<property-editor>Type</property-editor>
+                                    <property-editor>
+                                        <visible-when>${ Type == &quot;String&quot; }</visible-when>
+                                        <property>StringLength</property>
+                                    </property-editor>
+                                    <property-editor>
+                                    	<visible-when>${ Type == &quot;Struct&quot; }</visible-when>
+                                    	<property>Members</property>
+                                    </property-editor>
+                                    <property-editor>Enums</property-editor>
+                                    <property-editor>Default</property-editor>
+                                	<property-editor>ArrayLength</property-editor>
+                                	<property-editor>SequenceLength</property-editor>
+                                	<property-editor>ArrayDimensions</property-editor>
+                                    <property-editor>
+                    					<property>Parameter</property>
+                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    					<hint>
+                    						<name>checkbox.layout</name>
+                    						<value>leading.label</value>
+                    					</hint>
+                    				</property-editor>
+                                    <section>
+               							<label>Accessibility</label>
+               							<content>
+               								<property-editor>Readable</property-editor>
+               								<property-editor>Volatile</property-editor>
+               								<property-editor>Writable</property-editor>
+               								<property-editor>Initial</property-editor>               								
+               							</content>
+               						</section>
+                            	</content>
+                        	</section>
+                    	</case>
+                	</node-factory>
+                </node>-->
+                <!-- Ports -->
+                <node>
+            		<label>Ports</label>
+            		<section>
+            			<label>Ports</label>
+            			<description>Add a Port to your spec xml.</description>
+            			<content>
+            				<actuator>
+            					<action-id>Sapphire.Add</action-id>
+            					<label>Add a Port</label>
+            				</actuator>
+            			</content>
+            		</section>
+            		<node-factory>
+            			<property>Ports</property>
+            			<case>
+            				<label>${ Name == null ? "&lt;port&gt;" : Name }</label>
+            				<section>
+            					<label>Port</label>
+            					<description>Modify attributes of this Port.</description>
+            					<content>
+            						<property-editor>Name</property-editor>
+            						<property-editor>
+            							<property>Protocol</property>
+            							<style>Sapphire.PropertyEditor.PopUpListField.Strict</style>
+            						</property-editor>
+            						<property-editor>
+                    					<property>Producer</property>
+                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    					<hint>
+                    						<name>checkbox.layout</name>
+                    						<value>leading.label</value>
+                    					</hint>
+                    				</property-editor>
+                    				<property-editor>
+                    					<property>Optional</property>
+                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    					<hint>
+                    						<name>checkbox.layout</name>
+                    						<value>leading.label</value>
+                    					</hint>
+                    				</property-editor>
+                    				<section>
+                    					<label>Advanced Attributes</label>
+                    					<content>
+                    						<property-editor>NumberOfOpCodes</property-editor>
+		                                	<property-editor>DataValueWidth</property-editor>
+		                                	<property-editor>DataValueGranularity</property-editor>
+		                                	<property-editor>
+		                    					<property>ZeroLengthMessages</property>
+		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+		                    					<hint>
+		                    						<name>checkbox.layout</name>
+		                    						<value>leading.label</value>
+		                    					</hint>
+		                    				</property-editor>
+		                                	<property-editor>MaxMessageValues</property-editor>
+		                                	<property-editor>
+		                    					<property>VariableMessageLength</property>
+		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+		                    					<hint>
+		                    						<name>checkbox.layout</name>
+		                    						<value>leading.label</value>
+		                    					</hint>
+		                    				</property-editor>
+		                                	<property-editor>
+		                    					<property>DiverseDataSizes</property>
+		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+		                    					<hint>
+		                    						<name>checkbox.layout</name>
+		                    						<value>leading.label</value>
+		                    					</hint>
+		                    				</property-editor>
+		                                	<property-editor>
+		                    					<property>UnBounded</property>
+		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+		                    					<hint>
+		                    						<name>checkbox.layout</name>
+		                    						<value>leading.label</value>
+		                    					</hint>
+		                    				</property-editor>
+                    					</content>
+                    					<collapsible>true</collapsible>
+	                    				<collapsed-initially>true</collapsed-initially>
+                    				</section>
+            					</content>
+            				</section>
+            			</case>
+            		</node-factory>
+            	</node>
+            </node>
+        </root-node>
+    </editor-page>
+</definition>
