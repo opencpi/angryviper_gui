@@ -45,6 +45,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.LabelProvider;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
@@ -65,10 +67,12 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.dialogs.ElementListSelectionDialog;
 import org.eclipse.ui.internal.ide.IDEWorkbenchPlugin;
 import org.eclipse.ui.internal.wizards.datatransfer.DataTransferMessages;
 
 import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.avps.internal.RegisteredProjectSearchTool;
 import av.proj.ide.wizards.NewOcpiAssetWizard;
 import av.proj.ide.wizards.internal.validators.AddToProjectValidator;
 import av.proj.ide.wizards.internal.validators.ApplicationValidator;
@@ -121,8 +125,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 
 	public NewOcpiAssetWizardPage1(NewOcpiAssetWizard wizard, ISelection selection) {
 		super("wizardPage");
-		setTitle("Create a new ANGRYVIPER Asset");
-		setDescription("This wizard creates a new ANGRYVIPER asset");
+		setTitle("Create a new OpenCPI Asset");
+		setDescription("Select the asset type from the drop down and complete the form.");
 		this.previousProjBrowse = ""; 
 		this.libraryOptions = new ArrayList<String>();
 		this.gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -322,21 +326,26 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			}
 			
 			public void handleDependencyAdd() {
-				DirectoryDialog dialog = new DirectoryDialog(addButton.getShell(), SWT.SHEET);
-				dialog.setMessage(DataTransferMessages.FileImport_importFileSystem);
+			    ElementListSelectionDialog dialog = new ElementListSelectionDialog(container.getShell(), new LabelProvider());
+			    dialog.setMessage("Select from Registered Projects:");
+			    RegisteredProjectSearchTool projectTool = AngryViperAssetService.getRegistedProjectTool();
+			    Set<String> selectProjects = projectTool.getRegisteredProjectsLessCore();
+			    String[] selections = selectProjects.toArray(new String[selectProjects.size()]);
+			    dialog.setElements(selections);
+			    dialog.setMultipleSelection(true);
+
+				int res = dialog.open();
+				if(res == Window.CANCEL)
+					return;
 				
-				if (previousDepBrowse.equals("")) {
-					dialog.setFilterPath(IDEWorkbenchPlugin.getPluginWorkspace().getRoot().getLocation().toOSString());
-				} else {
-					dialog.setFilterPath(previousDepBrowse);
-				}
-				String selectedDirectory = dialog.open();
-				if (selectedDirectory != null) {
-					if (!Arrays.asList(projectDependencyList.getItems()).contains(selectedDirectory)) {
+				Object[] results = dialog.getResult();
+				List<String> currentSels = Arrays.asList(projectDependencyList.getItems());
+				for (Object proj : results) {
+					String selectedDirectory = (String)proj;
+					if (!currentSels.contains(selectedDirectory)) {
 						projectDependencyList.add(selectedDirectory);
 						depsList.add(selectedDirectory);
 					}
-					previousDepBrowse = selectedDirectory;
 				}
 			}
 		});
@@ -611,7 +620,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 
 	public void setComponentSpecs ()
 	{
-		Set<String> specs = AngryViperAssetService.getAllOcpiSpecs();
+		RegisteredProjectSearchTool tool = AngryViperAssetService.getRegistedProjectTool();
+		Set<String> specs =  tool.getSpecsList();
 		
 		if (!this.workerSpecNameCombo.isDisposed()) {
 			this.workerSpecNameCombo.removeAll();

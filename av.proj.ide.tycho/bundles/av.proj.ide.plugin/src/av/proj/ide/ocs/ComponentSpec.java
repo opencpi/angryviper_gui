@@ -37,8 +37,8 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import av.proj.ide.custom.bindings.list.OCSPortXmlListBinding;
 import av.proj.ide.custom.bindings.list.OCSPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.root.ComponentSpecRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.MultiwordBooleanXmlValueBinding;
 
 @CustomXmlRootBinding(value = ComponentSpecRootXmlBinding.class)
 
@@ -56,7 +56,7 @@ public interface ComponentSpec extends Element {
 	
 	// *** NoControl ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding(impl = MultiwordBooleanXmlValueBinding.class )
 	@Label(standard = "NoControl")
 	
 	ValueProperty PROP_NO_CONTROL = new ValueProperty(TYPE, "NoControl");

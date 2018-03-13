@@ -45,7 +45,7 @@ public class BooleanAttributeRemoveIfFalseValueBinding extends GenericDualCaseXm
     @Override
     public void write( final String value )
     {
-		if ("false".equals(value)) {
+		if ("false".equals(value) || "0".equals(value)) {
     		final XmlElement element = xml( false );
 			element.removeChildNode( this.path );
     	} else {

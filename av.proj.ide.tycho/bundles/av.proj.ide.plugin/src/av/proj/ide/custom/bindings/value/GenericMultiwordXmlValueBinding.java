@@ -22,7 +22,7 @@ package av.proj.ide.custom.bindings.value;
 
 import org.eclipse.sapphire.modeling.xml.XmlPath;
 
-public class GenericMultiwordXmlValueBinding extends BooleanAttributeRemoveIfFalseValueBinding {
+public class GenericMultiwordXmlValueBinding extends GenericDualCaseXmlValueBinding {
 	
 	protected String camelName = "";
 	

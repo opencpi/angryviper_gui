@@ -26,6 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -33,18 +35,33 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.Display;
 import org.json.simple.JSONObject;
 
-public class SearchForSpecs {
+public class RegisteredProjectSearchTool {
+	private Map<String, String> eclipseToRegisterProjectName;
 	private Map<String, String> specs;
+	private Map<String, List<String>> specLookup;
+	private Set<String> registeredProjects;
+	private Set<String> registeredProjectsLessCore;
+
 	private Set<String> protocols;
 	private Set<String> hdlAdapters;
 	private HashSet<String> invalidSpecPath;
 	
 	
-	public SearchForSpecs() {
+	public RegisteredProjectSearchTool() {
+		this.eclipseToRegisterProjectName = new HashMap<String,String>();
 		this.specs = new TreeMap<String,String>();
+		this.specLookup = new HashMap<String,List<String>>();
 		this.protocols = new TreeSet<String>();
+		this.registeredProjects = new TreeSet<String>();
+		this.registeredProjectsLessCore = new TreeSet<String>();
 		
 		invalidSpecPath = new HashSet<String>();
 		invalidSpecPath.add("applications");
@@ -66,10 +83,14 @@ public class SearchForSpecs {
 //		public Boolean registered;
 //		public Boolean exists;
 		public String fullPath;
+		public String eclipseName;
+		public String projectDirectory;
 		
 		protected Project (String name, JSONObject prjData) {
 			this.name = name;
 			fullPath = (String) prjData.get("real_path");
+			String[] pathSegments = fullPath.split("/");
+			projectDirectory = pathSegments[pathSegments.length -1];
 /*(**			
  Not needed at this time.			
 			Object obj = prjData.get("registered");
@@ -86,7 +107,25 @@ public class SearchForSpecs {
 	}
 	
 	protected List <Project> getOcpiProjects() {
-
+		
+		// Figure out various pieces of the environment.
+		HashMap<String, String> eclipseProjectInfo = new HashMap<String, String>();
+		IWorkspace workspace = ResourcesPlugin.getWorkspace();
+		IProject [] eProjects = workspace.getRoot().getProjects();
+		IProject eProject;
+		for(int i= 0; i<eProjects.length; i++) {
+			eProject = eProjects[i];
+			
+			if(! eProject.isOpen()) continue;
+			if("RemoteSystemsTempFiles".equals(eProject.getName())) continue;
+			
+			String eProjectName = eProject.getName();
+			IPath path = eProject.getLocation();
+			String[] pathSegments = path.segments();
+			String projectDir = pathSegments[pathSegments.length -1];
+			eclipseProjectInfo.put(projectDir, eProjectName);
+		}
+		
 		JSONObject jsonObject = EnvBuildTargets.getEnvInfo(getProjectsCmd);
         ArrayList<Project> envProjects = new ArrayList<Project>();
 		if(jsonObject != null) {
@@ -97,7 +136,20 @@ public class SearchForSpecs {
     			Set<String> projects = projectsObj.keySet();
     	        for(String key : projects) {
     	        	Project project = new Project(key, (JSONObject) projectsObj.get(key));
-	   	        	envProjects.add(project);
+    	        	String eProjectName = eclipseProjectInfo.get(project.projectDirectory);
+    	        	project.eclipseName = eProjectName;
+    	        	envProjects.add(project);
+        			registeredProjects.add(project.name);
+        			if(project.eclipseName != null) {
+        	        	eclipseToRegisterProjectName.put(project.eclipseName, project.name);
+        			}
+        			else {
+        				// Try this
+        	        	eclipseToRegisterProjectName.put(project.projectDirectory, project.name);
+        			}
+        			if(!( project.name.equalsIgnoreCase("ocpi.core") || project.name.equalsIgnoreCase("ocpi.cdk"))) {
+        				registeredProjectsLessCore.add(project.name);
+        			}
     	        }
    		    }
 		}
@@ -106,6 +158,7 @@ public class SearchForSpecs {
 	
 	public void searchForSpecs() {
 		List<Project> projects = getOcpiProjects();
+		
 		getProjectEnvSpecs(projects);
 	}
 	
@@ -113,6 +166,7 @@ public class SearchForSpecs {
 		List<Project> projects = getOcpiProjects();
 		getProjectEnvHdlAdapters(projects);
 	}
+	
 	private void getProjectEnvHdlAdapters(List<Project> projects) {
 		hdlAdapters = new HashSet<String>();
 		for (Project project : projects) {
@@ -137,6 +191,54 @@ public class SearchForSpecs {
 	public Map<String, String> getSpecs() {
 		return specs;
 	}
+	
+	public Set<String> getSpecsList() {
+		return specs.keySet();
+	}
+	
+	public Collection<String> getApplicationComponents() {
+		return specs.values();
+	}
+	
+	public String getApplicationSpecName(String eclipseProjectName, String libName, String specFileName) {
+		String errorMessage = null;
+		
+		List<String> specNames = specLookup.get(specFileName);
+		if(specNames != null) {
+			String registeredProjectName = eclipseToRegisterProjectName.get(eclipseProjectName);
+			if(registeredProjectName != null) {
+				
+				for(String name : specNames) {
+					if(name.contains(registeredProjectName)) {
+						return specs.get(name);
+					}
+				}
+				errorMessage =	"You have pulled a unknown spec filename.\n\n";
+			}
+			else {
+				errorMessage = "You have pulled a spec from an unknown project.\n\n";
+			}
+		}
+		else {
+			errorMessage = "You have pulled a unknown spec filename.\n\n";
+		}
+		
+		errorMessage += "Verify the project is registered properly and try a refresh via OpenCPI Projects view."
+				+ " If that doesn't work, here are some suggestions:\n"
+				+ " - Check the project package ID in the exports/project-package-id file.\n"
+				+ "   If the project package ID does not match the registered package ID,\n"
+				+ "   the project needs to be cleaned and rebuilt.\n"
+				+ " - refresh Eclipse (right-click into Project Explorer) then refresh\n"
+				+ "   the OpenCPI Projects view.";
+
+		MessageDialog.openInformation(Display.getDefault().getActiveShell(), "Environment State Error", errorMessage);		
+		return null;
+	}
+	
+	public Map<String, List<String>> getSpecLookup() {
+		return specLookup;
+	}
+
 	public Set<String> getProtocols() {
 		return protocols;
 	}
@@ -144,6 +246,14 @@ public class SearchForSpecs {
 		return hdlAdapters;
 	}
 	
+	public Set<String> getRegisteredProjects() {
+		return registeredProjects;
+	}
+
+	public Set<String> getRegisteredProjectsLessCore() {
+		return registeredProjectsLessCore;
+	}
+
 	private void getProjectEnvSpecs(List<Project> projects) {
 		for (Project project : projects) {
 			if("ocpi.cdk".equals(project.name))
@@ -212,13 +322,32 @@ public class SearchForSpecs {
 				String specName;
 				String frameworkComponentName;
 				if (name.endsWith("-spec.xml")) {
+					
 					specName = packageName + name.substring(0, name.length() - 4);
 					frameworkComponentName = packageName + name.replace("-spec.xml", "");
 					specs.put(specName, frameworkComponentName);
+					List<String> specsList = specLookup.get(name);
+					if(specsList != null) {
+						specsList.add(specName);
+					}
+					else {
+						specsList = new ArrayList<String> ();
+						specsList.add(specName);
+						specLookup.put(name, specsList);
+					}
 				} else if (name.endsWith("_spec.xml")) {
 					specName = packageName + name.substring(0, name.length() - 4);
 					frameworkComponentName = packageName + name.replace("_spec.xml", "");
 					specs.put(specName, frameworkComponentName);
+					List<String> specsList = specLookup.get(name);
+					if(specsList != null) {
+						specsList.add(specName);
+					}
+					else {
+						specsList = new ArrayList<String> ();
+						specsList.add(specName);
+						specLookup.put(name, specsList);
+					}
 				}
 				else if (name.endsWith("-prot.xml") ||
 						name.endsWith("_prot.xml") ||

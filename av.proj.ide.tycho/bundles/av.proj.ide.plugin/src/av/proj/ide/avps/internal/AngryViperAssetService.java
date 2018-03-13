@@ -117,9 +117,13 @@ public class AngryViperAssetService {
 	protected List<HdlVendor> hdlVendors;
 	protected List<HdlPlatformInfo> hdlPlatforms;
 	protected List<RccPlatformInfo> rccPlatforms;
-	protected Map<String, String>  allSpecs = null;
-	protected Set<String> allProtocols = null;
+	
+//	protected Map<String, List<String>> specsLookup = null;
+//	protected Map<String, String>  allSpecs = null;
+//	protected Set<String> allProtocols = null;
 	protected Set<String> allHdlWorkers = null;
+	
+	protected RegisteredProjectSearchTool registerProjectsTool = null;
 
 	private File   scriptsDir;
 	private String cdkPath;
@@ -177,6 +181,57 @@ public class AngryViperAssetService {
 		return rccPlatforms;
 	}
 	
+	public static RegisteredProjectSearchTool getRegistedProjectTool() {
+		if(instance == null) {
+			instance = new AngryViperAssetService(false);
+		}
+		if(instance.registerProjectsTool == null) {
+			synchronized (instance) {
+				instance.registerProjectsTool = new RegisteredProjectSearchTool();
+			}
+		}
+		return instance.registerProjectsTool;
+	}
+	
+	public static  Collection<String> getApplicationComponents() {
+		if(instance == null) {
+			instance = new AngryViperAssetService(false);
+		}
+		if(instance.registerProjectsTool == null) {
+			getRegistedProjectTool();
+		}
+		return instance.registerProjectsTool.getApplicationComponents();
+	}
+	
+	public static String getApplicationSpecName(String projectName, String libName, String specFileName) {
+		if(instance == null) {
+			instance = new AngryViperAssetService(false);
+		}
+		if(instance.registerProjectsTool == null) {
+			getRegistedProjectTool();
+		}
+		return instance.registerProjectsTool.getApplicationSpecName(projectName, libName, specFileName);
+	}
+	
+	public Set<String> getAllHdlWorkers() {
+		if(allHdlWorkers == null) {
+			allHdlWorkers = new HashSet<String>();
+			RegisteredProjectSearchTool search = new RegisteredProjectSearchTool();
+			search.searchForAdapters();
+			allHdlWorkers.addAll(search.getHdlAdapters());
+			
+			for(AngryViperAsset asset : assetLookup.keySet()) {
+				if(asset.category == OcpiAssetCategory.component) {
+					if(asset.buildName.endsWith(".hdl")) {
+						int len = asset.buildName.length();
+						allHdlWorkers.add(asset.buildName.substring(0, len -4));
+					}
+				}
+			}
+		}
+		return allHdlWorkers;
+	}
+	
 	/***
 	 * Data synchronization processing.  The projects view registers for 
 	 * change updates. Since the updates may occur from other threads
@@ -216,6 +271,7 @@ public class AngryViperAssetService {
 		this.platformUpdater = platformUpdater;
 	}
 	
+	
 	protected void buildAssets() {
 		projects = new HashMap <String, AssetModelData> ();
 		envBuildInfo = new EnvBuildTargets();
@@ -252,60 +308,6 @@ public class AngryViperAssetService {
 		rccPlatforms = envBuildInfo.getRccPlatforms();
 	}
 
-	public static Set<String> getAllOcpiSpecs() {
-		if(instance == null) {
-			instance = new AngryViperAssetService(false);
-		}
-		if(instance.allSpecs == null) {
-			SearchForSpecs search = new SearchForSpecs();
-			instance.allSpecs = search.getSpecs();
-			instance.allProtocols = search.getProtocols();
-		}
-		return instance.allSpecs.keySet();
-	}
-	
-	public static Set<String> getAllOcpiProtocols() {
-		if(instance == null) {
-			instance = new AngryViperAssetService(false);
-		}
-		if(instance.allProtocols == null) {
-			SearchForSpecs search = new SearchForSpecs();
-			instance.allSpecs = search.getSpecs();
-			instance.allProtocols = search.getProtocols();
-		}
-		return instance.allProtocols;
-	}
-	
-	public static Collection<String> getFrameworkComponents() {
-		if(instance == null) {
-			instance = new AngryViperAssetService(false);
-		}
-		if(instance.allSpecs == null) {
-			SearchForSpecs search = new SearchForSpecs();
-			instance.allSpecs = search.getSpecs();
-			instance.allProtocols = search.getProtocols();
-		}
-		return instance.allSpecs.values();
-	}
-	
-	public Set<String> getAllHdlWorkers() {
-		if(allHdlWorkers == null) {
-			allHdlWorkers = new HashSet<String>();
-			SearchForSpecs search = new SearchForSpecs();
-			search.searchForAdapters();
-			allHdlWorkers.addAll(search.getHdlAdapters());
-			
-			for(AngryViperAsset asset : assetLookup.keySet()) {
-				if(asset.category == OcpiAssetCategory.component) {
-					if(asset.buildName.endsWith(".hdl")) {
-						int len = asset.buildName.length();
-						allHdlWorkers.add(asset.buildName.substring(0, len -4));
-					}
-				}
-			}
-		}
-		return allHdlWorkers;
-	}
 	
 	public void synchronizeWithFileSystem(TreeItem[] selections) {
 		
@@ -407,6 +409,11 @@ public class AngryViperAssetService {
 			}
 		}
 		
+		// Reset the specs, applicationComponents, and projects list to be reloaded
+		// no matter what.
+		registerProjectsTool = null;
+		
+		// Nothing Changed 
 		if(addedChangeset.size() == 0 && removedChangeset.size() == 0 && add_remove == null)
 			return;
 		
@@ -421,6 +428,7 @@ public class AngryViperAssetService {
 		
 		if(removedProjects.size() > 0)
 			projectsRemoved = removedProjects;
+		
 		
 		// Signal the change
 		if(projectsViewUpdate != null)
@@ -545,7 +553,10 @@ public class AngryViperAssetService {
 		IProject project;
 		for(int i= 0; i<projects.length; i++) {
 			project = projects[i];
+			
 			if(! project.isOpen()) continue;
+			if("RemoteSystemsTempFiles".equals(project.getName())) continue;
+			
 			String projectName = project.getName();
 			IPath path = project.getLocation();
 			IFile projectFile = null;
@@ -560,11 +571,15 @@ public class AngryViperAssetService {
 						projectFile = project.getFile("project.xml");
 					}
 					
+					if(! projectFile.exists()) {
+						AvpsResourceManager.getInstance().writeToNoticeConsole("Attempting to read OpenCPI project metadata. Project "+ project.getName() +" does not appear to be an OpenCPI project. Continuing.");
+						continue;
+					}
 					is = projectFile.getContents(true);
 					XmlResourceStore store = new XmlResourceStore(is);
 					RootXmlResource xmlResource = new RootXmlResource(store);
 					Project proj = Project.TYPE.instantiate(xmlResource);
-					//workspaceProjects.add(proj);
+					
 					AssetLocation location = new AssetLocation(projectName, projpath);
 					AssetModelData projectData = new AssetModelData(new AngryViperAsset(projectName, location, OcpiAssetCategory.project));
 					projectLookup.put(projectName, projectData);
@@ -573,7 +588,7 @@ public class AngryViperAssetService {
 						lookup.putAll(projLookup);
 					
 				} catch (CoreException | ResourceStoreException | IOException | InterruptedException e) {
-					AvpsResourceManager.getInstance().writeToNoticeConsole("Error obtaining project metadata. This happens when a project is not an ANGRYVIPER project.\n --> " + e.toString() );
+					AvpsResourceManager.getInstance().writeToNoticeConsole("Error obtaining project metadata. --> " + e.toString() );
 					//e.printStackTrace();
 				}
 				finally{

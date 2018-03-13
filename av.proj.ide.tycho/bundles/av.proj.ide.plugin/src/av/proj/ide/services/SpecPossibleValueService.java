@@ -35,6 +35,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.sapphire.PossibleValuesService;
 import org.eclipse.sapphire.Transient;
 import org.eclipse.sapphire.modeling.Status;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.TreeItem;
 
 import av.proj.ide.avps.internal.AngryViperAssetService;
 import av.proj.ide.oas.Application;
@@ -97,7 +100,7 @@ public class SpecPossibleValueService extends PossibleValuesService {
 	}
 	
 	public void getSpecs() {
-		this.files = AngryViperAssetService.getFrameworkComponents();
+		this.files = AngryViperAssetService.getApplicationComponents();
 
 		String possValues = "";
 		for (String s : this.files) {
@@ -109,7 +112,7 @@ public class SpecPossibleValueService extends PossibleValuesService {
 	}
 	
 	public String getSpecsString() {
-		this.files = AngryViperAssetService.getFrameworkComponents();
+		this.files = AngryViperAssetService.getApplicationComponents();
 		String possValues = "";
 		for (String s : this.files) {
 			possValues += s+",";
@@ -119,7 +122,12 @@ public class SpecPossibleValueService extends PossibleValuesService {
 	
 	public void refreshInstance(String possValues) {
 		if (this.app != null) {
-			this.app.setValues(possValues);
+			Display.getDefault().asyncExec(new Runnable(){
+				
+				public void run() {
+					app.setValues(possValues);
+				}
+			});			
 		}
 		refresh();
 	}

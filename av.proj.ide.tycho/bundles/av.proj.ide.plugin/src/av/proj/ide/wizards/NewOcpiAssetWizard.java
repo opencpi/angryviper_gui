@@ -66,7 +66,7 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 	
 	public NewOcpiAssetWizard() {
 		super();
-		setWindowTitle("New ANGRYVIPER Asset");
+		setWindowTitle("ANGRYVIPER OpenCPI Asset Wizard");
 		setNeedsProgressMonitor(true);
 		this.project = "";
 		this.confirmed = false;

@@ -10,7 +10,7 @@
       <wizard
       		category="AngryViper"
       		canFinishEarly="false"
-            name="ANGRYVIPER Asset"
+            name="OpenCPI Asset Wizard"
         	icon="icons/snake-32.png"
             class="av.proj.ide.wizards.NewOcpiAssetWizard"
             id="av.proj.ide.wizards.NewOcpiAssetWizard"
@@ -256,7 +256,7 @@
    		<command
    			defaultHandler="av.proj.ide.commands.NewAssetHandler"
    			id="av.proj.ide.commands.NewAsset"
-   			name="New ANGRYVIPER Asset">
+   			name="Create a New OpenCPI Asset">
    		</command>
    </extension>
    
@@ -267,7 +267,7 @@
    			<command
    				commandId="av.proj.ide.commands.NewAsset"
         		icon="icons/snake-32.png"
-   				label="ANGRYVIPER Asset"
+   				label="OpenCPI Asset Wizard"
    				style="push">
    				<visibleWhen checkEnabled="false"></visibleWhen>
    			</command>
@@ -277,14 +277,14 @@
          point="org.eclipse.ui.views">
       <category
             id="av.proj.ide.plugin"
-            name="Angry Viper Project">
+            name="ANGRYVIPER Project">
       </category>
       <view
             category="av.proj.ide.plugin"
             class="av.proj.ide.plugin.views.AVProjectView"
             icon="icons/Toolbox.gif"
             id="av.proj.ide.plugin.views.AVProjectView"
-            name="ANGRYVIPER Projects">
+            name="OpenCPI Projects">
       </view>
       <view
             category="av.proj.ide.plugin"

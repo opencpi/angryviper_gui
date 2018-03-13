@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>av.proj.ide.tycho</groupId>
 	<artifactId>av.proj.ide.tycho.bundles</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>av.proj.ide.tycho</groupId>
 		<artifactId>av.proj.ide.tycho.root</artifactId>
-		<version>1.3.0-SNAPSHOT</version>
+		<version>1.3.1-SNAPSHOT</version>
 	</parent>
 	<modules>
 		<module>av.proj.ide.plugin</module>

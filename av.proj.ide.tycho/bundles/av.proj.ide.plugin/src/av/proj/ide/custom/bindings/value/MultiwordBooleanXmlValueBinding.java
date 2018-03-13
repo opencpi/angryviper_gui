@@ -18,28 +18,34 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.owd.rcc;
+package av.proj.ide.custom.bindings.value;
 
-import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.Value;
-import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.XmlPath;
 
-import av.proj.ide.common.BasePort;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-
-public interface Port extends BasePort {
-	ElementType TYPE = new ElementType( Port.class );
+public class MultiwordBooleanXmlValueBinding extends BooleanAttributeRemoveIfFalseValueBinding {
 	
+	protected String camelName = "";
 	
-	// *** MinBufferCount *** 
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label(standard = "MinBufferCount")
-		
-	ValueProperty PROP_MIN_BUFFER_COUNT = new ValueProperty(TYPE, "MinBufferCount");
-
-	Value<String> getMinBufferCount();
-	void setMinBufferCount(String value);
+	@Override
+	protected void initBindingMetadata()
+    {
+        super.initBindingMetadata();
+        char c[] = this.name.toCharArray();
+        c[1] = Character.toLowerCase(c[1]);
+        this.camelName = new String(c);
+    }
 	
+    @Override
+    public String read()
+    {
+        String value = super.read();
+        if(value == null || value.isEmpty()) {
+            this.path = new XmlPath(this.camelName , resource().getXmlNamespaceResolver());
+            value = super.read();
+        }
+        if(value == null || value.isEmpty()) {
+            this.path = null;
+        }
+        return value;
+    }
 }

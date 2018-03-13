@@ -36,7 +36,10 @@ public class SpecialDualCaseXmlValueBinding extends BooleanAttributeRemoveIfFals
 		if(signaledFileModMessage == false) {
 			Display.getDefault().asyncExec(new Runnable(){
 				public void run() {
-					String message = "The Component XML editors are going to programmatically correct XML files when they are openned (type attribute set to certain primitives). Please save these files and make them part of your baseline.";
+					String message = 
+					"The Component XML editors programmatically modify the \"type\" attribute in the property element to a standarized format."
+					+ "\n - These changes are cosmetic and do not impact XML functionality in the Framework."
+					+ "\n - XML files opened just to be viewed do not need to be saved.";
 					MessageDialog.openInformation(Display.getDefault().getActiveShell(), "XML File Modifications", message);
 				}
 			});

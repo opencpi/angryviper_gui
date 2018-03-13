@@ -20,28 +20,16 @@
 
 package av.proj.ide.oas.internal;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.sapphire.LoggingService;
-import org.eclipse.sapphire.Sapphire;
 import org.eclipse.sapphire.ui.DragAndDropService;
 import org.eclipse.sapphire.ui.Point;
 import org.eclipse.sapphire.ui.diagram.editor.DiagramNodePart;
 import org.eclipse.sapphire.ui.diagram.editor.SapphireDiagramEditorPagePart;
 
+import av.proj.ide.avps.internal.AngryViperAssetService;
 import av.proj.ide.oas.Application;
 import av.proj.ide.oas.Instance;
-import av.proj.ide.parsers.ocs.ComponentSpec;
-import av.proj.ide.parsers.ocs.OCSXMLParser;
 
 public class ApplicationInstanceDragAndDropService extends DragAndDropService {
 
@@ -49,156 +37,41 @@ public class ApplicationInstanceDragAndDropService extends DragAndDropService {
 	public boolean droppable(DropContext context) {
 		if (context.object() instanceof IFile) {
 			IFile file = (IFile) context.object();
-			if (!file.getName().endsWith("-spec.xml") && !file.getName().endsWith("_spec.xml")) {
-				return false;				
+			if(file == null)
+				return false;
+			
+			if (file.getName().endsWith("-spec.xml") || file.getName().endsWith("_spec.xml")) {
+				return true;				
 			}
 		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public void drop(DropContext context) {
 		IFile specFile = (IFile) context.object();
+		String name = specFile.getName();
 		String projectName = specFile.getProject().getName();
 		IResource library = specFile.getParent().getParent();
-		String packageName = determinePackageName(library);
-		String prefix = "";
-		if (packageName.equals("")) {
-			packageName = findTopLevelPackageName(specFile.getProject());
-			if (!packageName.equals("")) {
-				prefix = packageName+".";
-				if (!library.getName().equals("components")) {
-					prefix += library.getName()+".";
-				}
-			}	
-		} else {
-			prefix = packageName+".";
+		String instanceName = AngryViperAssetService.
+				getApplicationSpecName(projectName, library.getName(), name);
+		final SapphireDiagramEditorPagePart diagram = context( SapphireDiagramEditorPagePart.class );
+        final Application app = context( Application.class );
+        
+        final Point initialDropPosition = context.position();
+        
+        int x = initialDropPosition.getX();
+        int y = initialDropPosition.getY();
+        
+        final Instance instance = app.getInstances().insert();
+		if(instanceName == null) {
+			instance.setName("UnavailableSpec");
 		}
-		InputStream in = null;
-		OCSXMLParser parser = new OCSXMLParser();
-		try {
-			in = specFile.getContents();
-			parser.parse(in);
-			ComponentSpec spec = parser.getComponentSpec();
-			String instanceName = "";
-			if (spec.getName() != null && !spec.getName().equals("")) {
-				instanceName = prefix+spec.getName();
-			} else {
-				if (specFile.getName().endsWith("_spec.xml")) {
-					instanceName = prefix+specFile.getName().replaceAll("_spec.xml", "");
-				} else if (specFile.getName().endsWith("-spec.xml")) {
-					instanceName = prefix+specFile.getName().replaceAll("-spec.xml", "");
-				}
-			}
-			if (!instanceName.equals("")) {
-				final SapphireDiagramEditorPagePart diagram = context( SapphireDiagramEditorPagePart.class );
-	            final Application app = context( Application.class );
-	            
-	            final Point initialDropPosition = context.position();
-	            
-	            int x = initialDropPosition.getX();
-	            int y = initialDropPosition.getY();
-	            
-	            final Instance instance = app.getInstances().insert();
-	            instance.setComponent(instanceName);
-	            
-	            final DiagramNodePart instanceNodePart = diagram.getDiagramNodePart(instance);
-	            instanceNodePart.setNodeBounds(x, y);
-			}
-		} catch (CoreException e) {
-			Sapphire.service( LoggingService.class ).log( e );
-		} finally {
-			try {
-				if (in != null) {
-					in.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		else {
+			instance.setComponent(instanceName);
 		}
-	
+        
+        final DiagramNodePart instanceNodePart = diagram.getDiagramNodePart(instance);
+        instanceNodePart.setNodeBounds(x, y);
 	}
-	
-	private String determinePackageName(IResource library) {
-		String packageName = "";
-		if (library instanceof IFolder) {
-			IFolder libFolder = (IFolder)library;
-			FileReader fileReader = null;
-			BufferedReader bufferedReader = null;
-			try {
-				for (IResource r : libFolder.members()) {
-					if (r.getName().equals("Makefile")) {
-						String line = null;
-						fileReader = new FileReader(r.getLocation().toString());
-						bufferedReader = new BufferedReader(fileReader); 
-						while((line = bufferedReader.readLine()) != null) {
-							if (line.startsWith("Package=")) {
-								packageName = line.replace("Package=", "");
-								break;
-							}
-						}
-					}
-				}
-			} catch (CoreException e) {
-				e.printStackTrace();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					if (fileReader != null) {
-						fileReader.close();
-					}
-					if (bufferedReader != null) {
-						bufferedReader.close();
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		return packageName;
-	}
-	
-	private String findTopLevelPackageName(IProject project) {
-		String packageName = "";
-		
-		if (project != null && project.exists()) {
-			IFile projectMk = project.getFile("Project.mk");
-			if (projectMk != null && projectMk.exists()) {
-				String line = null;
-				FileReader fileReader = null;
-				BufferedReader bufferedReader = null;
-				try {
-					fileReader = new FileReader(projectMk.getLocation().toFile());
-					bufferedReader = new BufferedReader(fileReader);
-					while((line = bufferedReader.readLine()) != null) {
-						if (line.startsWith("ProjectPackage=")) {
-							packageName = line.replace("ProjectPackage=", "");
-							break;
-						}
-					}
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				} finally {
-					try {
-						if (fileReader != null) {
-							fileReader.close();
-						}
-						if (bufferedReader != null) {
-							bufferedReader.close();
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
-		
-		return packageName;
-	}
-
 }

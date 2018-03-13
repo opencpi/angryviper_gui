@@ -34,8 +34,9 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.OPSOperationXmlListBinding;
 import av.proj.ide.custom.bindings.root.ProtocolRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.MultiwordBooleanXmlValueBinding;
 
 @CustomXmlRootBinding( value = ProtocolRootXmlBinding.class )
 
@@ -80,7 +81,7 @@ public interface Protocol extends Element {
 	
 	// *** ZeroLengthMessages ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
 	@Label( standard = "ZeroLengthMessages" )
 		
 	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
@@ -100,7 +101,7 @@ public interface Protocol extends Element {
 	
 	// *** VariableMessageLength ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
 	@Label( standard = "VariableMessageLength" )
 		
 	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
@@ -111,7 +112,7 @@ public interface Protocol extends Element {
 	
 	// *** DiverseDataSizes ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
 	@Label( standard = "DiverseDataSizes" )
 		
 	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
@@ -122,7 +123,7 @@ public interface Protocol extends Element {
 	
 	// *** UnBounded ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
 	@Label( standard = "UnBounded" )
 		
 	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");

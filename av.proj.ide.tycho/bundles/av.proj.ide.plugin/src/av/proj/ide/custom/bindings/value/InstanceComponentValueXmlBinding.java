@@ -20,10 +20,12 @@
 
 package av.proj.ide.custom.bindings.value;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.sapphire.modeling.xml.StandardXmlValueBindingImpl;
 import org.eclipse.sapphire.modeling.xml.XmlElement;
 import org.eclipse.sapphire.modeling.xml.XmlNode;
 import org.eclipse.sapphire.modeling.xml.XmlPath;
+import org.eclipse.swt.widgets.Display;
 
 public class InstanceComponentValueXmlBinding extends StandardXmlValueBindingImpl {
 	private String existing = "";
@@ -55,21 +57,51 @@ public class InstanceComponentValueXmlBinding extends StandardXmlValueBindingImp
                 }
             }
         }
+        boolean isNotNamed = false;
+		XmlPath tmpPath = new XmlPath("@Name", resource().getXmlNamespaceResolver());
+		XmlNode node = xml(false).getChildNode(tmpPath, false);
+		if (node == null) {
+			tmpPath = new XmlPath("@name", resource().getXmlNamespaceResolver());
+			node = xml(false).getChildNode(tmpPath, false);
+			if (node == null) {
+				isNotNamed = true;
+			}
+		}
         
         if (!existing.equals(value)) {
         	if (!existing.equals("")) {
         		compChanged = true;
         	}
-        	String[] split = value.split("\\.");
-        	if (split.length > 0) {
-        		writeName(split[split.length-1]);
-        	}
+ 	    	String[] split = value.split("\\.");
+	    	if (split.length > 0) {
+	    		if(isNotNamed)
+	    			presentModWarning();
+	    		writeName(split[split.length-1]);
+	    	}
         }
         
         existing = value;
         
         return value;
     }
+	
+	private static boolean signaledFileModMessage = false;
+	
+	protected void presentModWarning() {
+		if(signaledFileModMessage == false) {
+			Display.getDefault().asyncExec(new Runnable(){
+				public void run() {
+					String message = 
+					"The Application XML editor programmatically modifies OAS XML files to support presentation (name attribute is added to instance elements)."
+					+ "\n - These changes are cosmetic and do not impact XML functionality in the Framework."
+					+ "\n - The default names chosen by the editor may be changed."
+					+ "\n - XML files opened just to be viewed do not need to be saved.";
+					MessageDialog.openInformation(Display.getDefault().getActiveShell(), "XML File Modifications", message);
+				}
+			});
+			signaledFileModMessage = true;
+		}
+	}
 	
 	private void writeName( final String value ) {
 		XmlPath tmpPath = new XmlPath("@Name", resource().getXmlNamespaceResolver());

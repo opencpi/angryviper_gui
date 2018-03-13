@@ -85,7 +85,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 		
 		synchronizeButton = new Button(buttons, SWT.PUSH);
 		synchronizeButton.setText("Refresh");
-		synchronizeButton.setToolTipText("Fefresh assets from the file system.");
+		synchronizeButton.setToolTipText("Refresh assets from the file system.");
 		
 		gap = new Composite(this, SWT.NONE);
 		gap.setLayout(new GridLayout(1, false) );

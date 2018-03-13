@@ -32,6 +32,7 @@ import org.eclipse.sapphire.PossibleValuesService;
 import org.eclipse.sapphire.Transient;
 
 import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.avps.internal.RegisteredProjectSearchTool;
 import av.proj.ide.ocs.ComponentSpec;
 
 public class ProtocolPossibleValuesService extends PossibleValuesService {
@@ -46,7 +47,8 @@ public class ProtocolPossibleValuesService extends PossibleValuesService {
 	protected void compute(Set<String> values) {
 		values.clear();
 		if (initCurrent()) {
-			Set<String> prots = AngryViperAssetService.getAllOcpiProtocols();
+			RegisteredProjectSearchTool tool = AngryViperAssetService.getRegistedProjectTool();
+			Set<String> prots =  tool.getProtocols();
 			values.addAll(prots);
 		}
 	}

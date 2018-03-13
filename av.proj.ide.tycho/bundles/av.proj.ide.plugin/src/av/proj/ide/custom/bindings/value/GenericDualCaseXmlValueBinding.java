@@ -76,10 +76,17 @@ public class GenericDualCaseXmlValueBinding extends StandardXmlValueBindingImpl 
     @Override
     public void write( final String value )
     {
-    	if(this.path == null) {
-    		// If this is a new instance of this attribute, default it to property name.
-    		this.path = new XmlPath(this.name , resource().getXmlNamespaceResolver());
+    	// A value was added then removed.
+		if (value == null || value.isEmpty()) {
+    		final XmlElement element = xml( false );
+			element.removeChildNode( this.path );
+    	} else {
+    		//First time write
+        	if(this.path == null) {
+        		// If this is a new instance of this attribute, default it to property name.
+        		this.path = new XmlPath(this.name , resource().getXmlNamespaceResolver());
+        	}
+    		super.write(value);
     	}
-    	super.write(value);
     }
 }
