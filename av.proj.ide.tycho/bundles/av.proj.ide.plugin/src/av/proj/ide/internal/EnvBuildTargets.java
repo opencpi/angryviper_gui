@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.avps.internal;
+package av.proj.ide.internal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,6 +31,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import av.proj.ide.avps.internal.AvpsResourceManager;
 
 /**
  * Here are classes used as the target and platform data model
@@ -49,6 +51,9 @@ public class EnvBuildTargets {
 			parts = new ArrayList<String>();
 			tool = (String)target.get("tool");
 			JSONArray prts = (JSONArray) target.get("parts");
+			if(prts == null)
+				return;
+			
 			for (int i = 0; i < prts.size(); i++) {
 				String part = (String) prts.get(i);
 				parts.add(part);
@@ -66,7 +71,10 @@ public class EnvBuildTargets {
 			
 	        @SuppressWarnings("unchecked")
 			Set<String> targetNames = (Set<String>)vendor.keySet();
-	        for(String tname : targetNames) {
+			if(targetNames == null)
+				return;
+
+			for(String tname : targetNames) {
 	       	 JSONObject target = (JSONObject) vendor.get(tname);
 	      	 HdlTargetInfo targ = new HdlTargetInfo(tname, target);
 	      	 targetList.add(targ);
@@ -171,9 +179,17 @@ public class EnvBuildTargets {
 	public List<HdlVendor> getHdlVendors() {
 		
 		JSONObject jsonObject = getEnvInfo(hdlTargetsCmd);		
+        ArrayList<HdlVendor> vendors = new ArrayList<HdlVendor>();
+		if(jsonObject == null) {
+			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show hdl targets.");
+			return vendors;
+		}
+
         @SuppressWarnings("unchecked")
 		Set<String> keys = jsonObject.keySet();
-        ArrayList<HdlVendor> vendors = new ArrayList<HdlVendor>();
+		if(keys == null)
+			return vendors;
+        
         for(String key : keys) {
         	 JSONObject vendorObj = (JSONObject) jsonObject.get(key);
         	 HdlVendor vendor = new HdlVendor(key, vendorObj);
@@ -184,9 +200,15 @@ public class EnvBuildTargets {
 	
 	public List<HdlPlatformInfo> getHdlPlatforms() {
 		JSONObject jsonObject = getEnvInfo(hdlPlatformsCmd);		
+        ArrayList<HdlPlatformInfo> platforms = new ArrayList<HdlPlatformInfo>();
+
+        if(jsonObject == null) {
+			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show hdl platforms.");
+			return platforms;
+        }
+
         @SuppressWarnings("unchecked")
 		Set<String> keys = jsonObject.keySet();
-        ArrayList<HdlPlatformInfo> platforms = new ArrayList<HdlPlatformInfo>();
         for(String key : keys) {
         	 JSONObject platformObj = (JSONObject) jsonObject.get(key);
         	 HdlPlatformInfo platform = new HdlPlatformInfo(key, platformObj);
@@ -195,10 +217,18 @@ public class EnvBuildTargets {
 		return platforms;
 	}
 	public List<RccPlatformInfo> getRccPlatforms() {
-		JSONObject jsonObject = getEnvInfo(rccPlatformsCmd);		
-        @SuppressWarnings("unchecked")
-		Set<String> keys = jsonObject.keySet();
         ArrayList<RccPlatformInfo> rccPlatforms = new ArrayList<RccPlatformInfo>();
+		JSONObject jsonObject = getEnvInfo(rccPlatformsCmd);		
+		if(jsonObject == null) {
+			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show rcc platforms.");
+			return rccPlatforms;
+		}
+
+		@SuppressWarnings("unchecked")
+		Set<String> keys = jsonObject.keySet();
+		if(keys == null)
+			return rccPlatforms;
+        
         for(String key : keys) {
         	 JSONObject platformObj = (JSONObject) jsonObject.get(key);
         	 RccPlatformInfo platform = new RccPlatformInfo(key, platformObj);

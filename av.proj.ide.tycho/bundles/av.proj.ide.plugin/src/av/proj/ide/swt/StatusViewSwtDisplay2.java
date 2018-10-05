@@ -48,10 +48,10 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
 import av.proj.ide.avps.internal.AvpsResourceManager;
-import av.proj.ide.avps.internal.ExecutionAsset.CommandVerb;
 import av.proj.ide.avps.internal.OcpiBuildStatus;
 import av.proj.ide.avps.internal.ProjectBuildService;
 import av.proj.ide.avps.internal.StatusNotificationInterface;
+import av.proj.ide.internal.OcpidevVerb;
 
 public class StatusViewSwtDisplay2 extends Composite implements StatusNotificationInterface {
 
@@ -136,6 +136,8 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 				if(selects.length == 1) {
 					TreeItem item = selects[0];
 					StatusItemControls control = (StatusItemControls)item.getData();
+					// control will be null if a sub item is selected.
+					if(control == null) return;
 					AvpsResourceManager.getInstance().bringConsoleToView(control.consoleName);
 				}
 			}
@@ -195,7 +197,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	
 	
 	@Override
-	public void registerBuild(Integer buildNumber, CommandVerb verb, String consoleName, String buildLabel) {
+	public void registerBuild(Integer buildNumber, OcpidevVerb verb, String consoleName, String buildLabel) {
 		
 		addStatusEntry(buildNumber, verb, consoleName, buildLabel);
 	}
@@ -226,7 +228,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 		});
 	}
 	@Override
-	public void restartBuild(Integer buildNumber, CommandVerb verb) {
+	public void restartBuild(Integer buildNumber, OcpidevVerb verb) {
 		StatusItemControls ctrl = buildControls.get(buildNumber);
 		if(ctrl == null) return;
 		TreeItem item = ctrl.theItem;
@@ -240,7 +242,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	}
 	
 	
-	public void addStatusEntry(Integer buildNumber, CommandVerb verb, String consoleName, String buildLabel) {
+	public void addStatusEntry(Integer buildNumber, OcpidevVerb verb, String consoleName, String buildLabel) {
 
 		TreeItem item = new TreeItem(statusListing, SWT.NONE);
 		String[] s = new String[]{buildNumber.toString(), buildLabel, consoleName};
@@ -252,7 +254,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	    controls.theItem = item;
 	    controls.buildNumber = buildNumber;
 	    controls.consoleName = consoleName;
-	    if(verb == CommandVerb.runtest)
+	    if(verb == OcpidevVerb.run)
 	    	controls.isRun = true;
 		buildControls.put(buildNumber, controls);
 		item.setData(controls);
@@ -324,7 +326,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
  						selection = selection.getParentItem();
  						control = (StatusItemControls)selection.getData();
  					}
-					ProjectBuildService.getInstance().reRun(CommandVerb.build, null, control.buildNumber);
+					ProjectBuildService.getInstance().reRun(OcpidevVerb.build, null, control.buildNumber);
 				}
 			});
 	        
@@ -339,7 +341,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
  						selection = selection.getParentItem();
  						control = (StatusItemControls)selection.getData();
  					}
-					ProjectBuildService.getInstance().reRun(CommandVerb.runtest, null, control.buildNumber);
+					ProjectBuildService.getInstance().reRun(OcpidevVerb.run, null, control.buildNumber);
 				}
 	 		});
 	        
@@ -354,7 +356,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
  						selection = selection.getParentItem();
  						control = (StatusItemControls)selection.getData();
  					}
-					ProjectBuildService.getInstance().reRun(CommandVerb.clean, null, control.buildNumber);
+					ProjectBuildService.getInstance().reRun(OcpidevVerb.clean, null, control.buildNumber);
 				}
 	 		});
 	        

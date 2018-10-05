@@ -169,6 +169,8 @@ public class AvpsResourceManager {
 	
 	public void bringConsoleToView(MessageConsole console) {
 		IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+		if(window == null)
+			return;
 		IWorkbenchPage page = window.getActivePage();
 		String id = IConsoleConstants.ID_CONSOLE_VIEW;
 		try {
@@ -180,6 +182,7 @@ public class AvpsResourceManager {
 		}
 	}
 	public void bringConsoleToView(String consoleName) {
+		if(consoleName == null)return;
 		MessageConsole console = findConsole(consoleName);
 		bringConsoleToView(console);
 	}

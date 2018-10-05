@@ -29,8 +29,9 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
 
 public interface SpecProperty extends Element {
 	ElementType TYPE = new ElementType( SpecProperty.class );
@@ -46,7 +47,7 @@ public interface SpecProperty extends Element {
 	void setName(String value);
 	
 	// *** Default ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "Default")
 
 	ValueProperty PROP_DEFAULT = new ValueProperty(TYPE, "Default");
@@ -56,8 +57,9 @@ public interface SpecProperty extends Element {
 	
 	// *** Readable ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "Readable")
+    //@Enablement( expr = "${ Volatile  == null }" )
 
 	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
 
@@ -67,8 +69,9 @@ public interface SpecProperty extends Element {
 
 	// *** Volatile ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "Volatile")
+    //@Enablement( expr = "${ Readable  == null }" )
 
 	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
 
@@ -78,7 +81,7 @@ public interface SpecProperty extends Element {
 
 	// *** Writable ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "Writable")
 
 	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
@@ -89,7 +92,7 @@ public interface SpecProperty extends Element {
 
 	// *** Initial ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "Initial")
 
 	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");

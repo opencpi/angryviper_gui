@@ -27,7 +27,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 
-import av.proj.ide.wizards.internal.NewOcpiAssetWizardPage1;
+import av.proj.ide.wizards.NewOcpiAssetWizardPage1;
 
 public class ProjectValidator implements IValidator {
 

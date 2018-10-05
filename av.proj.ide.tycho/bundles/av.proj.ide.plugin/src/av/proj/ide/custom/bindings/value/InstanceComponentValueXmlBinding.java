@@ -20,162 +20,137 @@
 
 package av.proj.ide.custom.bindings.value;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.sapphire.modeling.xml.StandardXmlValueBindingImpl;
-import org.eclipse.sapphire.modeling.xml.XmlElement;
 import org.eclipse.sapphire.modeling.xml.XmlNode;
 import org.eclipse.sapphire.modeling.xml.XmlPath;
-import org.eclipse.swt.widgets.Display;
 
-public class InstanceComponentValueXmlBinding extends StandardXmlValueBindingImpl {
-	private String existing = "";
-	private boolean compChanged = false;
+import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.UiComponentSpec;
+
+/***
+ * Requirements
+ * 1. Applies to the Instance element component attribute.
+ * 2. Must be able to find it in lower case and leading capital C.
+ * 3. If the component attribute is found when reading the document
+ * 	  the name needs to be checked. If it doesn't exist write it out
+ * 	  (UI wrongly uses it in the display) if it does exist, keep the
+ *    existing name.
+ * 4. This should try to preserve the case used in the original document.
+ * 5. ANGRYVIPER convention: elements an attribute are capitalized.   
+ * 6. If the user changes the instance component, Sapphire first write
+ *    out the attribute then read is called to update the diagram. 
+ *    This change must be detected and a new name applied.
+ * 7. Dealing with components in the various XML documents is tricky.
+ *    They are referred to in various way.  As of Rel 1.4 the UI makes
+ *    a more readable and common name for respective displays. The OAS
+ *    XML uses the fully qualified component name 
+ *    (library package-Id.componentName). This name must be written
+ *    as the component value.
+ * 8. The diagram editor lists component selections by the component name.
+ * 9. Drag-and-drop acts on the component file name and the instance
+ *    write passes in the fully qualified name.  Write must cover both
+ *    cases.   
+ */
+public class InstanceComponentValueXmlBinding extends GenericDualCaseXmlValueBinding {
+	private XmlPath namePath = null;
+	String priorComponent = null;
 	
 	@Override
     public String read()
     {
-        String value = null;
-        final XmlElement element = xml( false );
-        this.path = new XmlPath("@component" , resource().getXmlNamespaceResolver());
-        if( element != null )
-        {
-            if( this.treatExistanceAsValue )
-            {
-                final boolean exists = ( element.getChildNode( this.path, false ) != null );
-                value = ( exists ? this.valueWhenPresent : this.valueWhenNotPresent );
-            }
-            else if( this.path == null )
-            {
-                value = element.getText();
-            }
-            else
-            {
-                value = element.getChildNodeText( this.path );
-                if (value.equals("")) {
-                	XmlPath tmpPath = new XmlPath("@Component" , resource().getXmlNamespaceResolver());
-                	value = element.getChildNodeText( tmpPath );
-                }
-            }
-        }
-        boolean isNotNamed = false;
-		XmlPath tmpPath = new XmlPath("@Name", resource().getXmlNamespaceResolver());
-		XmlNode node = xml(false).getChildNode(tmpPath, false);
-		if (node == null) {
-			tmpPath = new XmlPath("@name", resource().getXmlNamespaceResolver());
-			node = xml(false).getChildNode(tmpPath, false);
-			if (node == null) {
-				isNotNamed = true;
+		String value = super.read();
+		if(value != null) {
+			if(priorComponent == null) {
+				// First read.
+				priorComponent = value;
+			}
+			String name = getName();
+			if (name == null) {
+				// It didn't exist before; write it out.
+				writeName(value);
+			}
+			else if( ! value.equals(priorComponent) ){
+				// The user changed the component. Update the name in the 
+				// diagram.
+				writeName(value);
+				priorComponent = value;
 			}
 		}
-        
-        if (!existing.equals(value)) {
-        	if (!existing.equals("")) {
-        		compChanged = true;
-        	}
- 	    	String[] split = value.split("\\.");
-	    	if (split.length > 0) {
-	    		if(isNotNamed)
-	    			presentModWarning();
-	    		writeName(split[split.length-1]);
-	    	}
-        }
-        
-        existing = value;
         
         return value;
     }
 	
-	private static boolean signaledFileModMessage = false;
-	
-	protected void presentModWarning() {
-		if(signaledFileModMessage == false) {
-			Display.getDefault().asyncExec(new Runnable(){
-				public void run() {
-					String message = 
-					"The Application XML editor programmatically modifies OAS XML files to support presentation (name attribute is added to instance elements)."
-					+ "\n - These changes are cosmetic and do not impact XML functionality in the Framework."
-					+ "\n - The default names chosen by the editor may be changed."
-					+ "\n - XML files opened just to be viewed do not need to be saved.";
-					MessageDialog.openInformation(Display.getDefault().getActiveShell(), "XML File Modifications", message);
-				}
-			});
-			signaledFileModMessage = true;
-		}
-	}
-	
-	private void writeName( final String value ) {
-		XmlPath tmpPath = new XmlPath("@Name", resource().getXmlNamespaceResolver());
-		XmlNode node = xml(false).getChildNode(tmpPath, false);
-
-		if (node == null) {
-			tmpPath = new XmlPath("@name", resource().getXmlNamespaceResolver());
-			node = xml(false).getChildNode(tmpPath, false);
+	/***
+	 * Must deal with the case of name as it does the case of component. 
+	 */
+	private String getName() {
+		String name = null;
+		XmlNode node;
+		if(namePath == null) {
+			XmlPath ucPath = new XmlPath("@Name", resource().getXmlNamespaceResolver());
+			node = xml(false).getChildNode(ucPath, false);
 			if (node == null) {
-				xml(true).setChildNodeText(tmpPath, value, this.removeNodeOnSetIfNull);
-			} else {
-				if (!node.getText().equals(value) && this.compChanged) {
-					xml(true).setChildNodeText(tmpPath, value, this.removeNodeOnSetIfNull);
-					this.compChanged = false;
+				namePath = new XmlPath("@name", resource().getXmlNamespaceResolver());
+				node = xml(false).getChildNode(namePath, false);
+				if(node == null) {
+	  				namePath = ucPath;
+	  				return null;
 				}
 			}
-		} else {
-			if (!node.getText().equals(value) && this.compChanged) {
-				xml(true).setChildNodeText(tmpPath, value, this.removeNodeOnSetIfNull);
-				this.compChanged = false;
+			else {
+				// Default to upper case.
+				namePath = ucPath;
 			}
 		}
+		node = xml(false).getChildNode(namePath, false);
+		if(node != null) {
+			name = node.getText();
+		}
+		return name;
+	}
+
+	/***
+	 * Two points of entry: the editor and drag-and-drop.
+	 */
+	private String writeName( final String value ) {
+    	UiComponentSpec spec = AngryViperAssetService.getInstance().getUiSpecByDisplayName(value);
+    	String oasComp = null;
+    	if(spec != null) {
+    		oasComp = spec.getComponentName();
+    	}
+    	else {
+    		// This is used to deal with the "nothing" component.
+        	String[] split = value.split("\\.");
+        	if (split.length > 0) {
+        		oasComp = split[split.length-1];
+        	}
+    	}
+		XmlNode node = xml(false).getChildNode(namePath, false);
+		if (node == null) {
+			// we're adding it.
+			xml(true).setChildNodeText(namePath, oasComp, this.removeNodeOnSetIfNull);
+		}
+		else {
+			// It's being updated
+			xml(true).setChildNodeText(namePath, oasComp, this.removeNodeOnSetIfNull);
+		}
+		return oasComp;
 	}
 
     @Override
     public void write( final String value )
     {
-    	this.path = new XmlPath("@component" , resource().getXmlNamespaceResolver());
-        if( this.treatExistanceAsValue )
-        {
-            final boolean nodeShouldBePresent = this.valueWhenPresent.equals( value );
-            
-            if( nodeShouldBePresent )
-            {
-                xml( true ).getChildNode( this.path, true );
-            }
-            else
-            {
-                final XmlElement element = xml( false );
-                
-                if( element != null )
-                {
-                    element.removeChildNode( this.path );
-                }
-            }
-        }
-        else if( this.path == null )
-        {
-            xml( true ).setText( value );
-        }
-        else
-        {
-            xml( true ).setChildNodeText( this.path, value, this.removeNodeOnSetIfNull );
-            
-            XmlPath tmpPath = new XmlPath("@Component", resource().getXmlNamespaceResolver());
-            final XmlElement element = xml( false );
-                
-                if( element != null )
-                {
-                    element.removeChildNode( tmpPath );
-                }
-        }
-    }
-
-    @Override
-    public XmlNode getXmlNode()
-    {
-        final XmlElement element = xml( false );
-        if( element != null )
-        {
-            return element.getChildNode( this.path, false );   
-        }
-        
-        return null;
-    }
+    	// There are two paths to write.  Once it view instance comp selction in the editor
+    	// the other is through drag & drop.  Drag and Drop passes the oasReference of the component.
+    	AngryViperAssetService service = AngryViperAssetService.getInstance();
+    	UiComponentSpec spec = service.getUiSpecByDisplayName(value);
+    	if(spec != null) {
+    		// Editor operation
+        	super.write(spec.getOasReference());
+     	}
+    	else {
+    		// Drag/drop operation.
+        	super.write(value);
+    	}
+   }
 
 }

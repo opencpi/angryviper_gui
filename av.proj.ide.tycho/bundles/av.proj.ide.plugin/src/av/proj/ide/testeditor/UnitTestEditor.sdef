@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definition>
+	<editor-page>
+		<id>UnitTestEditor</id>
+		<element-type>av.proj.ide.testeditor.Tests</element-type>
+		<page-header-text>Unit Test Editor</page-header-text>
+		<initial-selection>Tests</initial-selection>
+		<root-node>
+			<node>
+				<label>Top Level Test Element</label>
+				<section>
+					<label>Test Attributes</label>
+					<content>
+						<property-editor>Spec</property-editor>
+						<property-editor>
+							<property>useHDLFileIo</property>
+							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+							<hint>
+								<name>checkbox.layout</name>
+								<value>leading.label</value>
+							</hint>
+						</property-editor>
+						<property-editor>Timeout</property-editor>
+						<property-editor>Duration</property-editor>
+
+						<property-editor>OnlyWorkers</property-editor>
+						<property-editor>ExcludeWorkers</property-editor>
+
+						<property-editor>OnlyPlatforms</property-editor>
+						<property-editor>ExcludePlatforms</property-editor>
+					</content>
+				</section>
+			</node>
+
+			<node>
+				<label>Inputs</label>
+				<section>
+					<label>Create Inputs</label>
+					<content>
+						<label>
+							Test inputs have either a Name or a Port (must have one or
+							the
+							other). The rest of
+							the input attributes are optional, however
+							a test having a source of
+							data can
+							have either a Script or a File;
+							not both.
+						</label>
+						<spacer />
+						<actuator>
+							<action-id>Sapphire.Add</action-id>
+							<label>Add</label>
+						</actuator>
+						<separator></separator>
+						<!-- List Section -->
+						<section>
+						<label>Test Inputs</label>
+							<content>
+								<property-editor>
+									<property>Inputs</property>
+									<child-property>Name</child-property>
+									<child-property>Port</child-property>
+									<child-property>Script</child-property>
+									<child-property>File</child-property>
+                                    <child-property>
+                                        <style>Sapphire.PropertyEditor.PopUpListField.Editable</style>
+                                        <property>StressorMode</property>
+                                    </child-property>
+									<child-property>MessageSize</child-property>
+									<child-property>MessagesInFile</child-property>
+									<child-property>SuppressEOF</child-property>
+								</property-editor>
+							</content>
+                            <scroll-horizontally>true</scroll-horizontally>
+						</section>
+						<!-- -->
+					</content>
+				</section>
+
+				<node-factory>
+					<property>Inputs</property>
+					<case>
+						<label>${ Name != null ? Name : (Port != null ? Port :
+							&quot;&lt;Input&gt;&quot; ) }</label>
+						<section>
+							<label>New Input</label>
+							<content>
+								<property-editor>Name</property-editor>
+								<property-editor>Port</property-editor>
+								<property-editor>Script</property-editor>
+								<property-editor>File</property-editor>
+                                <property-editor>
+                                    <style>Sapphire.PropertyEditor.PopUpListField.Editable</style>
+                                    <property>StressorMode</property>
+                                </property-editor>
+							</content>
+						</section>
+						<section>
+							<label>Parameters for the File Read Worker</label>
+							<content>
+								<property-editor>MessageSize</property-editor>
+								<property-editor>MessagesInFile</property-editor>
+								<property-editor>SuppressEOF</property-editor>
+							</content>
+						</section>
+					</case>
+				</node-factory>
+
+			</node>
+
+			<node>
+				<label>Outputs</label>
+				<section>
+					<label>Test Outputs</label>
+					<content>
+						<label>
+							Test outputs have either a Name or a Port (must have one or
+							the
+							other). The rest of
+							the output attributes are optional, however
+							a test having data
+							comparison validation can
+							have either a Script
+							or a File; not both.
+						</label>
+						<spacer />
+						<actuator>
+							<action-id>Sapphire.Add</action-id>
+							<label>Add</label>
+						</actuator>
+						<separator></separator>
+						<!-- List Section -->
+						<section>
+							<label>Test Outputs</label>
+							<content>
+								<property-editor>
+									<property>Outputs</property>
+									<child-property>Name</child-property>
+									<child-property>Port</child-property>
+									<child-property>Script</child-property>
+									<child-property>File</child-property>
+									<child-property>View</child-property>
+									<child-property>StopOnEof</child-property>
+									<child-property>DisableBackPressure</child-property>
+								</property-editor>
+							</content>
+                            <scroll-horizontally>true</scroll-horizontally>
+						</section>
+						<section>
+							<label>Parameter for the File Write Worker</label>
+							<content>
+								<child-property>StopOnEof</child-property>
+							</content>
+						</section>
+						<!-- -->
+					</content>
+				</section>
+
+				<node-factory>
+					<property>Outputs</property>
+					<case>
+						<label>${ Name != null ? Name : (Port != null ? Port :
+							&quot;&lt;Output&gt;&quot; ) }</label>
+						<section>
+							<label>New Output</label>
+							<content>
+								<property-editor>Name</property-editor>
+								<property-editor>Port</property-editor>
+								<property-editor>Script</property-editor>
+								<property-editor>File</property-editor>
+								<property-editor>View</property-editor>
+								<property-editor>StopOnEof</property-editor>
+								<property-editor>DisableBackPressure</property-editor>
+							</content>
+						</section>
+					</case>
+				</node-factory>
+
+			</node>
+
+			<node>
+				<label>Properties</label>
+				<section>
+					<label>Test Properties</label>
+					<content>
+						<actuator>
+							<action-id>Sapphire.Add</action-id>
+							<label>Add</label>
+						</actuator>
+						<!-- <separator></separator> <section> <label>List</label> <content> 
+							<property-editor> <property>Properties</property> <child-property>Test</child-property> 
+							<child-property>Name</child-property> <child-property>Set</child-property> 
+							</property-editor> </content> </section> -->
+					</content>
+				</section>
+
+				<node-factory>
+					<property>Properties</property>
+					<case>
+						<label>${ Name != null ? Name : &quot;&lt;Name&gt;&quot; }</label>
+						<section>
+							<label>Properties Form</label>
+							<content>
+								<include>TestPropertiesForm</include>
+							</content>
+						</section>
+					</case>
+				</node-factory>
+
+			</node>
+			
+			<node>
+				<label>Test Cases</label>
+				<section>
+					<label>Test Cases</label>
+					<content>
+						<actuator>
+							<action-id>Sapphire.Add</action-id>
+							<label>Add</label>
+						</actuator>
+						<!-- <separator></separator> <section> <label>List</label> <content> 
+							<property-editor> <property>Properties</property> <child-property>Test</child-property> 
+							<child-property>Name</child-property> <child-property>Set</child-property> 
+							</property-editor> </content> </section> -->
+					</content>
+				</section>
+
+				<node-factory>
+					<property>Cases</property>
+					<case>
+						<label>${ Name != null ? Name : &quot;&lt;Name&gt;&quot; }</label>
+						<section>
+							<label>Test Cases Form</label>
+							<content>
+								<include>TestCaseForm</include>
+							<spacer />
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add Property</label>
+							</actuator>
+							</content>
+						</section>
+                        <node-factory>
+						<property>Properties</property>
+							<case>
+								<label>${ Name != null ? Name : &quot;&lt;Name&gt;&quot; }</label>
+								<section>
+									<label>Properties Form</label>
+									<content>
+										<include>TestPropertiesForm</include>
+									</content>
+								</section>
+							</case>
+                        </node-factory>
+					</case>
+				</node-factory>
+
+			</node>
+
+		</root-node>
+	</editor-page>
+
+	<form>
+		<id>TestPropertiesForm</id>
+		<content>
+			<section>
+				<label>General Property Attributes</label>
+				<content>
+					<property-editor>Test</property-editor>
+					<property-editor>Name</property-editor>
+					<property-editor>
+						<child-property>Delay</child-property>
+						<property>Sets</property>
+						<child-property>Value</child-property>
+					</property-editor>
+				</content>
+			</section>
+			<section>
+				<label>Source of Test Values</label>
+				<content>
+					<property-editor>Value</property-editor>
+					<property-editor>Values</property-editor>
+					<property-editor>ValueFile</property-editor>
+					<property-editor>ValuesFile</property-editor>
+					<property-editor>Generate</property-editor>
+				</content>
+				<description>Only one of these five attributes can be set in a
+					property. Expressions can be put in for Value.
+				</description>
+			</section>
+			<section>
+				<label>Platforms Tested or Excluded</label>
+				<content>
+					<property-editor>Only</property-editor>
+					<property-editor>Exclude</property-editor>
+					<property-editor>Add</property-editor>
+				</content>
+				<description>Only one of these three attributes may be set in a
+					property.
+				</description>
+			</section>
+		</content>
+	</form>
+	
+    <form>
+		<id>TestCaseForm</id>
+		<content>
+			<section>
+				<label>General Property Attributes</label>
+				<content>
+					<property-editor>Name</property-editor>
+						<property-editor>Timeout</property-editor>
+						<property-editor>Duration</property-editor>
+
+						<property-editor>OnlyWorkers</property-editor>
+						<property-editor>ExcludeWorkers</property-editor>
+
+						<property-editor>OnlyPlatforms</property-editor>
+						<property-editor>ExcludePlatforms</property-editor>
+				</content>
+			</section>
+			<section>
+				<label>Case Inputs and Outputs</label>
+				<description>Note restrictions on use of name and port when these attributes appear in a
+				top level input or output. Port cannot be specified if the top level element
+				specifies a port. 
+				</description>
+				<content>
+					<property-editor>
+						<property>Inputs</property>
+						<child-property>Name</child-property>
+						<child-property>Port</child-property>
+						<child-property>Script</child-property>
+						<child-property>File</child-property>
+                        <child-property>
+                            <style>Sapphire.PropertyEditor.PopUpListField.Editable</style>
+                            <property>StressorMode</property>
+                        </child-property>
+						<child-property>MessageSize</child-property>
+						<child-property>MessagesInFile</child-property>
+						<child-property>SuppressEOF</child-property>
+					</property-editor>
+					<separator></separator>
+					<property-editor>
+						<property>Outputs</property>
+						<child-property>Name</child-property>
+						<child-property>Port</child-property>
+						<child-property>Script</child-property>
+						<child-property>File</child-property>
+						<child-property>View</child-property>
+						<child-property>StopOnEof</child-property>
+						<child-property>DisableBackPressure</child-property>
+					</property-editor>
+					
+				</content>
+			</section>
+		</content>
+	</form>	
+</definition>

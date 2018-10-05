@@ -26,7 +26,10 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.List;
 
-import av.proj.ide.avps.internal.ExecutionAsset.CommandVerb;
+import org.eclipse.ui.console.MessageConsole;
+
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.OcpidevVerb;
 
 public class CommandExecutor {
 	Thread executionTread;
@@ -56,7 +59,10 @@ public class CommandExecutor {
 		}
 	}
 	
-	public void executeCommandSet(ExecutionComponents components, CommandVerb verb, Boolean flag) {
+	public void executeCommandSet(ExecutionComponents components, OcpidevVerb verb, Boolean flag) {
+		// Reruns - reset these in case they we set before.
+		threadStopped[0] = false;
+		buildProblem[0] = false;
 		
 		executionTread = new Thread(new Runnable() {
 	        public void run() {
@@ -82,7 +88,7 @@ public class CommandExecutor {
 	    				status.asset = asset.assetName;
 	    			}
 	        		status.buildString = exAsset.getDisplayString(verb);
-	        		status.project = asset.location.projectName;
+	        		status.project = asset.projectLocation.projectName;
 	        		status.lib = asset.libraryName;
 	        		
 	        		File executionLocation = exAsset.getExecutionDir();
@@ -132,5 +138,77 @@ public class CommandExecutor {
 
 	public boolean isActive() {
 		return(executionTread != null && executionTread.isAlive());
+	}
+	
+	public static String getCommandResult(String[] command, MessageConsole cons, StringBuilder errMessage) {
+    	PrintStream console = new PrintStream(cons.newMessageStream());
+		String c = command.toString();
+		c = c.replaceAll(", ", " ");
+		console.println(c + "\n");
+		ProcessBuilder pb = new ProcessBuilder(command);
+		//pb.redirectErrorStream(true);
+		
+		Process process;
+		try {
+			process = pb.start();
+			int result = process.waitFor();
+			InputStream in = process.getInputStream();
+			if(result == 0) {
+				StringBuilder sb = new StringBuilder();
+				while((result = in.read())> -1) {
+					sb.append((char)result);
+				}
+				return sb.toString();
+				
+			}
+			else {
+				while((result =in.read())> -1) {
+					console.print((char)result);
+					errMessage.append((char)result);
+				}
+			}
+		} catch (IOException | InterruptedException e) {
+			StackTraceElement[] trace = e.getStackTrace();
+			for(StackTraceElement elem : trace) {
+				console.println(elem.toString());
+			}
+		}
+		return null;
+	}
+
+	public static boolean executeCommand(List<String> command, MessageConsole cons, StringBuilder errMessage) {
+    	PrintStream console = new PrintStream(cons.newMessageStream());
+		String c = command.toString();
+		c = c.replaceAll(", ", " ");
+		console.println(c + "\n");
+		ProcessBuilder pb = new ProcessBuilder(command);
+		pb.redirectErrorStream(true);
+		boolean success = true;
+		
+		Process process;
+		try {
+			process = pb.start();
+			int result = process.waitFor();
+			InputStream in = process.getInputStream();
+			if(result == 0) {
+				while((result = in.read())> -1) {
+					console.print((char)result);
+				}
+				
+			}
+			else {
+				success = false;	
+				while((result =in.read())> -1) {
+					console.print((char)result);
+					errMessage.append((char)result);
+				}
+			}
+		} catch (IOException | InterruptedException e) {
+			StackTraceElement[] trace = e.getStackTrace();
+			for(StackTraceElement elem : trace) {
+				console.println(elem.toString());
+			}
+		}
+		return success;
 	}
 }

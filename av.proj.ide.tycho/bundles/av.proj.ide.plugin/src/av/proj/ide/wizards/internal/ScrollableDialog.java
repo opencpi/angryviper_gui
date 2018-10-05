@@ -20,8 +20,6 @@
 
 package av.proj.ide.wizards.internal;
 
-import java.util.List;
-
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.swt.SWT;
@@ -39,8 +37,6 @@ public class ScrollableDialog extends TitleAreaDialog {
 	private String title;
 	private String text;
 	private String scrollableText;
-	private List<String> command;
-	private SystemCommandExecutor commandExecutor;
 	
 	public ScrollableDialog(Shell parentShell, String title, String text, String scrollableText) {
 		super(parentShell);

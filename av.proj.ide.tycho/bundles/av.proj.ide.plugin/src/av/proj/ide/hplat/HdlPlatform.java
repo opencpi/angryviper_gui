@@ -33,6 +33,7 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.XmlBinding;
 
@@ -41,12 +42,15 @@ import av.proj.ide.custom.bindings.list.PlatformDeviceXmlListBinding;
 import av.proj.ide.custom.bindings.list.PlatformSignalXmlListBinding;
 import av.proj.ide.custom.bindings.list.PlatformSlotXmlListBinding;
 import av.proj.ide.custom.bindings.list.PlatformSpecPropertyXmlListBinding;
+import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
 import av.proj.ide.services.NameValidationService;
 
 /***
  * Interface to the HDL Platform XML document. The root tag = <HdlPlatform  Language="" spec="">
  */
+@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
+
 public interface HdlPlatform extends Element
 {
 	ElementType TYPE = new ElementType(HdlPlatform.class);

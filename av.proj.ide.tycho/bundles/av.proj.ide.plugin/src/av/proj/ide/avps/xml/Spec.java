@@ -40,14 +40,4 @@ public interface Spec extends Element {
 	
 	Value<String> getName();
 	void setName(String value);
-	
-	@Label(standard="Location")
-	@XmlBinding(path="location")
-	@ReadOnly
-	
-	ValueProperty PROP_LOCATION = new ValueProperty(TYPE, "Location");
-	
-	Value<String> getLocation();
-	void setLocation(String value);
-
 }

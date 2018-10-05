@@ -27,7 +27,7 @@ import org.eclipse.sapphire.ui.Point;
 import org.eclipse.sapphire.ui.diagram.editor.DiagramNodePart;
 import org.eclipse.sapphire.ui.diagram.editor.SapphireDiagramEditorPagePart;
 
-import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperAssetService;
 import av.proj.ide.oas.Application;
 import av.proj.ide.oas.Instance;
 
@@ -51,10 +51,11 @@ public class ApplicationInstanceDragAndDropService extends DragAndDropService {
 	public void drop(DropContext context) {
 		IFile specFile = (IFile) context.object();
 		String name = specFile.getName();
-		String projectName = specFile.getProject().getName();
+		String fullProjectPathname = specFile.getProject().getLocation().toOSString();
+		
 		IResource library = specFile.getParent().getParent();
 		String instanceName = AngryViperAssetService.
-				getApplicationSpecName(projectName, library.getName(), name);
+				getApplicationSpecName(fullProjectPathname, library.getName(), name);
 		final SapphireDiagramEditorPagePart diagram = context( SapphireDiagramEditorPagePart.class );
         final Application app = context( Application.class );
         

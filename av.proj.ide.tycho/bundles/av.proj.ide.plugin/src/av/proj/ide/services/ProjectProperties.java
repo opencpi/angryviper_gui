@@ -68,7 +68,6 @@ public class ProjectProperties {
 					FileReader input = new FileReader(location);
 					bufferedData = new BufferedReader(input);
 				} catch (FileNotFoundException e) {
-					// TODO Auto-generated catch block
 					// should not ever hit this as we check for null above
 					e.printStackTrace();
 					return false;
@@ -102,7 +101,6 @@ public class ProjectProperties {
 				    }
 				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 				return false;
 			}

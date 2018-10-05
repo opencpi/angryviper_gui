@@ -24,7 +24,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.part.ViewPart;
 
-import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperAssetService;
 import av.proj.ide.swt.AddViewControls;
 import av.proj.ide.swt.ColorSchemeBlue;
 import av.proj.ide.swt.ProjectImages;

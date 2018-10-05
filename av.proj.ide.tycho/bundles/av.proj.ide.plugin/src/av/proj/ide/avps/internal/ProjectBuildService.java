@@ -27,7 +27,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.console.MessageConsole;
 
-import av.proj.ide.avps.internal.ExecutionAsset.CommandVerb;
+import av.proj.ide.internal.OcpidevVerb;
 
 /**
  * This class supports building and running requests coming from the other 
@@ -92,7 +92,7 @@ public class ProjectBuildService {
 			msg.append("No assets selected to build.\n");
 		}
 		BuildTargetSelections selections = userSelections.buildTargetSelections;
-		if(		(userSelections.verb != CommandVerb.clean
+		if(		(userSelections.verb != OcpidevVerb.clean
 			&& (selections.rccBldSelects == null || selections.rccBldSelects.length == 0) 
 			&& (selections.hdlBldSelects == null || selections.hdlBldSelects.length == 0))) {
 			setupError = true;
@@ -141,7 +141,7 @@ public class ProjectBuildService {
 			return -1;
 		}
 		
-		if(selections.verb == CommandVerb.clean) {
+		if(selections.verb == OcpidevVerb.clean) {
 			boolean bigClean = false;
 			String bigCleanMessage = null;
 			
@@ -151,12 +151,13 @@ public class ProjectBuildService {
 					
 					switch(exAsset.asset.category) {
 					case project:
-					case components:
+					case componentsLibrary:
 					case library:
-					case hdlLibrary:
 					case primitives:
 					case platforms:
 					case assemblies:
+					case devices:
+					case cards:
 						bigClean = true;
 						break;
 					default:
@@ -209,17 +210,15 @@ public class ProjectBuildService {
 	}
 
 	/***
-	 * ReRun supports all reruns now (builds, tests, etc.)
-	 * 
 	 * Note that the verb and no-assemblies flags can change from run to run thus that are
 	 * variables to the method.
 	 */
-	public void reRun(CommandVerb verb, Boolean noAssemblies, Integer myBuildNumber) {
+	public void reRun(OcpidevVerb verb, Boolean noAssemblies, Integer myBuildNumber) {
 		ExecutionComponents buildComps = registeredExecutions.get(myBuildNumber);
 		if(buildComps == null)
 			return;
 		
-		if(verb == CommandVerb.clean) {
+		if(verb == OcpidevVerb.clean) {
 			List<ExecutionAsset> executionAssets = buildComps.executionAssets;
 			boolean bigClean = false;
 			for(ExecutionAsset exAsset : executionAssets) {
@@ -236,57 +235,49 @@ public class ProjectBuildService {
 			}
 		}
 		buildComps.statusMonitor.restartBuild(myBuildNumber, verb);
-		CommandExecutor ex = new CommandExecutor();
-		buildComps.commandExecutor = ex;
-		
 		AvpsResourceManager.getInstance().bringConsoleToView(buildComps.bldConsole.getName());
-		ex.executeCommandSet(buildComps, verb, noAssemblies);
+		buildComps.commandExecutor.executeCommandSet(buildComps, verb, noAssemblies);
 	}
 	
 	/***
 	 * Entry point to run selected tests.  The mechanics are much like the build request.
 	 * The build number is returned for future re-runs.
 	 */
-	public Integer processTestRequest(UserBuildSelections selections) {
-		
-		
-		List<ExecutionAsset> exAssets = null;
-		if(selections.verb == CommandVerb.runtest) {
-			exAssets = TestExecutionAsset.createTestAssets(selections.verb, selections);		
-		}
-		else {
-			if( ! isBuildRequestOk(selections) ){
-				return -1;
-			}
-			exAssets = BuildTestExecAsset.createBuildAssets(selections.verb, selections);		
-		}
-		
+	public Integer processTestRequest(UserTestSelections selections, Integer runNumber) {
+		// TODO-make reuse more efficient. That was where the OcpidevCommand class was going.
+		List<ExecutionAsset> exAssets  = OdevTestExecutionAsset.createTestAssets(selections.verb, selections);
 		if(exAssets.isEmpty()) {
 			AvpsResourceManager.getInstance().writeToNoticeConsole("No viable build test configuration is provided in your selections.");
 			return -1;
 		}
-		
-		MessageConsole bldConsole = AvpsResourceManager.getInstance().getNextConsole();
-		if (bldConsole == null) {
-			return -1;
+		ExecutionComponents buildComps = null;
+		if(runNumber != null) {
+			buildComps = registeredExecutions.get(runNumber);
+			if(buildComps != null) {
+				buildComps.setExecutionAssets(exAssets);
+				buildComps.statusMonitor.restartBuild(runNumber, selections.verb);
+				AvpsResourceManager.getInstance().bringConsoleToView(buildComps.bldConsole.getName());
+			}
 		}
-		
-		Integer thisBuildNumber = new Integer(nextExecutionNumber++);
-		StatusNotificationInterface statusMonitor = AvpsResourceManager.getInstance().getStatusMonitor();
-		if(statusMonitor != null) {
-			statusMonitor.registerBuild(thisBuildNumber, selections.verb, bldConsole.getName(), selections.buildDescription);
+		else {
+			runNumber = new Integer(nextExecutionNumber++);
+			StatusNotificationInterface statusMonitor = AvpsResourceManager.getInstance().getStatusMonitor();
+			MessageConsole bldConsole = AvpsResourceManager.getInstance().getNextConsole();
+			if (bldConsole == null) {
+				return -1;
+			}
+			if(statusMonitor != null) {
+				statusMonitor.registerBuild(runNumber, selections.verb, bldConsole.getName(), "Unit Tests # " + runNumber );
+			}
+			
+			buildComps = new ExecutionComponents(runNumber,bldConsole, statusMonitor);
+			registeredExecutions.put(runNumber, buildComps);
+			CommandExecutor ex = new CommandExecutor();
+			buildComps.commandExecutor = ex;
+			buildComps.setExecutionAssets(exAssets);
 		}
-		
-		ExecutionComponents buildComps = new ExecutionComponents(thisBuildNumber,bldConsole, statusMonitor);
-		registeredExecutions.put(thisBuildNumber, buildComps);
-		
-		buildComps.setExecutionAssets(exAssets);
-		CommandExecutor ex = new CommandExecutor();
-		buildComps.commandExecutor = ex;
-		
-		ex.executeCommandSet(buildComps, selections.verb, selections.noAssemblies);
-		
-		return thisBuildNumber;
+		buildComps.commandExecutor.executeCommandSet(buildComps, selections.verb, true);
+		return runNumber;
 	}
 	
 	/**

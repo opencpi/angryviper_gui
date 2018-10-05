@@ -28,7 +28,7 @@ import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
-import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperAssetService;
 
 public final class OHADEditor extends SapphireEditor {
 

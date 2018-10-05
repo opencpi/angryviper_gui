@@ -9,7 +9,7 @@
         <id>HdlWorkerEditorPage</id>
         <element-type>av.proj.ide.owd.hdl.HdlWorker</element-type>
         <initial-selection>HdlWorker</initial-selection>
-        <page-header-text>OWD HDL Editor</page-header-text>
+        <page-header-text>HDL OWD Editor</page-header-text>
         <root-node>
             <node>
             	<label>${ Name == null ? &quot;HdlWorker&quot; : Name }</label>

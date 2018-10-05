@@ -223,7 +223,7 @@
             <visible>false</visible>
         </guides>
         <id>DiagramPage</id>
-        <page-header-text>${ Name == null ? &quot;HDL Assembly&quot; : Name }</page-header-text>
+        <page-header-text>${ Name == null ? &quot;HDL Assembly&quot; : Name } OHAD Diagram</page-header-text>
         <page-name>HDL Assembly</page-name>
         <connection-service-type>standard</connection-service-type>
         <properties-view>

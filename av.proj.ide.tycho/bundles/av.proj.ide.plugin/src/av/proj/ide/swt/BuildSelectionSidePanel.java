@@ -39,9 +39,9 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import av.proj.ide.avps.internal.EnvBuildTargets.HdlPlatformInfo;
-import av.proj.ide.avps.internal.EnvBuildTargets.HdlVendor;
-import av.proj.ide.avps.internal.EnvBuildTargets.RccPlatformInfo;
+import av.proj.ide.internal.EnvBuildTargets.HdlPlatformInfo;
+import av.proj.ide.internal.EnvBuildTargets.HdlVendor;
+import av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo;
 
 public class BuildSelectionSidePanel  extends Composite  {
 	
@@ -223,6 +223,15 @@ public class BuildSelectionSidePanel  extends Composite  {
 	public void removeHdlPlatform(String platform) {
 		int idx = hdlPlatforms.indexOf(platform);
 		hdlPlatforms.remove(idx);
+	}
+	
+	public void addRccPlatform(RccPlatformInfo platform) {
+		rccPlatforms.add(platform.getName());
+	}
+	
+	public void removeRccPlatform(String platform) {
+		int idx = rccPlatforms.indexOf(platform);
+		rccPlatforms.remove(idx);
 	}
 	
 	public void setHdlTargets(Collection<HdlVendor>  targets) {

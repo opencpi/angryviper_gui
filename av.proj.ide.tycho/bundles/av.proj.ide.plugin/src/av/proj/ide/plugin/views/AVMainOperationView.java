@@ -45,6 +45,7 @@ public class AVMainOperationView extends ViewPart {
 		mainDisplay.setPanelColorScheme(colorScheme);
 	    
 		AddViewControls.addOperationsPanelControls(mainDisplay);
+		AddViewControls.addTextPanelControls(mainDisplay);
 		mainDisplay.layout();
 	}
 	

@@ -20,40 +20,48 @@
 
 package av.proj.ide.swt;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
 
-import av.proj.ide.avps.internal.AngryViperAsset;
-import av.proj.ide.avps.internal.AngryViperAssetService;
-import av.proj.ide.avps.internal.AngryViperAssetService.HdlPlatformUpdate;
 import av.proj.ide.avps.internal.AvpsResourceManager;
 import av.proj.ide.avps.internal.BuildTargetSelections;
-import av.proj.ide.avps.internal.EnvBuildTargets.HdlPlatformInfo;
-import av.proj.ide.avps.internal.EnvBuildTargets.HdlVendor;
-import av.proj.ide.avps.internal.EnvBuildTargets.RccPlatformInfo;
-import av.proj.ide.avps.internal.ExecutionAsset.CommandVerb;
 import av.proj.ide.avps.internal.ProjectBuildService;
 import av.proj.ide.avps.internal.ProjectBuildService.ProvideBuildSelections;
 import av.proj.ide.avps.internal.SelectionsInterface;
+import av.proj.ide.avps.internal.TestMode;
 import av.proj.ide.avps.internal.UserBuildSelections;
+import av.proj.ide.avps.internal.UserTestSelections;
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperAssetService.BuildPlatformUpdate;
+import av.proj.ide.internal.EnvBuildTargets.HdlPlatformInfo;
+import av.proj.ide.internal.EnvBuildTargets.HdlVendor;
+import av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo;
+import av.proj.ide.internal.OcpidevVerb;
+import av.proj.ide.internal.OpenCPICategory;
 
 public class MainOperationSwtDisplayV1 extends Composite implements SelectionsInterface, ProvideBuildSelections {
 	Composite headerArea;
 	BuildSelectionSidePanel buildSelectPanel;
-	SelectionPanel selectionPanel;
+//	SelectionPanel selectionPanel;
+	CentralPanel  selectionPanel;
 	
 	protected boolean selectionsChanged = false;
 	protected boolean buildTargetsChanged = false;
@@ -84,11 +92,21 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 	
 	@Override
 	public void addSelections(TreeItem[] items) {
+		ArrayList<String> unsupportedAssets = null;
 		for(int i=0; i< items.length; i++) {
 			TreeItem item = items[i];
 			AngryViperAsset asset =  (AngryViperAsset)item.getData();
 			if(assetSelections.contains(asset)) continue;
 			
+			if(asset.category == OpenCPICategory.component || 
+			   asset.category == OpenCPICategory.protocol ||
+			   asset.category == OpenCPICategory.xmlapp  ) {
+				if(unsupportedAssets == null) {
+					unsupportedAssets = new ArrayList<String>();
+				}
+				unsupportedAssets.add(asset.category.getFrameworkName() + "s");
+				continue;
+			}
 			assetSelections.add(asset);
 			selectionsChanged = true;
 			selectionPanel.text.setText("");
@@ -97,8 +115,26 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 				makeCopy(item, copy);
 			}
 		}
+		if(unsupportedAssets != null) {
+			int len = unsupportedAssets.size();
+			StringBuilder sb = new StringBuilder("The Operations Panel offers no further support for ");
+			sb.append(unsupportedAssets.get(0));
+			for(int i = 1; i < len -1; i++) {
+				sb.append(", ");
+				sb.append(unsupportedAssets.get(i));
+			}
+			if(len > 1) {
+				sb.append(" or ");
+				sb.append(unsupportedAssets.get(len -1));
+			}
+			sb.append('.');
+			MessageDialog.openInformation(this.getShell(), "No Further Support", sb.toString());
+		}
 	}
 	private TreeItem[] emptyItems = new TreeItem[0];
+	Button addSelectionsButton;
+	Button removeSelectionsButton;
+	Button clearSelectionsButton;
 	@Override
 	public TreeItem[] getSelections() {
 		return emptyItems;
@@ -122,16 +158,26 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		
 		AvpsResourceManager.getInstance().registerSelectionReceivers((SelectionsInterface) this);
 		ProjectBuildService.getInstance().setBuildSelectionProvider((ProvideBuildSelections)this);
-		HdlPlatformUpdate platformUpdater = new HdlPlatformUpdate() {
+		BuildPlatformUpdate platformUpdater = new BuildPlatformUpdate() {
 
 			@Override
 			public void addHdlPlatforms(List<HdlPlatformInfo> hdlPlatforms) {
-				addPlatforms(hdlPlatforms);
+				addHDLPlatforms(hdlPlatforms);
 			}
 
 			@Override
 			public void removeHdlPlatforms(List<HdlPlatformInfo> hdlPlatforms) {
-				removePlatforms(hdlPlatforms);
+				removeHDLPlatforms(hdlPlatforms);
+			}
+
+			@Override
+			public void addRccPlatforms(List<RccPlatformInfo> rccPlatforms) {
+				addRCCPlatforms(rccPlatforms);
+			}
+
+			@Override
+			public void removeRccPlatforms(List<RccPlatformInfo> rccPlatforms) {
+				removeRCCPlatforms(rccPlatforms);
 			}
 		};
 		
@@ -150,6 +196,38 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 
 		new Label(headerArea, SWT.NONE);
 		
+		Composite addRemoveCtrl = new Composite(this,  SWT.NONE);
+		GridLayout gl = new GridLayout(1, false);
+		addRemoveCtrl.setLayout(gl);
+		GridData gd;
+		
+		// Top Fill
+		new Composite(addRemoveCtrl,  SWT.NONE);
+		
+		// Controls
+		Composite centerSection = new Composite(addRemoveCtrl,  SWT.BORDER_SOLID);
+		gl = new GridLayout(1, false);
+		centerSection.setLayout(gl);
+		gd =  new GridData(GridData.CENTER, GridData.BEGINNING, true, false);
+		
+		addSelectionsButton = new Button(centerSection, SWT.PUSH);
+		addSelectionsButton.setText(">");
+		gd =  new GridData(GridData.FILL, GridData.CENTER, true, false);
+		addSelectionsButton.setLayoutData(gd);
+		
+		removeSelectionsButton = new Button(centerSection, SWT.PUSH);
+		//addSelectionsButton.setImage(image);
+		removeSelectionsButton.setText("<");
+		gd =  new GridData(GridData.FILL, GridData.CENTER, true, false);
+		removeSelectionsButton.setLayoutData(gd);
+
+		clearSelectionsButton = new Button(centerSection, SWT.PUSH);
+		clearSelectionsButton.setText("clr");
+		gd =  new GridData(GridData.FILL, GridData.CENTER, true, false);
+		clearSelectionsButton.setLayoutData(gd);
+		// Bottom Fill
+		new Composite(addRemoveCtrl,  SWT.NONE);
+
 		// ===================================================================
 		//                         Build Panel
 		// ===================================================================
@@ -159,7 +237,9 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		// ===================================================================
 		//                         Selection Panel
 		// ===================================================================
-		selectionPanel = new SelectionPanel(this, SWT.NONE);
+		selectionPanel = new CentralPanel(this, SWT.NONE);
+		selectionPanel.assets.setSelection(true);
+
 		// ===================================================================
 		//                          Panel Layout 
 		// ===================================================================
@@ -172,11 +252,19 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		data.right = new FormAttachment(100, -5);
 		headerArea.setLayoutData(data);	
 
+		// Add/Remove - left side
+		data = new FormData();
+		data.top = new FormAttachment(headerArea, 5);
+		data.left = new FormAttachment(0, 2);
+		data.right = new FormAttachment(0, 50);
+		data.bottom  = new FormAttachment(100, -10);
+		addRemoveCtrl.setLayoutData(data);
+
 		// Build Panel - left side
 		data = new FormData();
 		data.top = new FormAttachment(headerArea, 5);
-		data.left = new FormAttachment(0, 5);
-		data.right = new FormAttachment(0, 170);
+		data.left = new FormAttachment(addRemoveCtrl, 2);
+		data.right = new FormAttachment(0, 200);
 		data.bottom  = new FormAttachment(100, -10);
 		buildSelectPanel.setLayoutData(data);
 
@@ -189,6 +277,7 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		selectionPanel.setLayoutData(data);
 		
 		populateBuildTypes();
+		//selectionPanel.setTestsPresentation();
 		
 	}
 	
@@ -244,9 +333,9 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		return sb.toString();
 	}
 	
-	public void doBuild(CommandVerb verb) {
+	public void doBuild(OcpidevVerb verb) {
 		ProjectBuildService pb = ProjectBuildService.getInstance();
-		if( processingStateChange(pb)) {
+		if( processingStateChange()) {
 			doNewBuild(pb, verb);
 		}
 		else {
@@ -270,7 +359,7 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		}
 	}
 	
-	protected void doNewBuild(ProjectBuildService pb, CommandVerb verb) {
+	protected void doNewBuild(ProjectBuildService pb, OcpidevVerb verb) {
 		UserBuildSelections userSelections = getUserSelections();
 		if(userSelections.buildDescription == null) {
 			userSelections.buildDescription = makeBuildLabel(userSelections);
@@ -283,7 +372,7 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		processingNumbers.put("build", buildNumber);
 	}
 	
-	protected boolean processingStateChange(ProjectBuildService pb) {
+	protected boolean processingStateChange() {
 		if( selectionsChanged || buildTargetsChanged) {
 			selectionsChanged = false;
 			buildTargetsChanged = false;
@@ -294,76 +383,31 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		
 	}
 	
-	public void doTestBuild(CommandVerb build) {
-		ProjectBuildService pb = ProjectBuildService.getInstance();
-		if( processingStateChange(pb)) {
-			doNewTestBuild(pb, build);
-		}
-		else {
-			Integer myBuildNumber = processingNumbers.get("buildtest");
-			if(myBuildNumber == null) {
-				doNewTestBuild(pb, build);
-			}
-			else {
-				if(pb.haveBuildNumber(myBuildNumber)) {
-					pb.reRun(build, true, myBuildNumber);
-				}
-				else {
-					processingNumbers.remove("buildtest");
-					doNewTestBuild(pb, build);
-				}
-			}
-		}
-	}
 
-	protected void doNewTestBuild(ProjectBuildService pb, CommandVerb build) {
-		UserBuildSelections userSelections = getUserSelections();
-		if(userSelections.buildDescription == null) {
-			userSelections.buildDescription = makeBuildLabel(userSelections);
-		}
-		userSelections.verb = build;
-		int buildNumber = pb.processTestRequest(userSelections);
-		if(buildNumber == -1) {
-			return;
-		}
-		processingNumbers.put("buildtest", buildNumber);
-	}
-	
-
-	public void doRun(CommandVerb verb) {
+	public void executeTests(TestMode mode) {
+		UserTestSelections selections = getUserTestSelections();
+		selections.verb = OcpidevVerb.run;
+		selections.testMode = mode;
 		ProjectBuildService pb = ProjectBuildService.getInstance();
-		if( processingStateChange(pb)) {
-			doNewRun(pb, verb);
+		String key = "run " + mode.toString();
+		Integer runNumber =  processingNumbers.get(key);
+		
+		if( processingStateChange()) {
+			runNumber = null;
 		}
-		else {
-			Integer myRunNumber = processingNumbers.get("runtest");
-			if(myRunNumber == null) {
-				doNewRun(pb,verb);
-			}
-			else {
-				if(pb.haveBuildNumber(myRunNumber)) {
-					pb.reRun(verb, true, myRunNumber);
-				}
-				else {
-					processingNumbers.remove("runtest");
-					doNewRun(pb,verb);
-				}
-				pb.reRun(verb, true, myRunNumber);
+		if(runNumber != null) {
+			if(pb.haveBuildNumber(runNumber)) {
+				pb.processTestRequest(selections, runNumber);
+				return;
 			}
 		}
-	}
-	
-	protected void doNewRun(ProjectBuildService pb, CommandVerb verb) {
-		UserBuildSelections userSelections = getUserSelections();
-		if(userSelections.buildDescription == null) {
-			userSelections.buildDescription = makeRunLabel(userSelections);
-		}
-		userSelections.verb = verb;
-		Integer runNumber = pb.processTestRequest(userSelections);
+		processingNumbers.remove(key);
+		runNumber = pb.processTestRequest(selections, null);
 		if(runNumber > -1) {
-			processingNumbers.put("runtest", runNumber);
+			processingNumbers.put(key, runNumber);
 		}
 	}
+	
 	public void removeSelected() {
 		TreeItem[] selectedItems = selectionPanel.selectedComponents.getSelection();
 		if(selectedItems.length > 0) {
@@ -395,14 +439,25 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		itemCopy.setData(srcItem.getData());
 	}
 	
-	public void addPlatforms(List<HdlPlatformInfo> hdlPlatforms) {
+	public void addHDLPlatforms(List<HdlPlatformInfo> hdlPlatforms) {
 		for(HdlPlatformInfo platform : hdlPlatforms) {
 			buildSelectPanel.addHdlPlatform(platform);
 		}
 	}
-	public void removePlatforms(List<HdlPlatformInfo> hdlPlatforms) {
+	public void removeHDLPlatforms(List<HdlPlatformInfo> hdlPlatforms) {
 		for(HdlPlatformInfo platform : hdlPlatforms) {
 			buildSelectPanel.removeHdlPlatform(platform.getName());
+		}
+	}
+	
+	public void addRCCPlatforms(List<RccPlatformInfo> rccPlatforms) {
+		for(RccPlatformInfo platform : rccPlatforms) {
+			buildSelectPanel.addRccPlatform(platform);
+		}
+	}
+	public void removeRCCPlatforms(List<RccPlatformInfo> rccPlatforms) {
+		for(RccPlatformInfo platform : rccPlatforms) {
+			buildSelectPanel.removeRccPlatform(platform.getName());
 		}
 	}
 	
@@ -455,5 +510,30 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		}
 		selections.buildDescription = descript;
 		return selections;
+	}
+	public UserTestSelections getUserTestSelections() {
+		BuildTargetSelections tSelects = getBuildTargetSelects();
+		UserTestSelections utSels = new UserTestSelections();
+		utSels.buildTargetSelections = tSelects;
+		selectionPanel.getCurrentSelections(utSels);
+		return utSels;
+	}
+	
+	private BuildTargetSelections getBuildTargetSelects() {
+		String[] rccBldSelects = buildSelectPanel.getRccPlatforms();
+		String[] hdlBldSelects;
+		boolean isHdlPlatform = true;
+		if(buildSelectPanel.isTargetsButtonSelected()) {
+			hdlBldSelects = buildSelectPanel.getHdlTargets();
+			isHdlPlatform = false;
+		}
+		else {
+			hdlBldSelects = buildSelectPanel.getHdlPlatforms();
+		}
+		BuildTargetSelections tSelects = new BuildTargetSelections();
+		tSelects.rccBldSelects = rccBldSelects;
+		tSelects.isHdlPlatforms = isHdlPlatform;
+		tSelects.hdlBldSelects = hdlBldSelects;
+		return tSelects;
 	}
 }

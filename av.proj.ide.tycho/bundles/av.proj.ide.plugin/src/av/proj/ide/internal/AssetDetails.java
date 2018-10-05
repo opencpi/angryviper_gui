@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.avps.internal;
+package av.proj.ide.internal;
 
 public class AssetDetails {
 	
@@ -39,7 +39,7 @@ public class AssetDetails {
 			case assemblies:
 				return HDL;
 				
-			case component:
+			case worker:
 				if(asset.assetName.toLowerCase().endsWith(".rcc")) {
 					return RCC;
 				}

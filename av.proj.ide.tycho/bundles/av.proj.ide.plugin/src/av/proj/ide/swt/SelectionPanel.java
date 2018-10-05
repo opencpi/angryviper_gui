@@ -115,7 +115,7 @@ public class SelectionPanel  extends Composite  {
 		gd.horizontalSpan = 2;
 		text.setLayoutData(gd);
 		Label l = new Label(bottomBar, SWT.NONE);
-		l.setText("your build label");
+		l.setText("build label");
 
 	}
 

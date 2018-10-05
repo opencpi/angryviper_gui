@@ -23,11 +23,12 @@ package av.proj.ide.avps.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import av.proj.ide.avps.internal.ExecutionAsset.CommandVerb;
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.OcpidevVerb;
 
 public class UserBuildSelections {
 	
-	public CommandVerb    verb;
+	public OcpidevVerb    verb;
 	public Boolean        noAssemblies = true;
 	public String         buildDescription = null;
 	public List<AngryViperAsset>  assetSelections = new ArrayList<AngryViperAsset>();
@@ -58,9 +59,8 @@ public class UserBuildSelections {
 			for(int i= 0; i< selects.length; i++) {
 				sb.append(selects[i]);
 			}
-			if(verb == CommandVerb.runtest){
-				sb.append(verb.getVerb());
-			}
+			sb.append(verb.getVerb());
+
 			String hashString = sb.toString();
 			int stringHash = hashString.hashCode();
 			myConfigHash = new Integer(stringHash);

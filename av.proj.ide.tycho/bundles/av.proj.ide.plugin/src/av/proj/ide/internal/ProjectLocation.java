@@ -18,30 +18,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.avps.internal;
+package av.proj.ide.internal;
 
-import java.util.ArrayList;
-
-/**
- * This is a container class used to accumulate an asset and its children.
- * The project view obtains these as projects when it initializes and constructs
- * the project tree.  Change updates are also sent in this container.
- */
-public class AssetModelData {
-	AngryViperAsset asset;
-	public AngryViperAsset getAsset() {
-		return asset;
+public class ProjectLocation {
+	public ProjectLocation(String projectName2, String projectPath2) {
+		projectName = projectName2;
+		projectPath = projectPath2;
 	}
-
-	public ArrayList<AssetModelData> getChildList() {
-		return childList;
-	}
-
-	ArrayList<AssetModelData> childList;
 	
-	AssetModelData(AngryViperAsset asset) {
-		this.asset= asset;
-		childList = new ArrayList<AssetModelData>();
-	}
+	public String projectPath;
+	public String projectName;
+	public String assetTopLevelFolder;
 
 }

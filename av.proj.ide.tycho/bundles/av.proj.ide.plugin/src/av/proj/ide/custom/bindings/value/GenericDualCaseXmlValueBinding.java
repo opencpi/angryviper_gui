@@ -38,6 +38,7 @@ public class GenericDualCaseXmlValueBinding extends StandardXmlValueBindingImpl 
 	@Override
 	protected void initBindingMetadata()
     {
+		this.removeNodeOnSetIfNull=true;
 		super.initBindingMetadata();
         final Value<?> property = (Value<?>) property();
         this.name = "@"+property.name();
@@ -56,7 +57,10 @@ public class GenericDualCaseXmlValueBinding extends StandardXmlValueBindingImpl 
         final XmlElement element = xml( false );
         if (element == null)
         	return null;
-        
+
+        if(this.path != null) {
+            value = element.getChildNodeText( this.path );
+        }
         if(value == null || value.isEmpty()) {
             this.path = new XmlPath(this.name , resource().getXmlNamespaceResolver());
             value = element.getChildNodeText( this.path );
@@ -76,17 +80,10 @@ public class GenericDualCaseXmlValueBinding extends StandardXmlValueBindingImpl 
     @Override
     public void write( final String value )
     {
-    	// A value was added then removed.
-		if (value == null || value.isEmpty()) {
-    		final XmlElement element = xml( false );
-			element.removeChildNode( this.path );
-    	} else {
-    		//First time write
-        	if(this.path == null) {
-        		// If this is a new instance of this attribute, default it to property name.
-        		this.path = new XmlPath(this.name , resource().getXmlNamespaceResolver());
-        	}
-    		super.write(value);
+    	if(this.path == null) {
+    		// If this is a new instance of this attribute, default it to property name.
+    		this.path = new XmlPath(this.name , resource().getXmlNamespaceResolver());
     	}
+    	super.write(value);
     }
 }

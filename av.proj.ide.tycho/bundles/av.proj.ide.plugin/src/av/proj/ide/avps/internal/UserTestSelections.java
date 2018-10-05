@@ -18,34 +18,24 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.custom.bindings.value;
+package av.proj.ide.avps.internal;
 
-import org.eclipse.sapphire.modeling.xml.XmlPath;
+import java.util.ArrayList;
+import java.util.List;
 
-public class MultiwordBooleanXmlValueBinding extends BooleanAttributeRemoveIfFalseValueBinding {
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.OcpidevVerb;
+
+public class UserTestSelections {
+	public OcpidevVerb  verb;
+	public TestMode testMode = null;
+	public boolean accumulateErrors;
+	public boolean runViewScript;
+	public boolean keepSimulations;
 	
-	protected String camelName = "";
-	
-	@Override
-	protected void initBindingMetadata()
-    {
-        super.initBindingMetadata();
-        char c[] = this.name.toCharArray();
-        c[1] = Character.toLowerCase(c[1]);
-        this.camelName = new String(c);
-    }
-	
-    @Override
-    public String read()
-    {
-        String value = super.read();
-        if(value == null || value.isEmpty()) {
-            this.path = new XmlPath(this.camelName , resource().getXmlNamespaceResolver());
-            value = super.read();
-        }
-        if(value == null || value.isEmpty()) {
-            this.path = null;
-        }
-        return value;
-    }
+	public List<AngryViperAsset>  assetSelections = new ArrayList<AngryViperAsset>();
+	public BuildTargetSelections  buildTargetSelections = null;
+	public String[] remoteList= null;
+	public String[] testCaseList= null;
+
 }

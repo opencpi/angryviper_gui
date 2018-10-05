@@ -32,7 +32,6 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
 import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.MultiwordBooleanXmlValueBinding;
 
 public interface StreamInterface extends Element {
 	ElementType TYPE = new ElementType( StreamInterface.class );
@@ -58,7 +57,7 @@ public interface StreamInterface extends Element {
 	
 	// *** PreciseBurst ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Label( standard = "PreciseBurst" )
 			
 	ValueProperty PROP_PRECISE_BURST = new ValueProperty(TYPE, "PreciseBurst");
@@ -98,7 +97,7 @@ public interface StreamInterface extends Element {
 	
 	// *** MyClock ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Label( standard = "MyClock" )
 		
 	ValueProperty PROP_MY_CLOCK = new ValueProperty(TYPE, "MyClock");
@@ -136,7 +135,7 @@ public interface StreamInterface extends Element {
 	
 	// *** ZeroLengthMessages ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Label( standard = "ZeroLengthMessages" )
 		
 	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
@@ -155,7 +154,7 @@ public interface StreamInterface extends Element {
 
 	// *** VariableMessageLength ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = MultiwordBooleanXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
 	@Label(standard = "VariableMessageLength")
 
 	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
@@ -166,7 +165,7 @@ public interface StreamInterface extends Element {
 
 	// *** DiverseDataSizes ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = MultiwordBooleanXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
 	@Label(standard = "DiverseDataSizes")
 
 	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
@@ -177,7 +176,7 @@ public interface StreamInterface extends Element {
 
 	// *** UnBounded ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = MultiwordBooleanXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
 	@Label(standard = "UnBounded")
 
 	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");

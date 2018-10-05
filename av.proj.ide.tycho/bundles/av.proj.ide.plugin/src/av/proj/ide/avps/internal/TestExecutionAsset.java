@@ -24,6 +24,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.OcpidevVerb;
+import av.proj.ide.internal.OpenCPICategory;
+
 public class TestExecutionAsset extends ExecutionAsset {
 	protected File projectDirectory;
 	protected static String format = "%s/%s";
@@ -113,8 +117,8 @@ public class TestExecutionAsset extends ExecutionAsset {
 	}
 	
 	@Override
-	public List<String> getCommand(CommandVerb verb, Boolean flag) {
-		if(verb == CommandVerb.runtest) {
+	public List<String> getCommand(OcpidevVerb verb, Boolean flag) {
+		if(verb == OcpidevVerb.run) {
 			return command;
 		}
 		return null;
@@ -125,18 +129,18 @@ public class TestExecutionAsset extends ExecutionAsset {
 		return projectDirectory;
 	}
 	
-	public static List<ExecutionAsset> createTestAssets(CommandVerb verb, UserBuildSelections selections) {
+	public static List<ExecutionAsset> createTestAssets(OcpidevVerb verb, UserBuildSelections selections) {
 		
 		ArrayList<ExecutionAsset> testExecs = new ArrayList<ExecutionAsset>();
 		boolean tryingHdlTests = false;
 		for(AngryViperAsset test : selections.assetSelections) {
-			if(test.category == OcpiAssetCategory.test) {
-				File dir = new File(test.location.projectPath);
+			if(test.category == OpenCPICategory.test) {
+				File dir = new File(test.projectLocation.projectPath);
 				TestExecutionAsset testex = 
 						new TestExecutionAsset(test, dir, selections.buildTargetSelections.hdlBldSelects, selections.buildTargetSelections.rccBldSelects);
 				testExecs.add(testex);
 			}
-			else if(test.category == OcpiAssetCategory.hdlTest) {
+			else if(test.category == OpenCPICategory.hdlTest) {
 				tryingHdlTests = true;
 			}
 		}

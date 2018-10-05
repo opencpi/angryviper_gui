@@ -223,7 +223,7 @@
             <visible>false</visible>
         </guides>
         <id>DiagramPage</id>
-        <page-header-text>${ Name == null ? &quot;Application&quot; : Name }</page-header-text>
+        <page-header-text>${ Name == null ? &quot;Application&quot; : Name } OAS Diagram</page-header-text>
         <page-name>Application</page-name>
         <connection-service-type>standard</connection-service-type>
         <properties-view>

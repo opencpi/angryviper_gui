@@ -24,7 +24,10 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import av.proj.ide.avps.internal.AssetDetails.AuthoringModel;
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.AssetDetails.AuthoringModel;
+import av.proj.ide.internal.OcpidevVerb;
+import av.proj.ide.internal.OpenCPICategory;
 
 public class BuildExecAsset extends ExecutionAsset {
 	
@@ -53,7 +56,7 @@ public class BuildExecAsset extends ExecutionAsset {
 		createBuildString();
 	}
 	@Override
-	public List<String> getCommand(CommandVerb verb, Boolean noAssemblies) {
+	public List<String> getCommand(OcpidevVerb verb, Boolean noAssemblies) {
 		switch (verb) {
 		case build:
 			getBuildCommand();
@@ -68,8 +71,8 @@ public class BuildExecAsset extends ExecutionAsset {
 		return null;
 	}
 	@Override
-	public String getDisplayString(CommandVerb verb){
-		if(verb == CommandVerb.build) {
+	public String getDisplayString(OcpidevVerb verb){
+		if(verb == OcpidevVerb.build) {
 			return shortBld;
 		}
 		else {
@@ -87,7 +90,7 @@ public class BuildExecAsset extends ExecutionAsset {
 	
 	
 	protected void setNoAssemblies(Boolean noAssemblies) {
-		if(asset.category != OcpiAssetCategory.project || noAssemblies == null)
+		if(asset.category != OpenCPICategory.project || noAssemblies == null)
 			return;
 		
 		if(noAssemblies) {
@@ -110,7 +113,7 @@ public class BuildExecAsset extends ExecutionAsset {
 		if(buildCommand == null) {
 			buildCommand = new ArrayList<String>(buildString);
 			buildCommand.addAll(buildFlags);
-			buildCommand.set(verbIndex, CommandVerb.build.getVerb());
+			buildCommand.set(verbIndex, OcpidevVerb.build.getVerb());
 			List<String> shortCmd = buildCommand.subList(3, buildCommand.size());
     		shortBld =  shortCmd.toString();
     		shortBld = shortBld.replace(",", " ");
@@ -122,7 +125,7 @@ public class BuildExecAsset extends ExecutionAsset {
 		if(cleanCommand == null) {
 			cleanCommand = new ArrayList<String>(buildString);
 			cleanCommand.addAll(buildFlags);
-			cleanCommand.set(verbIndex, CommandVerb.clean.getVerb());
+			cleanCommand.set(verbIndex, OcpidevVerb.clean.getVerb());
 			List<String> shortCmd = cleanCommand.subList(3, cleanCommand.size());
     		shortClean =  shortCmd.toString();
     		shortClean = shortClean.replace(",", " ");
@@ -139,7 +142,7 @@ public class BuildExecAsset extends ExecutionAsset {
 	}
 	protected void createBuildString() {
 		buildString = new ArrayList<String>(baseCmd);
-		buildString.add(asset.location.projectPath);
+		buildString.add(asset.projectLocation.projectPath);
 		verbIndex = buildString.size();
 		buildString.add(null);
 		buildString.addAll(asset.category.getOcpiBuildNowns());
@@ -148,13 +151,13 @@ public class BuildExecAsset extends ExecutionAsset {
 			buildString.add(asset.buildName);
 		}
 		
-		if(asset.category == OcpiAssetCategory.component || asset.category == OcpiAssetCategory.test){
+		if(asset.category == OpenCPICategory.worker || asset.category == OpenCPICategory.test){
 			buildString.add("-l");
 			buildString.add(asset.libraryName);
 		}
 	}
 
-	public static List<ExecutionAsset> createBuildAssets(CommandVerb verb, UserBuildSelections selections) {
+	public static List<ExecutionAsset> createBuildAssets(OcpidevVerb verb, UserBuildSelections selections) {
 		List<String> hdlbuildList = new ArrayList<String>();
 		List<String> rccbuildList = new ArrayList<String>();
 		BuildTargetSelections buildSelects = selections.buildTargetSelections;
@@ -180,11 +183,10 @@ public class BuildExecAsset extends ExecutionAsset {
 	
 	public static List<String>  creatBuildTagSequence(AngryViperAsset selection, List<String> hdlbuildList, List<String> rccbuildList) {
 		List<String> tagList = new ArrayList<String>();
-		if(selection.category == OcpiAssetCategory.tests ||selection.category == OcpiAssetCategory.test
-			|| selection.category == OcpiAssetCategory.assemblies || selection.category == OcpiAssetCategory.assembly) {
+		if(selection.category == OpenCPICategory.assemblies || selection.category == OpenCPICategory.assembly) {
 			tagList.addAll(hdlbuildList);
 		}
-		else if(selection.category == OcpiAssetCategory.component) {
+		else if(selection.category == OpenCPICategory.worker) {
 			if(selection.assetName.endsWith("rcc")) {
 				tagList.addAll(rccbuildList);
 			}else {

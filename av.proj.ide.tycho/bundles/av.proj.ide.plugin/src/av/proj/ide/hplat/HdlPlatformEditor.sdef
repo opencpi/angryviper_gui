@@ -4,6 +4,7 @@
         <id>HdlPlatformEditorPage</id>
         <element-type>av.proj.ide.hplat.HdlPlatform</element-type>
         <page-header-text>HDL Platform Editor</page-header-text>
+        <initial-selection>HdlPlatform</initial-selection>
         <root-node>
             <node>
                 <label>HdlPlatform</label>

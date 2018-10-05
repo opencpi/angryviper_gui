@@ -71,7 +71,16 @@ public interface Project extends Element {
     
     ElementList<Application> getApplications();
 
+	// *** Top Level Specs ***
     
+	@Type(base = Spec.class)
+    @XmlListBinding( path = "specs", mappings = @XmlListBinding.Mapping( element = "spec", type = Spec.class ) )
+    
+    ListProperty PROP_SPECS = new ListProperty( TYPE, "Specs" );
+    
+    ElementList<Spec> getSpecs();
+    
+   
 	// *** Components ***
     
 	@Label(standard="Components")

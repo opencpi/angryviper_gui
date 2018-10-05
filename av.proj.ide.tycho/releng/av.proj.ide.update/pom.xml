@@ -5,11 +5,11 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>av.proj.ide.tycho</groupId>
 	<artifactId>av.proj.ide.update</artifactId>
-	<version>1.3.1-SNAPSHOT</version>
+	<version>1.4.0-SNAPSHOT</version>
 	<packaging>eclipse-repository</packaging>
 	<parent>
 		<groupId>av.proj.ide.tycho</groupId>
 		<artifactId>av.proj.ide.tycho.releng</artifactId>
-		<version>1.3.1-SNAPSHOT</version>
+		<version>1.4.0-SNAPSHOT</version>
 	</parent>
 </project>

@@ -29,7 +29,6 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
 
 public interface Cpmaster extends Element {
 	ElementType TYPE = new ElementType(Cpmaster.class);

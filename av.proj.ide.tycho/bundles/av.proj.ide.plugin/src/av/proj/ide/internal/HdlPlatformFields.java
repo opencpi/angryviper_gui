@@ -18,15 +18,16 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.avps.internal;
+package av.proj.ide.internal;
 
-public class AssetLocation {
-	public AssetLocation(String projectName2, String projectPath2) {
-		projectName = projectName2;
-		projectPath = projectPath2;
+public class HdlPlatformFields extends CreateAssetFields {
+	String partNumber;
+	String timerServerFreq;
+
+	public HdlPlatformFields(String project, String projectpath, String name, String partNo, String freq) {
+		super(project, projectpath, name);
+		partNumber = partNo;
+		timerServerFreq = freq;
 	}
-	
-	public String projectPath;
-	public String projectName;
 
 }

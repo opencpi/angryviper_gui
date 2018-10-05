@@ -35,11 +35,9 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.sapphire.PossibleValuesService;
 import org.eclipse.sapphire.Transient;
 import org.eclipse.sapphire.modeling.Status;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.TreeItem;
 
-import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperAssetService;
 import av.proj.ide.oas.Application;
 
 public class SpecPossibleValueService extends PossibleValuesService {

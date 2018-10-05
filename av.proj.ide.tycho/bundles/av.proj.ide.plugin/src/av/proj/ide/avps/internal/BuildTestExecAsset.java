@@ -23,6 +23,10 @@ package av.proj.ide.avps.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.OcpidevVerb;
+import av.proj.ide.internal.OpenCPICategory;
+
 public class BuildTestExecAsset extends BuildExecAsset {
 	
 	public BuildTestExecAsset(AngryViperAsset asset, List<String> buildFlags, List<String> cleanflags) {
@@ -32,11 +36,11 @@ public class BuildTestExecAsset extends BuildExecAsset {
 	@Override
 	protected void createBuildString() {
 		buildString = new ArrayList<String>(baseCmd);
-		StringBuilder sb = new StringBuilder(asset.location.projectPath);
+		StringBuilder sb = new StringBuilder(asset.projectLocation.projectPath);
 
 		switch (asset.category) {
 		//case test:
-		case components:
+		case componentsLibrary:
 			sb.append("/components");
 			break;
 			
@@ -57,7 +61,8 @@ public class BuildTestExecAsset extends BuildExecAsset {
 			sb.append(asset.buildName);
 			break;
 			
-		case hdlLibrary:
+		case cards:
+		case devices:
 			sb.append("/hdl/");
 			sb.append(asset.assetName);
 			break;
@@ -72,20 +77,19 @@ public class BuildTestExecAsset extends BuildExecAsset {
 		buildString.add(null);
 		buildString.add("test");
 		
-		if(asset.category == OcpiAssetCategory.test){
+		if(asset.category == OpenCPICategory.test){
 			if(asset.buildName != null) {
 				buildString.add(asset.buildName);
 			}
-			buildString.addAll(asset.category.getOcpiBuildNowns());
 			buildString.add("-l");
 			buildString.add(asset.libraryName);
 		}
-		else if(asset.category == OcpiAssetCategory.hdlTest) {
+		else if(asset.category == OpenCPICategory.hdlTest) {
 			buildString.add(asset.buildName);
 		}
 	}
 	
-	public static List<ExecutionAsset> createBuildAssets(CommandVerb verb, UserBuildSelections selections) {
+	public static List<ExecutionAsset> createBuildAssets(OcpidevVerb verb, UserBuildSelections selections) {
 		List<String> hdlbuildList = new ArrayList<String>();
 		List<String> rccbuildList = new ArrayList<String>();
 		BuildTargetSelections buildSelects = selections.buildTargetSelections;
@@ -115,9 +119,8 @@ public class BuildTestExecAsset extends BuildExecAsset {
 				
 			case test:
 			case hdlTest:
-			case components:
+			case componentsLibrary:
 			case library:
-			case hdlLibrary:
 			case platform:
 			case project:
 				break;

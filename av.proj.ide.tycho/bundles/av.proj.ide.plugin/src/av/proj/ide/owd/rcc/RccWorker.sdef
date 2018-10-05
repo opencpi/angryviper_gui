@@ -9,7 +9,7 @@
         <id>RccWorkerEditorPage</id>
         <element-type>av.proj.ide.owd.rcc.RccWorker</element-type>
         <initial-selection>RccWorker</initial-selection>
-        <page-header-text>OWD RCC Editor</page-header-text>
+        <page-header-text>RCC OWD Editor</page-header-text>
         <root-node>
             <node>
             	<label>${ Name == null ? &quot;RccWorker&quot; : Name }</label>

@@ -38,7 +38,6 @@ import av.proj.ide.custom.bindings.list.OWDMemberXmlListBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
 import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.MultiwordBooleanXmlValueBinding;
 import av.proj.ide.custom.bindings.value.SpecialDualCaseXmlValueBinding;
 
 public interface Property extends av.proj.ide.common.Property {
@@ -187,7 +186,7 @@ public interface Property extends av.proj.ide.common.Property {
 	void setPadding(Boolean value);
 		
 	// *** ReadSync ***
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Type( base = Boolean.class )
 	@Label( standard = "ReadSync" )
 	
@@ -199,7 +198,7 @@ public interface Property extends av.proj.ide.common.Property {
 	
 	// *** WriteSync ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Label( standard = "WriteSync" )
 		
 	ValueProperty PROP_WRITE_SYNC = new ValueProperty(TYPE, "WriteSync");
@@ -210,7 +209,7 @@ public interface Property extends av.proj.ide.common.Property {
 	
 	// *** ReadError ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Label( standard = "ReadError" )
 	
 	ValueProperty PROP_READ_ERROR = new ValueProperty(TYPE, "ReadError");
@@ -221,7 +220,7 @@ public interface Property extends av.proj.ide.common.Property {
 	
 	// *** WriteError ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=MultiwordBooleanXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
 	@Label( standard = "WriteError" )
 		
 	ValueProperty PROP_WRITE_ERROR = new ValueProperty(TYPE, "WriteError");

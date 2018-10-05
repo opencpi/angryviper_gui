@@ -23,6 +23,9 @@ package av.proj.ide.avps.internal;
 import java.io.File;
 import java.util.List;
 
+import av.proj.ide.internal.AngryViperAsset;
+import av.proj.ide.internal.OcpidevVerb;
+
 /**
  * This class provides a common interface to execute an ocpidev command given an
  * asset. This had to be separated out as another class because a given asset
@@ -33,25 +36,14 @@ import java.util.List;
  */
 public abstract class ExecutionAsset {
 
-	public enum CommandVerb {
-		clean("clean"), build ("build"), runtest("runtest");
-
-		String verb;
-		
-		private CommandVerb(String verb) {
-			this.verb = verb;
-		}
-		public String getVerb(){return verb;}
-	}
-
 	protected AngryViperAsset asset;
 	protected List<String>  command = null;
 	protected String   shortCmd;
 	
 	public AngryViperAsset getAsset(){return asset;}
 
-	public abstract List<String> getCommand(CommandVerb verb, Boolean flag);
-	public String getDisplayString(CommandVerb verb){return shortCmd;}
+	public abstract List<String> getCommand(OcpidevVerb verb, Boolean flag);
+	public String getDisplayString(OcpidevVerb verb){return shortCmd;}
 	public abstract File getExecutionDir();
 	
 }

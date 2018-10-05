@@ -25,14 +25,16 @@ import java.util.List;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.TreeItem;
 
-import av.proj.ide.avps.internal.AngryViperAssetService;
 import av.proj.ide.avps.internal.AvpsResourceManager;
-import av.proj.ide.avps.internal.ExecutionAsset.CommandVerb;
 import av.proj.ide.avps.internal.SelectionsInterface;
+import av.proj.ide.avps.internal.TestMode;
+import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.OcpidevVerb;
 
 public class AddViewControls {
 	
@@ -42,8 +44,7 @@ public class AddViewControls {
 
 			@Override
 			public void handleEvent(Event arg0) {
-				TreeItem[] selections = projectDisplay.projectsTree.getSelection();
-				AngryViperAssetService.getInstance().synchronizeWithFileSystem(selections);
+				AngryViperAssetService.getInstance().synchronizeWithFileSystem();
 			}
 		}); 
 	}
@@ -69,36 +70,19 @@ public class AddViewControls {
 			}
 		});
 		
-		opsDisplay.selectionPanel.addSelectionsButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				List<SelectionsInterface> providers = AvpsResourceManager.getInstance().getSelectionProviders();
-				for(SelectionsInterface provider : providers) {
-					opsDisplay.addSelections(provider.getSelections());
-				}
-			}
-		});	
 		
 		opsDisplay.selectionPanel.buildButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				opsDisplay.doBuild(CommandVerb.build);
+				opsDisplay.doBuild(OcpidevVerb.build);
 			}
 		});	
 		opsDisplay.selectionPanel.cleanButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
-				opsDisplay.doBuild(CommandVerb.clean);
-			}
-		});		
-		opsDisplay.selectionPanel.buildTestsButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				opsDisplay.doTestBuild(CommandVerb.build);
+				opsDisplay.doBuild(OcpidevVerb.clean);
 			}
 		});	
-		opsDisplay.selectionPanel.runButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
-				opsDisplay.doRun(CommandVerb.runtest);
-			}
-		});		
-		opsDisplay.selectionPanel.addSelectionsButton.addSelectionListener(new SelectionAdapter() {
+		
+		opsDisplay.addSelectionsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				List<SelectionsInterface> providers = AvpsResourceManager.getInstance().getSelectionProviders();
 				for(SelectionsInterface provider : providers){
@@ -107,16 +91,90 @@ public class AddViewControls {
 				}
 			}
 		});	
-		opsDisplay.selectionPanel.removeSelectionsButton.addSelectionListener(new SelectionAdapter() {
+		opsDisplay.removeSelectionsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				opsDisplay.removeSelected();
 			}
 		});		
-		opsDisplay.selectionPanel.clearSelectionsButton.addSelectionListener(new SelectionAdapter() {
+		opsDisplay.clearSelectionsButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				opsDisplay.clearEntries();
 			}
 		});		
 	}
-	
+
+	public static void addTextPanelControls(MainOperationSwtDisplayV1 opsDisplay) {
+		CentralPanel p = opsDisplay.selectionPanel;
+
+		Button b = p.generate;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.gen);
+			}
+		});		
+		
+		b = p.prepare;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.prep);
+			}
+		});		
+		b = p.run;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.run);
+			}
+		});		
+
+		b = p.verify;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.verify);
+			}
+		});		
+		b = p.view;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.view);
+			}
+		});		
+		b = p.genBuild;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.gen_build);
+			}
+		});		
+		b = p.prepRun;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.prep_run);
+			}
+		});		
+		b = p.prepRunVerify;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.prep_run_verify);
+			}
+		});		
+
+		b = p.runCln;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.clean_run);
+			}
+		});		
+		b = p.simCln;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.clean_sim);
+			}
+		});		
+		b = p.allCln;
+		b.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				opsDisplay.executeTests(TestMode.clean_all);
+			}
+		});		
+
+	}
 }

@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.eclipse.sapphire.PossibleValuesService;
 
-import av.proj.ide.avps.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperAssetService;
 
 public class WorkerPossibleValueService extends PossibleValuesService {
 

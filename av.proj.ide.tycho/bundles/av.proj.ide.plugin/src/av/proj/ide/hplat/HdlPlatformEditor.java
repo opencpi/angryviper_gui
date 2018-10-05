@@ -42,11 +42,7 @@ public class HdlPlatformEditor extends SapphireEditor {
 		if(signaledFileModMessage == false) {
 			Display.getDefault().asyncExec(new Runnable(){
 				public void run() {
-					String message = 
-					"The HDL Platform XML editor programmatically modifies HDL Platform XML to support presentation (an extension element is added to signals)."
-					+ "\n - These changes are cosmetic and do not impact XML functionality in the Framework."
-					+ "\n - XML files opened just to be viewed do not need to be saved.";
-							
+					String message = "The HDL Platform XML editor is going to programmatically add an external signal tag to support presentation of existing platform files. Please save these files and make them part of your baseline.";
 					MessageDialog.openInformation(Display.getDefault().getActiveShell(), "HDL Platform XML File Modifications", message);
 				}
 			});

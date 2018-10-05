@@ -3,334 +3,280 @@
 <plugin>
 	<!-- ### Wizards ### -->
 	<extension point="org.eclipse.ui.newWizards">
-	  <category
-        id="AngryViper"
-        name="ANGRYVIPER">
-      </category>
-      <wizard
-      		category="AngryViper"
-      		canFinishEarly="false"
-            name="OpenCPI Asset Wizard"
-        	icon="icons/snake-32.png"
-            class="av.proj.ide.wizards.NewOcpiAssetWizard"
-            id="av.proj.ide.wizards.NewOcpiAssetWizard"
-            project="true"
-            hasPages="true">
-      </wizard>
-   </extension>
-   
-   <!-- ### Perspective Extensions ### -->
-   <extension point="org.eclipse.ui.perspectiveExtensions">
-     <perspectiveExtension targetID="org.eclipse.cdt.ui.CPerspective">
-       <newWizardShortcut id="av.proj.ide.wizards.NewOcpiAssetWizard"/>
-     </perspectiveExtension>
-   </extension>
+		<category id="AngryViper" name="ANGRYVIPER">
+		</category>
+		<wizard category="AngryViper" canFinishEarly="false"
+			name="OpenCPI Asset Wizard" icon="icons/snake-32.png"
+			class="av.proj.ide.wizards.NewOcpiAssetWizard" id="av.proj.ide.wizards.NewOcpiAssetWizard"
+			project="true" hasPages="true">
+		</wizard>
+	</extension>
+
+	<!-- ### Perspective Extensions ### -->
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.eclipse.cdt.ui.CPerspective">
+			<newWizardShortcut id="av.proj.ide.wizards.NewOcpiAssetWizard" />
+		</perspectiveExtension>
+	</extension>
 
 	<!-- ### Editors ### -->
 	<extension point="org.eclipse.ui.editors">
-		<editor
-			id="av.proj.ide.ocs.OCSEditor"
-			name="OCS Editor"
-			class="av.proj.ide.ocs.OCSEditor"
-			filenames="*-spec.xml"
-			extensions="xml">
-			<contentTypeBinding contentTypeId="av.proj.ide.Ocs"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.ocs"/>
+		<editor id="av.proj.ide.ocs.OCSEditor" name="OCS Editor"
+			class="av.proj.ide.ocs.OCSEditor" filenames="*-spec.xml" extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.Ocs" />
+			<contentTypeBinding contentTypeId="av.proj.ide.ocs" />
 		</editor>
-		<editor
-			id="av.proj.ide.ops.OPSEditor"
-			name="OPS Editor"
-			filenames="*-proto.xml"
+		<editor id="av.proj.ide.ops.OPSEditor" name="OPS Editor"
+			filenames="*-proto.xml" extensions="xml">
+			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
+				<parameter name="sdef" value="av.proj.ide.ops.OPSEditor" />
+			</class>
+			<contentTypeBinding contentTypeId="av.proj.ide.Ops" />
+			<contentTypeBinding contentTypeId="av.proj.ide.ops" />
+		</editor>
+		<editor id="av.proj.ide.owd.rcc.RccWorker" name="OWD RCC Editor"
 			extensions="xml">
 			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
-				<parameter name="sdef" value="av.proj.ide.ops.OPSEditor"/>
+				<parameter name="sdef" value="av.proj.ide.owd.rcc.RccWorker" />
 			</class>
-			<contentTypeBinding contentTypeId="av.proj.ide.Ops"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.ops"/>
+			<contentTypeBinding contentTypeId="av.proj.ide.OwdRcc" />
+			<contentTypeBinding contentTypeId="av.proj.ide.owdrcc" />
 		</editor>
-		<editor
-			id="av.proj.ide.owd.rcc.RccWorker"
-			name="OWD RCC Editor"
+		<editor id="av.proj.ide.owd.hdl.HdlWorker" name="OWD HDL Editor"
 			extensions="xml">
 			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
-				<parameter name="sdef" value="av.proj.ide.owd.rcc.RccWorker"/>
+				<parameter name="sdef" value="av.proj.ide.owd.hdl.HdlWorker" />
 			</class>
-			<contentTypeBinding contentTypeId="av.proj.ide.OwdRcc"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.owdrcc"/>
+			<contentTypeBinding contentTypeId="av.proj.ide.OwdHdl" />
+			<contentTypeBinding contentTypeId="av.proj.ide.owdhdl" />
 		</editor>
-		<editor
-			id="av.proj.ide.owd.hdl.HdlWorker"
-			name="OWD HDL Editor"
+		<editor id="av.proj.ide.oas.OASEditor" class="av.proj.ide.oas.OASEditor"
+			name="OAS Editor" extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.App" />
+			<contentTypeBinding contentTypeId="av.proj.ide.app" />
+		</editor>
+		<editor id="av.proj.ide.ohad.OHADEditor" class="av.proj.ide.ohad.OHADEditor"
+			name="OHAD Editor" extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.Hdl" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl" />
+		</editor>
+		<editor id="av.proj.ide.test.editor" name="Unit Test Editor"
 			extensions="xml">
 			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
-				<parameter name="sdef" value="av.proj.ide.owd.hdl.HdlWorker"/>
+				<parameter name="sdef" value="av.proj.ide.testeditor.UnitTestEditor" />
 			</class>
-			<contentTypeBinding contentTypeId="av.proj.ide.OwdHdl"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.owdhdl"/>
-		</editor>    
-		<editor
-			id="av.proj.ide.oas.OASEditor"
-			class="av.proj.ide.oas.OASEditor"
-			name="OAS Editor"
-			extensions="xml">
-			<contentTypeBinding contentTypeId="av.proj.ide.App"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.app"/>
+			<contentTypeBinding contentTypeId="av.proj.ide.Unittests.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.unittests.lower" />
 		</editor>
-		<editor
-			id="av.proj.ide.ohad.OHADEditor"
-			class="av.proj.ide.ohad.OHADEditor"
-			name="OHAD Editor"
-			extensions="xml">
-			<contentTypeBinding contentTypeId="av.proj.ide.Hdl"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.hdl"/>
+		<editor id="av.proj.ide.hplat.HdlPlatform" name="HDL Platform Editor"
+			class="av.proj.ide.hplat.HdlPlatformEditor" extensions="xml">
+			<!-- Above w/ class=".. launches the editor. below the the sdef file is 
+				used. The current impl needs to launch the editor so a check/set a dependent 
+				attribute is performed. <class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml"> 
+				<parameter name="sdef" value="av.proj.ide.hplat.HdlPlatformEditor"/> </class> -->
+			<contentTypeBinding contentTypeId="av.proj.ide.Hplat" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hplat" />
 		</editor>
-		<editor
-			id="av.proj.ide.hplat.HdlPlatform"
-			name="HDL Platform Editor" class="av.proj.ide.hplat.HdlPlatformEditor"
-			extensions="xml">
-			<!--  Above w/ class=".. launches the editor. below the the sdef file is used.
-			      The current impl needs to launch the editor so a check/set a dependent
-			      attribute is performed.
-			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
-				<parameter name="sdef" value="av.proj.ide.hplat.HdlPlatformEditor"/>
-			</class>
-			-->
-			<contentTypeBinding contentTypeId="av.proj.ide.Hplat"/>
-			<contentTypeBinding contentTypeId="av.proj.ide.hplat"/>
-		</editor>   
 	</extension>
-	
+
 	<!-- ### Content Types ### -->
-   <extension point="org.eclipse.core.contenttype.contentTypes">     
-     <!-- OCS Content Type -->
-     <content-type
-         id="av.proj.ide.Ocs"
-         priority="high"
-         name="OCS Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="ComponentSpec" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.ocs"
-         priority="high"
-         name="OCS Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="componentspec" />
-       </describer>
-     </content-type>
-     <!-- OPS Content Type -->
-     <content-type
-         id="av.proj.ide.Ops"
-         priority="high"
-         name="OPS Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="Protocol" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.ops"
-         priority="high"
-         name="OPS Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="protocol" />
-       </describer>
-     </content-type>
-     <!-- OWD RCC Content Type -->
-     <content-type
-         id="av.proj.ide.App"
-         priority="high"
-         name="OAS Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="Application" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.app"
-         priority="high"
-         name="OAS Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="application" />
-       </describer>
-     </content-type>
-     <!-- OWD HDL Content Type -->
-     <content-type
-         id="av.proj.ide.OwdHdl"
-         priority="high"
-         name="OWD HDL Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="HdlWorker" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.owdhdl"
-         priority="high"
-         name="OWD HDL Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="hdlworker" />
-       </describer>
-     </content-type>
-     <!-- OAS Content Type -->
-     <content-type
-         id="av.proj.ide.OwdRcc"
-         priority="high"
-         name="OWD RCC Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="RccWorker" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.owdrcc"
-         priority="high"
-         name="OWD RCC Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="rccworker" />
-       </describer>
-     </content-type>
-     <!-- OHAD Content Type -->
-     <content-type
-         id="av.proj.ide.Hdl"
-         priority="high"
-         name="OHAD Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="HdlAssembly" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.hdl"
-         priority="high"
-         name="OHAD Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="hdlassembly" />
-       </describer>
-     </content-type>
-     <!-- HPLAT Content Type -->
-     <content-type
-         id="av.proj.ide.Hplat"
-         priority="high"
-         name="HPLAT Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="HdlPlatform" />
-       </describer>
-     </content-type>
-     <content-type
-         id="av.proj.ide.hplat"
-         priority="high"
-         name="HPLAT Content Type"
-         file-extensions="xml"
-         base-type="org.eclipse.core.runtime.xml">
-       <describer class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
-       	<parameter name="element" value="hdlplatform" />
-       </describer>
-     </content-type>
-   </extension> 
-	
-	<!-- ### Commands ### --> 
+	<extension point="org.eclipse.core.contenttype.contentTypes">
+		<!-- OCS Content Type -->
+		<content-type id="av.proj.ide.Ocs" priority="high"
+			name="OCS Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="ComponentSpec" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.ocs" priority="high"
+			name="OCS Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="componentspec" />
+			</describer>
+		</content-type>
+		<!-- OPS Content Type -->
+		<content-type id="av.proj.ide.Ops" priority="high"
+			name="OPS Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Protocol" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.ops" priority="high"
+			name="OPS Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="protocol" />
+			</describer>
+		</content-type>
+		<!-- OWD RCC Content Type -->
+		<content-type id="av.proj.ide.App" priority="high"
+			name="OAS Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Application" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.app" priority="high"
+			name="OAS Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="application" />
+			</describer>
+		</content-type>
+		<!-- OWD HDL Content Type -->
+		<content-type id="av.proj.ide.OwdHdl" priority="high"
+			name="OWD HDL Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="HdlWorker" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.owdhdl" priority="high"
+			name="OWD HDL Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="hdlworker" />
+			</describer>
+		</content-type>
+		<!-- OAS Content Type -->
+		<content-type id="av.proj.ide.OwdRcc" priority="high"
+			name="OWD RCC Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="RccWorker" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.owdrcc" priority="high"
+			name="OWD RCC Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="rccworker" />
+			</describer>
+		</content-type>
+		<!-- OHAD Content Type -->
+		<content-type id="av.proj.ide.Hdl" priority="high"
+			name="OHAD Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="HdlAssembly" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.hdl" priority="high"
+			name="OHAD Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="hdlassembly" />
+			</describer>
+		</content-type>
+		
+		<!-- Unit Test Content Type -->
+		<content-type id="av.proj.ide.unittests.lower" priority="high"
+			name="Unit Test Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="tests" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.Unittests.upper" priority="high"
+			name="Unit Test Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Tests" />
+			</describer>
+		</content-type>
+
+		<!-- HPLAT Content Type -->
+		<content-type id="av.proj.ide.Hplat" priority="high"
+			name="HPLAT Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="HdlPlatform" />
+			</describer>
+		</content-type>
+		<content-type id="av.proj.ide.hplat" priority="high"
+			name="HPLAT Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="hdlplatform" />
+			</describer>
+		</content-type>
+
+	</extension>
+
+	<!-- ### Commands ### -->
 	<extension point="org.eclipse.ui.commands">
-   		<command
-   			defaultHandler="av.proj.ide.commands.NewAssetHandler"
-   			id="av.proj.ide.commands.NewAsset"
-   			name="Create a New OpenCPI Asset">
-   		</command>
-   </extension>
-   
-   <!-- ### Menus ### --> 
-   <extension point="org.eclipse.ui.menus">
-   		<menuContribution
-   			locationURI="popup:common.new.menu?before=new">
-   			<command
-   				commandId="av.proj.ide.commands.NewAsset"
-        		icon="icons/snake-32.png"
-   				label="OpenCPI Asset Wizard"
-   				style="push">
-   				<visibleWhen checkEnabled="false"></visibleWhen>
-   			</command>
-   		</menuContribution>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <category
-            id="av.proj.ide.plugin"
-            name="ANGRYVIPER Project">
-      </category>
-      <view
-            category="av.proj.ide.plugin"
-            class="av.proj.ide.plugin.views.AVProjectView"
-            icon="icons/Toolbox.gif"
-            id="av.proj.ide.plugin.views.AVProjectView"
-            name="OpenCPI Projects">
-      </view>
-      <view
-            category="av.proj.ide.plugin"
-            class="av.proj.ide.plugin.views.AVMainOperationView"
-            icon="icons/Toolbox.gif"
-            id="av.proj.ide.plugin.views.MainOperationView"
-            name="Project Operations">
-      </view>
-      <view
-            category="av.proj.ide.plugin"
-            class="av.proj.ide.plugin.views.AVBuildStatusView"
-            icon="icons/Toolbox.gif"
-            id="av.proj.ide.plugin.views.BuildStatusView"
-            name="Build Status">
-      </view>
-   </extension>
- <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-        class="av.proj.ide.perspective.AngryViperPerspectiveFactory"
-       	id="av.ide.angryViperPerspective"
-        icon="icons/snake-24.png"
-        name="ANGRYVIPER Perspective"/>
-   </extension>
-   <!-- Messing around -->
- <extension point="org.eclipse.ui.perspectiveExtensions">
-  <perspectiveExtension 
-	targetID="org.eclipse.debug.ui.DebugPerspective">
-	<actionSet id="org.eclipse.jdt.debug.ui.JDTDebugActionSet"/>
-    	<view id="org.eclipse.jdt.debug.ui.DisplayView" 
-        	relative="org.eclipse.debug.ui.ExpressionView" 
-    		relationship="stack"/>	
-        <view id="org.eclipse.jdt.ui.PackageExplorer" 
-                relative="org.eclipse.debug.ui.DebugView" 
-                relationship="stack"
-                visible="true"/>
-        <view id="org.eclipse.jdt.ui.TypeHierarchy" 
-                relative="org.eclipse.debug.ui.DebugView" 
-                relationship="stack"
-                visible="false"/>
-        <view id="org.eclipse.search.SearchResultView" 
-                relative="org.eclipse.debug.ui.ConsoleView" 
-                relationship="stack"
-                visible="false"/> 
-    	<viewShortcut id="org.eclipse.jdt.debug.ui.DisplayView"/>
-  </perspectiveExtension> 
-</extension>
-  
+		<command defaultHandler="av.proj.ide.commands.NewAssetHandler"
+			id="av.proj.ide.commands.NewAsset" name="Create a New OpenCPI Asset">
+		</command>
+	</extension>
+
+	<!-- ### Menus ### -->
+	<extension point="org.eclipse.ui.menus">
+		<menuContribution locationURI="popup:common.new.menu?before=new">
+			<command commandId="av.proj.ide.commands.NewAsset" icon="icons/snake-32.png"
+				label="ANGRYVIPER OpenCPI Asset Wizard" style="push">
+				<visibleWhen checkEnabled="false"></visibleWhen>
+			</command>
+		</menuContribution>
+	</extension>
+	<extension point="org.eclipse.ui.views">
+		<category id="av.proj.ide.plugin" name="ANGRYVIPER Project">
+		</category>
+		<view category="av.proj.ide.plugin" class="av.proj.ide.plugin.views.AVProjectView"
+			icon="icons/Toolbox.gif" id="av.proj.ide.plugin.views.AVProjectView"
+			name="OpenCPI Projects">
+		</view>
+		<view category="av.proj.ide.plugin" class="av.proj.ide.plugin.views.AVComponentsView"
+			icon="icons/Component.gif" id="av.proj.ide.plugin.views.AVComponentsView"
+			name="OpenCPI Components">
+		</view>
+		<view category="av.proj.ide.plugin" class="av.proj.ide.plugin.views.AVMainOperationView"
+			icon="icons/Toolbox.gif" id="av.proj.ide.plugin.views.MainOperationView"
+			name="Project Operations">
+		</view>
+		<view category="av.proj.ide.plugin" class="av.proj.ide.plugin.views.AVBuildStatusView"
+			icon="icons/Toolbox.gif" id="av.proj.ide.plugin.views.BuildStatusView"
+			name="Build Status">
+		</view>
+	</extension>
+	<extension point="org.eclipse.ui.perspectives">
+		<perspective class="av.proj.ide.perspective.AngryViperPerspectiveFactory"
+			id="av.ide.angryViperPerspective" icon="icons/snake-24.png" name="ANGRYVIPER Perspective" />
+	</extension>
+	<!-- Messing around -->
+	<extension point="org.eclipse.ui.perspectiveExtensions">
+		<perspectiveExtension targetID="org.eclipse.debug.ui.DebugPerspective">
+			<actionSet id="org.eclipse.jdt.debug.ui.JDTDebugActionSet" />
+			<view id="org.eclipse.jdt.debug.ui.DisplayView" relative="org.eclipse.debug.ui.ExpressionView"
+				relationship="stack" />
+			<view id="org.eclipse.jdt.ui.PackageExplorer" relative="org.eclipse.debug.ui.DebugView"
+				relationship="stack" visible="true" />
+			<view id="org.eclipse.jdt.ui.TypeHierarchy" relative="org.eclipse.debug.ui.DebugView"
+				relationship="stack" visible="false" />
+			<view id="org.eclipse.search.SearchResultView" relative="org.eclipse.debug.ui.ConsoleView"
+				relationship="stack" visible="false" />
+			<viewShortcut id="org.eclipse.jdt.debug.ui.DisplayView" />
+		</perspectiveExtension>
+	</extension>
+
 </plugin>

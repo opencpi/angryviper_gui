@@ -26,23 +26,25 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.widgets.Display;
 
-import av.proj.ide.avps.internal.OcpiAssetCategory;
+import av.proj.ide.internal.OpenCPICategory;
 
 public class ProjectImages {
 	
 	private Image warnImage;
 	private Image projImage;
 	private Image applicationImg;
+	private Image workerImg;
+	private Image componentImg;
 	private Image assemblyImg;
 	private Image platformImg;
-	private Image workerImg;
 	private Image primitiveImg;
 	private Image cardsImage;
 	private Image devicesImage;
-	private Image libImage;
-	private Image testsImage;
-	private Image testImage2;
+	private Image folderImage;
+	private Image dlFolderImage;
 	private Image testImage;
+	private Image diagramImage;
+	private Image equipmentImage;
 
 	public ProjectImages(ClassLoader cl, Display display) {
 		InputStream stream = cl.getResourceAsStream("icons/if_dialog-warning_32px.png");		
@@ -56,6 +58,14 @@ public class ProjectImages {
 	    stream = cl.getResourceAsStream("icons/Computer-16x16.gif");
 		imd = new ImageData(stream);
 		applicationImg = new Image(display, imd);
+		
+	    stream = cl.getResourceAsStream("icons/Component.gif");
+		imd = new ImageData(stream);
+		workerImg = new Image(display, imd);
+		
+	    stream = cl.getResourceAsStream("icons/Equipment.gif");
+		imd = new ImageData(stream);
+		componentImg = new Image(display, imd);
 		
 	    stream = cl.getResourceAsStream("icons/Briefcase.gif");
 	    imd = new ImageData(stream);
@@ -73,30 +83,30 @@ public class ProjectImages {
 		imd = new ImageData(stream);
 		devicesImage = new Image(display, imd);
 
-	    stream = cl.getResourceAsStream("icons/Component.gif");
-		imd = new ImageData(stream);
-		workerImg = new Image(display, imd);
-		
 	    stream = cl.getResourceAsStream("icons/Pinion.gif");
 		imd = new ImageData(stream);
 		primitiveImg = new Image(display, imd);
 		
-		stream = cl.getResourceAsStream("icons/Folder.gif");		
-		imd = new ImageData(stream);
-		libImage = new Image(display, imd);
-		
-		stream = cl.getResourceAsStream("icons/Downloads folder.gif");		
-		imd = new ImageData(stream);
-		testsImage = new Image(display, imd);
-		
 		stream = cl.getResourceAsStream("icons/Diagram.gif");		
 		imd = new ImageData(stream);
-		testImage = new Image(display, imd);
+		diagramImage = new Image(display, imd);
+		
+		stream = cl.getResourceAsStream("icons/Equipment.gif");		
+		imd = new ImageData(stream);
+		equipmentImage = new Image(display, imd);
+		
 		
 		stream = cl.getResourceAsStream("icons/Magic wand.gif");		
 		imd = new ImageData(stream);
-		testImage2 = new Image(display, imd);
+		testImage = new Image(display, imd);
 		
+		stream = cl.getResourceAsStream("icons/Folder.gif");		
+		imd = new ImageData(stream);
+		folderImage = new Image(display, imd);
+		
+		stream = cl.getResourceAsStream("icons/Downloads folder.gif");		
+		imd = new ImageData(stream);
+		dlFolderImage = new Image(display, imd);
 	}
 	
 	public Image getWarning() {
@@ -108,23 +118,23 @@ public class ProjectImages {
 	}
 
 	public Image getApplications() {
-		return libImage;
+		return folderImage;
 	}
 	
 	public Image getAssemblies() {
-		return testImage;
+		return diagramImage;
 	}
 
 	public Image getPlatforms() {
-		return testsImage;
+		return dlFolderImage;
 	}
 
 	public Image getComponents() {
-		return libImage;
+		return folderImage;
 	}
 
 	public Image getPrimitives() {
-		return testsImage;
+		return dlFolderImage;
 	}
 
 	public Image getApplication() {
@@ -142,8 +152,15 @@ public class ProjectImages {
 	public Image getPrimitive() {
 		return primitiveImg;
 	}
-
 	public Image getComponent() {
+		return componentImg;
+	}
+	public Image getProtocol() {
+		return componentImg;
+	}
+
+
+	public Image getWorker() {
 		return workerImg;
 	}
 	public Image getCard() {
@@ -158,50 +175,73 @@ public class ProjectImages {
 	public Image getDevices() {
 		return devicesImage;
 	}
+	public Image getWorkers() {
+		return folderImage;
+	}
 
 	public Image getTest() {
-		return testImage2;
+		return testImage;
 	}
 
 	public Image getLibrary() {
-		return libImage;
+		return folderImage;
+	}
+	public Image getTopLevelSpecs() {
+		return equipmentImage;
 	}
 
-	public Image getImage(OcpiAssetCategory category) {
+
+	public Image getImage(OpenCPICategory category) {
 		Image image = null;
 		switch(category) {
 		case applications:
-			image = libImage;
+			image = folderImage;
 			break;
 		case application:
 			image = applicationImg;
 			break;
+		case xmlapp:
+			image = componentImg;
+			break;
 		case assemblies:
-			image = testImage;
+			image = diagramImage;
 			break;
 		case assembly:
 			image = assemblyImg;
 			break;
-		case components:
-			image = libImage;
+		case componentsLibrary:
+		case componentsLibraries:
+		case workers:
+			image = folderImage;
 			break;
 		case component:
+		case protocol:
+			image = componentImg;
+			break;
+			
+		case cards:
+			image = cardsImage;
+			break;
+		case devices:
+			image = devicesImage;
+			break;
+			
 		case card:
 		case device:
 			image = workerImg;
 			break;
 		case library:
-			image = libImage;
+			image = folderImage;
 			break;
 			
 		case platforms:
-			image = testsImage;
+			image = dlFolderImage;
 			break;
 		case platform:
 			image = platformImg;
 			break;
 		case primitives:
-			image = testsImage;
+			image = dlFolderImage;
 			break;
 		case primitive:
 			image = primitiveImg;
@@ -210,10 +250,22 @@ public class ProjectImages {
 			break;
 		case hdlTest:
 		case test:
-			image = testImage2;
+			image = testImage;
 			break;
 		case tests:
-			image = testsImage;
+			image = dlFolderImage;
+			break;
+//		case hdlLibrary:
+//			break;
+//		case protocol:
+//			break;
+		case worker:
+			image = workerImg;
+			break;
+
+		case specs:
+		case topLevelSpecs:
+			image = folderImage;
 			break;
 		default:
 			break;

@@ -24,7 +24,7 @@ import org.eclipse.core.databinding.validation.IValidator;
 import org.eclipse.core.databinding.validation.ValidationStatus;
 import org.eclipse.core.runtime.IStatus;
 
-import av.proj.ide.wizards.internal.NewOcpiAssetWizardPage1;
+import av.proj.ide.wizards.NewOcpiAssetWizardPage1;
 
 public class LibraryOptionValidator implements IValidator {
 	

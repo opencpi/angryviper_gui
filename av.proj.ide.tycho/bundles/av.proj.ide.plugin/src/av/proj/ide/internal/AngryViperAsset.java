@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.avps.internal;
+package av.proj.ide.internal;
 
 import java.util.List;
 
@@ -42,34 +42,69 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class AngryViperAsset {
 	
-	public String assetName;
 	public String buildName = null;
-	public AssetLocation location;
-	public OcpiAssetCategory category;
+	public ProjectLocation projectLocation;
+	public OpenCPICategory category;
+	
+	// Name is used for leaf assets.
+	public String assetName;
 	public String libraryName = null;
+	public boolean buildable = true;
+	
+	// Not used yet.  This was intended to hold worker build
+	// information.
 	public AssetDetails assetDetails;
 	public TreeItem assetUiItem;
 	public AngryViperAsset parent;
 	
 	protected List<String> buildString = null;
-	public void setLocation(AssetLocation location) {
-		this.location = location;
+	public void setLocation(ProjectLocation location) {
+		this.projectLocation = location;
 	}
 	
-	public AngryViperAsset(){}
-	public AngryViperAsset(String assetName, AssetLocation location, OcpiAssetCategory category){
+	// Location from the project location
+	String pathToAsset = null;
+	String xmlFilename = null;
+	String assetFolder = null;
+	
+	public void getPathToAsset(String path) {
+		pathToAsset = path;
+	}
+	public void getPathToAssetFile(String path) {
+		pathToAsset = path;
+	}
+	
+	
+	public void setAssetFolder(String path) {
+		assetFolder = path;
+	}
+	
+	public String getXmlFilename() {
+		return xmlFilename;
+	}
+
+	public void setXmlFilename(String xmlFilename) {
+		this.xmlFilename = xmlFilename;
+	}
+
+	public String getAssetLocation() {
+		return pathToAsset;
+	}
+	
+	// Purposely  placed in package scope so the factory is used to create them.
+	AngryViperAsset(){}
+	AngryViperAsset(String assetName, ProjectLocation location, OpenCPICategory category){
 		this.assetName = assetName;
-		this.location = location;
+		this.projectLocation = location;
 		this.category = category;
 	}
 	public AngryViperAsset(AngryViperAsset other){
 		this.assetName = other.assetName;
-		this.location = other.location;
+		this.projectLocation = other.projectLocation;
 		this.category = other.category;
 		this.libraryName = other.libraryName;
 		this.buildString = other.buildString;
 	}
-	
 
 	private int myHashcode;
 	private boolean hashNotBuild = true;
@@ -85,8 +120,8 @@ public class AngryViperAsset {
 			AngryViperAsset other = (AngryViperAsset)asset;
 			return this.category == other.category &&
 					this.assetName.equals(other.assetName) &&
-					this.location.projectName.equals(other.location.projectName) &&
-					this.location.projectPath.equals(other.location.projectPath) &&
+					this.projectLocation.projectName.equals(other.projectLocation.projectName) &&
+					this.projectLocation.projectPath.equals(other.projectLocation.projectPath) &&
 					(this.libraryName == null ? true : this.libraryName.equals(other.libraryName));
 		}
 		return false;
@@ -94,7 +129,7 @@ public class AngryViperAsset {
 	@Override
 	public int hashCode() {
 		if(hashNotBuild) {
-			myHashcode = assetName.hashCode() + location.projectPath.hashCode() + category.getListText().hashCode();
+			myHashcode = assetName.hashCode() + projectLocation.projectPath.hashCode() + category.name().hashCode();
 			if(buildName != null) {
 				myHashcode += buildName.hashCode();
 			}
@@ -107,10 +142,11 @@ public class AngryViperAsset {
 	}
 	private String myString = null;
 	private String format = "%s %s, %s";
+	
 	@Override
 	public String toString() {
 		if(myString == null) {
-			myString = String.format(format, assetName, category.getListText(), location.projectPath);
+			myString = String.format(format, assetName, category.getFrameworkName(), projectLocation.projectPath);
 		}
 		return myString;
 	}
