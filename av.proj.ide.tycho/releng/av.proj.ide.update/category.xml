@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/av.proj.ide.feature_1.4.0.qualifier.jar" id="av.proj.ide.feature" version="1.4.0.qualifier">
+   <feature url="features/av.proj.ide.feature_1.5.0.qualifier.jar" id="av.proj.ide.feature" version="1.5.0.qualifier">
       <category name="angryviper"/>
    </feature>
    <category-def name="angryviper" label="ANGRYVIPER"/>

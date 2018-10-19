@@ -5,12 +5,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>av.proj.ide.tycho</groupId>
 	<artifactId>av.proj.ide.tycho.root</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<parent>
 		<groupId>av.proj.ide.tycho</groupId>
 		<artifactId>av.proj.ide.tycho.configuration</artifactId>
-		<version>1.4.0-SNAPSHOT</version>
+		<version>1.5.0-SNAPSHOT</version>
 		<relativePath>./releng/av.proj.ide.tycho.configuration</relativePath>
 	</parent>
 	<modules>
