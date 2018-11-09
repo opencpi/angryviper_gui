@@ -38,6 +38,7 @@ import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.swt.widgets.Display;
 
 import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.oas.Application;
 
 public class SpecPossibleValueService extends PossibleValuesService {
@@ -98,7 +99,8 @@ public class SpecPossibleValueService extends PossibleValuesService {
 	}
 	
 	public void getSpecs() {
-		this.files = AngryViperAssetService.getApplicationComponents();
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		this.files = srv.getApplicationComponents();
 
 		String possValues = "";
 		for (String s : this.files) {
@@ -110,7 +112,8 @@ public class SpecPossibleValueService extends PossibleValuesService {
 	}
 	
 	public String getSpecsString() {
-		this.files = AngryViperAssetService.getApplicationComponents();
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		this.files = srv.getApplicationComponents();
 		String possValues = "";
 		for (String s : this.files) {
 			possValues += s+",";

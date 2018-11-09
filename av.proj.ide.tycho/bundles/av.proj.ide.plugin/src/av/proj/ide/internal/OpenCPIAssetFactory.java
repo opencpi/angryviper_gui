@@ -33,7 +33,8 @@ public class OpenCPIAssetFactory {
 		String libPath = null;
 		switch(cat) {
 		case project:
-			asset = new AngryViperAsset(name, projectLocation, cat);
+			asset = new AngryViperAsset(projectLocation.projectName, projectLocation, cat);
+			asset.qualifiedName = projectLocation.packageId;
 			asset.setAssetFolder(projectLocation.projectPath);
 			break;
 		case xmlapp:	
@@ -52,6 +53,7 @@ public class OpenCPIAssetFactory {
 		case assembly:
 			asset = new AngryViperAsset(name, projectLocation, cat);
 			asset.buildName = name;
+			asset.qualifiedName = projectLocation.packageId + "." + name;
 			asset.setAssetFolder(name);
 			break;
 
@@ -76,6 +78,7 @@ public class OpenCPIAssetFactory {
 			asset.setAssetFolder(asset.libraryName);
 			asset.buildable = false;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectLocation.packageId + "." + name;
 			libPath = getLibraryPath(asset);
 			asset.assetFolder = libPath + "/" + OpenCPICategory.specs.getFrameworkName();
 			break;
@@ -84,6 +87,7 @@ public class OpenCPIAssetFactory {
 			asset = new AngryViperAsset(name, projectLocation, cat);
 			asset.buildName = name;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectLocation.packageId + "." + name;
 			libPath = getLibraryPath(asset);
 			asset.assetFolder = libPath + "/" + name;
 			break;
@@ -93,6 +97,7 @@ public class OpenCPIAssetFactory {
 			asset.buildable = true;
 			asset.buildName = name;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectLocation.packageId + "." + name;
 			libPath = getLibraryPath(asset);
 			asset.assetFolder = libPath + "/" + name;
 			break;
@@ -103,6 +108,7 @@ public class OpenCPIAssetFactory {
 		case tests:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
 			asset.buildName = cat.getFrameworkName();
+			asset.qualifiedName = projectLocation.packageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder(cat.getFrameworkName());
 			break;
 			
@@ -115,6 +121,7 @@ public class OpenCPIAssetFactory {
 		case platforms :
 		case assemblies:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
+			asset.qualifiedName = projectLocation.packageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder("hld/" + name);
 			break;
 			
@@ -122,6 +129,7 @@ public class OpenCPIAssetFactory {
 		case devices:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
 			asset.buildName = cat.getFrameworkName();
+			asset.qualifiedName = projectLocation.packageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder("hld/" + name);
 			break;
 			
@@ -131,11 +139,13 @@ public class OpenCPIAssetFactory {
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
 			asset.buildable = false;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectLocation.packageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder("specs");
 			break;
 			
 		case workers:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
+			asset.qualifiedName = projectLocation.packageId + "." + cat.getFrameworkName();
 			asset.buildable = false;
 			// needs to be though out.  Actually this is constructed in another
 			// flow of control that is not un use yet.

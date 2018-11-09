@@ -54,7 +54,7 @@ public class ApplicationInstanceDragAndDropService extends DragAndDropService {
 		String fullProjectPathname = specFile.getProject().getLocation().toOSString();
 		
 		IResource library = specFile.getParent().getParent();
-		String instanceName = AngryViperAssetService.
+		String instanceName = AngryViperAssetService.getInstance().getEnvironment().
 				getApplicationSpecName(fullProjectPathname, library.getName(), name);
 		final SapphireDiagramEditorPagePart diagram = context( SapphireDiagramEditorPagePart.class );
         final Application app = context( Application.class );

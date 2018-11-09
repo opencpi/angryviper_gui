@@ -25,11 +25,13 @@ import java.util.Set;
 import org.eclipse.sapphire.PossibleValuesService;
 
 import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.OpencpiEnvService;
 
 public class WorkerPossibleValueService extends PossibleValuesService {
 
 	@Override
 	protected void compute(Set<String> values) {
-		values.addAll(AngryViperAssetService.getInstance().getAllHdlWorkers());
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		values.addAll(srv.getAllHdlWorkers());
 	}
 }

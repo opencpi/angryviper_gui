@@ -462,14 +462,15 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 	}
 	
 	protected void populateBuildTypes() {
-		AngryViperAssetService mgr = AngryViperAssetService.getInstance();
-		List<HdlPlatformInfo> hdlPlatforms = mgr.getHdlPlatforms();
+		
+		AngryViperAssetService srv = AngryViperAssetService.getInstance();
+		List<HdlPlatformInfo> hdlPlatforms = srv.getHdlPlatforms();
 		buildSelectPanel.setHdlPlatforms(hdlPlatforms);
 		
-		List<RccPlatformInfo> rccPlatforms = mgr.getRccPlatforms();
+		List<RccPlatformInfo> rccPlatforms = srv.getRccPlatforms();
 		buildSelectPanel.setRccPlatforms(rccPlatforms);
 		
-		List<HdlVendor> hdlVendors = mgr.getHdlTargets();
+		List<HdlVendor> hdlVendors = srv.getHdlTargets();
 		buildSelectPanel.setHdlTargets(hdlVendors);
 	}
 	

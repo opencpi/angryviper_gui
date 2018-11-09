@@ -23,6 +23,7 @@ package av.proj.ide.wizards;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -46,8 +47,11 @@ import org.eclipse.swt.widgets.Text;
 
 import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperProjectInfo;
+import av.proj.ide.internal.AssetModelData;
 import av.proj.ide.internal.CreateAssetFields;
 import av.proj.ide.internal.OpenCPICategory;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.wizards.internal.WizardInputConverter;
 
 
@@ -73,20 +77,29 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	private String initialLib  = null;
 	private String initialSpec  = null;
 	private String initialProjectSelected = null;
+	//private String initialProjectName = null;
 	private OpenCPICategory anticipatedSpecLocation = null;
 	
 	private AngryViperAsset initialAssetSelection = null;
 	
 	// Used when brought up from eclipse project explorer.
 	public void setInitialProjectName(String projectName) {
-		initialProjectSelected = projectName;
+		//initialProjectName =  projectName;
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		AngryViperProjectInfo info = srv.getProjectInfo(projectName);
+		if(info != null) {
+			initialProjectSelected = info.packageId;
+		}
+		else {
+			initialProjectSelected = projectName;
+		}
 	}
 	public void setInitialAssetWizard(OpenCPICategory selectedAssetType) {
 		this.presentInitialWizard = selectedAssetType;
 	}
 	public void setInitialAssetSelection(AngryViperAsset initialSelection) {
 		initialAssetSelection = initialSelection;
-		initialProjectSelected = initialSelection.projectLocation.projectName;
+		initialProjectSelected = initialSelection.projectLocation.packageId;
 		switch(initialSelection.category) {
 		case cards:
 			break;
@@ -152,12 +165,14 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	}
 	
 	void loadProjectCombo() {
-		Collection<String> projects = AngryViperAssetService.getInstance().getWorkspaceProjects().keySet();
+		Map<String, AssetModelData> projects = AngryViperAssetService.getInstance().getWorkspaceProjects();
+		
 		int idx = 0;
 		int selIdx = 0;
-		for(String projectName : projects) {
-			projectCombo.add(projectName);
-			if(projectName.equals(initialProjectSelected)) {
+		for(AssetModelData project : projects.values()) {
+			String name = project.getAsset().qualifiedName;
+			projectCombo.add(name);
+			if(name.equals(initialProjectSelected)) {
 				selIdx = idx;
 			}
 			idx++;
@@ -625,7 +640,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		String specName = null;
 		boolean setSpec = false;
 		if(initialSpec != null) {
-			specName = AngryViperAssetService.getInstance().getComponentName(initialSpec);
+			OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+			specName = srv.getComponentName(initialSpec);
 			setSpec = true;
 		}
 		int idx = 0;
@@ -654,7 +670,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		}
 		loadLibraryOptions();
 		
-		Collection<String> specs = AngryViperAssetService.getInstance().getComponentsAvailableToProject(projectName);
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		Collection<String> specs = srv.getComponentsAvailableToProject(projectName);
 		if(specs == null) {
 			return"There are no available components for this project.";
 		}
@@ -809,7 +826,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		dependencyList.setLayout(layout);
 		
 		if (depsList == null) {
-			depsList = AngryViperAssetService.getRegisteredProjectsLessCore();
+			OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+			depsList = srv.getRegisteredProjectsLessCore();
 		}
 		
 		projectDepButtons = new Button[depsList.size()];

@@ -42,10 +42,12 @@ import org.eclipse.ui.IWorkbench;
 import av.proj.ide.avps.internal.AvpsResourceManager;
 import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.AngryViperProjectInfo;
 import av.proj.ide.internal.CreateAssetFields;
 import av.proj.ide.internal.CreateProjectFields;
 import av.proj.ide.internal.OcpiAssetFileService;
 import av.proj.ide.internal.OpenCPICategory;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.wizards.internal.ScrollableDialog;
 
 public class NewOcpiAssetWizard extends Wizard implements INewWizard {
@@ -163,9 +165,10 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 				return false;
 			}
 		}
-		
-		eclipseProject = root.getProject(usersRequest.getProjectName());
-		String projectPath = eclipseProject.getLocation().toOSString();
+		String opencpiProject = usersRequest.getProjectName();
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		AngryViperProjectInfo projectInfo = srv.getProjectInfo(opencpiProject);
+		String projectPath = projectInfo.fullPath;
 		usersRequest.setFullProjectPath(projectPath);
 		StringBuilder sb = new StringBuilder();
 		
@@ -182,6 +185,7 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 			});
 			return false;
 		}
+		eclipseProject = root.getProject(projectInfo.projectDirectory);
 		eclipseProject.refreshLocal(2, monitor);
 		IFolder folder = OcpiAssetFileService.getAssetFolder(newAsset, eclipseProject);
 		if(folder == null || ! folder.exists()) {

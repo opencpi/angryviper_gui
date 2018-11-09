@@ -48,7 +48,7 @@ public final class OHADEditor extends SapphireEditor {
         setPageText( index, "Source" );
         this.currFile = (IFile) getEditorInput().getAdapter(IFile.class);
         // Load this now if it hasn't been done already
-		AngryViperAssetService.getInstance().getAllHdlWorkers();
+        AngryViperAssetService.getInstance().getEnvironment().getAllHdlWorkers();
 
     }
     

@@ -78,11 +78,12 @@ import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.AngryViperAssetService;
 import av.proj.ide.internal.AngryViperAssetService.AckModelDataUpdate;
 import av.proj.ide.internal.AngryViperAssetService.ModelDataUpdate;
+import av.proj.ide.internal.AngryViperProjectInfo;
 import av.proj.ide.internal.AssetModelData;
 import av.proj.ide.internal.OcpiAssetFileService;
 import av.proj.ide.internal.OcpidevVerb;
 import av.proj.ide.internal.OpenCPICategory;
-import av.proj.ide.internal.RegisteredProjectsService.Project;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.wizards.NewOcpiAssetWizard;
 
 public class ProjectViewSwtDisplay extends Composite implements SelectionsInterface {
@@ -263,7 +264,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 	private void addProject(AssetModelData project) {
 		TreeItem projItem = new TreeItem(projectsTree, SWT.NONE);
 		AngryViperAsset projectAsset = project.getAsset();
-		projItem.setText(projectAsset.assetName);
+		projItem.setText(projectAsset.qualifiedName);
 		projItem.setImage(projectImages.getProject());
 		projItem.setData(project.getAsset());
 		projectAsset.assetUiItem = projItem;
@@ -904,7 +905,8 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 					TreeItem selection = sels[0];
 					AngryViperAsset project = (AngryViperAsset)selection.getData();
 					String projectName = project.assetName;
-					Project projectInfo = AngryViperAssetService.getInstance().getProjectInfo(projectName);
+					OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+					AngryViperProjectInfo projectInfo = srv.getProjectInfo(projectName);
 					
 					if( projectInfo != null && projectInfo.isRegistered() ) {
 						theItem = new MenuItem(menu, SWT.NONE);
