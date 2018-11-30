@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -51,6 +50,7 @@ import av.proj.ide.avps.internal.AvpsResourceManager;
 import av.proj.ide.avps.internal.OcpiBuildStatus;
 import av.proj.ide.avps.internal.ProjectBuildService;
 import av.proj.ide.avps.internal.StatusNotificationInterface;
+import av.proj.ide.avps.internal.StatusRegistration;
 import av.proj.ide.internal.OcpidevVerb;
 
 public class StatusViewSwtDisplay2 extends Composite implements StatusNotificationInterface {
@@ -74,9 +74,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 			this.latestStatus = status;
 			Display.getDefault().asyncExec(new Runnable(){
 				public void run() {
-					TreeItem statusItem = new TreeItem(item, SWT.NONE);
-					String[] s = new String[]{status.asset, status.project, status.buildString};
-					statusItem.setText(s);
+					status.updateRunStatusLine(item);
 				}
 			});
 		}
@@ -197,9 +195,9 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	
 	
 	@Override
-	public void registerBuild(Integer buildNumber, OcpidevVerb verb, String consoleName, String buildLabel) {
+	public void registerBuild(Integer buildNumber, StatusRegistration registration) {
 		
-		addStatusEntry(buildNumber, verb, consoleName, buildLabel);
+		addStatusEntry(buildNumber, registration);
 	}
 	@Override
 	public void updateBuildStatus(Integer buildNumber, OcpiBuildStatus status) {
@@ -228,24 +226,30 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 		});
 	}
 	@Override
-	public void restartBuild(Integer buildNumber, OcpidevVerb verb) {
+	public void restartBuild(Integer buildNumber, StatusRegistration registration) {
 		StatusItemControls ctrl = buildControls.get(buildNumber);
 		if(ctrl == null) return;
 		TreeItem item = ctrl.theItem;
 		item.setBackground(ctrl.color);
 		StatusItemControls control = (StatusItemControls)item.getData();
 		control.isActive = true;
+		
+		String[] s = registration.getStatusLineEntries();
+		item.setText(1, s[1]);
+		
+		String[][] detailLines = registration.getDetailEntries();
 		TreeItem[] childList = item.getItems();
 		for(int i = 0; i < childList.length; i++ ) {
-			childList[i].dispose();
+			String[] lineEntries = detailLines[i];
+			childList[i].setText(2, lineEntries[2]);
 		}
 	}
 	
 	
-	public void addStatusEntry(Integer buildNumber, OcpidevVerb verb, String consoleName, String buildLabel) {
+	public void addStatusEntry(Integer buildNumber, StatusRegistration registration) {
 
 		TreeItem item = new TreeItem(statusListing, SWT.NONE);
-		String[] s = new String[]{buildNumber.toString(), buildLabel, consoleName};
+		String[] s = registration.getStatusLineEntries();
 		item.setText(s);
 		StatusLineUpdater updater = new StatusLineUpdater(item);
 		statusUpdaters.put(buildNumber, updater);
@@ -253,17 +257,23 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	    StatusItemControls controls = new StatusItemControls();
 	    controls.theItem = item;
 	    controls.buildNumber = buildNumber;
-	    controls.consoleName = consoleName;
-	    if(verb == OcpidevVerb.run)
+	    controls.consoleName = registration.getConsoleName();
+	    
+	    if(registration.getVerb() == OcpidevVerb.run)
 	    	controls.isRun = true;
 		buildControls.put(buildNumber, controls);
 		item.setData(controls);
+		
+		String[][] detailLines = registration.getDetailEntries();
+		for(String[] line : detailLines) {
+			TreeItem lineitem = new TreeItem(item, SWT.NONE);
+			lineitem.setText(line);
+		}
 	}
 
 	private class StatusContextMenu {
 		
 		Menu menu;
-		//MenuItem build, clean, console, stop, delete , run;
 		MenuItem build, clean, stop, delete , run;
 		
 		protected void disableAllItems() {
@@ -279,7 +289,6 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 			build.setEnabled(true);
 			run.setEnabled(false);
 			clean.setEnabled(true);
-			//console.setEnabled(true);
 			stop.setEnabled(false);
 			delete.setEnabled(true);			
 		}
@@ -288,7 +297,6 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 			build.setEnabled(false);
 			run.setEnabled(false);
 			clean.setEnabled(false);
-			//console.setEnabled(true);
 			stop.setEnabled(true);
 			delete.setEnabled(false);			
 		}
@@ -296,7 +304,6 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 			build.setEnabled(false);
 			run.setEnabled(true);
 			clean.setEnabled(false);
-			//console.setEnabled(true);
 			stop.setEnabled(false);
 			delete.setEnabled(true);			
 		}
@@ -305,7 +312,6 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 			build.setEnabled(false);
 			run.setEnabled(false);
 			clean.setEnabled(false);
-			//console.setEnabled(true);
 			stop.setEnabled(true);
 			delete.setEnabled(false);			
 		}
@@ -360,20 +366,6 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 				}
 	 		});
 	        
-//	        newItem = new MenuItem(menu, SWT.NONE);
-//	        newItem.setText("console");
-//	        console = newItem;
-//	        newItem.addSelectionListener(new SelectionAdapter() {
-//	 			public void widgetSelected(SelectionEvent event) {
-//	 				TreeItem selection = statusListing.getSelection()[0];
-// 					StatusItemControls control = (StatusItemControls)selection.getData();
-// 					while(control == null) {
-// 						selection = selection.getParentItem();
-// 						control = (StatusItemControls)selection.getData();
-// 					}
-//					AvpsResourceManager.getInstance().bringConsoleToView(control.consoleName);
-//				}
-//	 		});
 	        newItem = new MenuItem(menu, SWT.NONE);
 	        newItem.setText("stop");
 	        stop = newItem;
@@ -431,6 +423,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	 						selection = selection.getParentItem();
 	 						control = (StatusItemControls)selection.getData();
 	 					}
+	 					
 	 					if(control.isActive) {
 	 						if(control.isRun) {
 		 						setActiveRunSelections();
@@ -461,6 +454,7 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	 * Run the panel
 	 *
 	 */
+	/***
 	public static void main(String[] args) {
 	    Display display = new Display();
 	    Shell shell = new Shell(display);
@@ -536,5 +530,5 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 	    }
 	    display.dispose();
 	}
-	    
+***/   
 }

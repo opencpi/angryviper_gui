@@ -36,8 +36,7 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
 
 @CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
@@ -46,7 +45,7 @@ public interface Case extends Element
 	ElementType TYPE = new ElementType(Case.class);
 
 	// Name
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Test Case Name")
 
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
@@ -55,7 +54,7 @@ public interface Case extends Element
 	void setName(String value);
 	
 	
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Time Out")
     @Enablement( expr = "${ Duration  == null }" )
 	
@@ -66,7 +65,7 @@ public interface Case extends Element
 
 
 	// Messages In File
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Duration")
     @Enablement( expr = "${ Timeout  == null }" )
 	
@@ -76,7 +75,7 @@ public interface Case extends Element
 	void setDuration(String value);
 
 	// ***  ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Only Workers")
 
 	ValueProperty PROP_ONLY_WORKERS = new ValueProperty(TYPE, "OnlyWorkers");
@@ -84,7 +83,7 @@ public interface Case extends Element
 	Value<String> getOnlyWorkers();
 	void setOnlyWorkers(String value);
 
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Exclude Workers")
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_EXCLUDE_WORKERS = new ValueProperty(TYPE, "ExcludeWorkers");
@@ -92,7 +91,7 @@ public interface Case extends Element
 	Value<String> getExcludeWorkers();
 	void setExcludeWorkers(String value);
 
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Only Platforms")
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_ONLY_PLATFORMS = new ValueProperty(TYPE, "OnlyPlatforms");
@@ -100,7 +99,7 @@ public interface Case extends Element
 	Value<String> getOnlyPlatforms();
 	void setOnlyPlatforms(String value);
 
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Exclude Platforms")
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_EXCLUDE_PLATFORMS = new ValueProperty(TYPE, "ExcludePlatforms");

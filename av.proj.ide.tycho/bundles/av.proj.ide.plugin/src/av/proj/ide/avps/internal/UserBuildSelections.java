@@ -59,7 +59,7 @@ public class UserBuildSelections {
 			for(int i= 0; i< selects.length; i++) {
 				sb.append(selects[i]);
 			}
-			sb.append(verb.getVerb());
+			//sb.append(verb.getVerb());
 
 			String hashString = sb.toString();
 			int stringHash = hashString.hashCode();

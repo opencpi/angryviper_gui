@@ -32,15 +32,14 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 @CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
 public interface Output extends Element {
 	ElementType TYPE = new ElementType(Output.class);
 	
 	// Name
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Name")
     @Enablement( expr = "${ Port == null }" )
 
@@ -50,7 +49,7 @@ public interface Output extends Element {
 	void setName(String value);
 
 	// Or Port 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Port")
     @Enablement( expr = "${ Name == null }" )
 
@@ -61,7 +60,7 @@ public interface Output extends Element {
 
 	
 	// File 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "File")
     @Enablement( expr = "${ Script == null }" )
 
@@ -71,7 +70,7 @@ public interface Output extends Element {
 	void setFile(String value);
 
 	// Or Script 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Script")
     @Enablement( expr = "${ File  == null }" )
 
@@ -80,7 +79,7 @@ public interface Output extends Element {
 	Value<String> getScript();
 	void setScript(String value);
 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "View")
 
 	ValueProperty PROP_VIEW = new ValueProperty(TYPE, "View");
@@ -91,7 +90,7 @@ public interface Output extends Element {
 	
 	// Count (optional)
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Stop on EOF")
 	
 	ValueProperty PROP_STOPON_EOF = new ValueProperty(TYPE, "StopOnEof");

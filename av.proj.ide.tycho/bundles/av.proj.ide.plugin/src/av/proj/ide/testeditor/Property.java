@@ -37,8 +37,7 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 @CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
 public interface Property extends Element
@@ -46,7 +45,7 @@ public interface Property extends Element
 	ElementType TYPE = new ElementType(Property.class);
 	
 	// Name
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Name")
     @Required
 
@@ -59,7 +58,7 @@ public interface Property extends Element
 	// Only one source can be set
 	
 	// Value Attribute
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Value")
     @Enablement( expr = "${ Values == null && ValueFile == null && ValuesFile == null && Generate == null}" )
 
@@ -69,7 +68,7 @@ public interface Property extends Element
 	void setValue(String value);
 	
 	// Values Attribute
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Values")
     @Enablement( expr = "${ Value == null && ValueFile == null && ValuesFile == null && Generate == null}" )
 
@@ -79,7 +78,7 @@ public interface Property extends Element
 	void setValues(String value);
 	
 	// ValueFile Attribute
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Value File")
     @Enablement( expr = "${ Value == null && Values == null && ValuesFile == null && Generate == null}" )
 
@@ -89,7 +88,7 @@ public interface Property extends Element
 	void setValueFile(String value);
 	
 	// ValuesFile Attribute
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Values File")
     @Enablement( expr = "${ Value == null && Values == null && ValueFile == null && Generate == null}" )
 
@@ -99,7 +98,7 @@ public interface Property extends Element
 	void setValuesFile(String value);
 
 	// Generate Attribute
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Generate")
 	   @Enablement( expr = "${ Value == null && Values == null && ValueFile == null && ValuesFile == null}" )
 
@@ -126,7 +125,7 @@ public interface Property extends Element
 	 	ElementType TYPE = new ElementType(Set.class);
 	 	
 	 	// *** name attribute***
-		@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	 	@Label(standard = "Delay")
 	 	ValueProperty PROP_DELAY = new ValueProperty(TYPE, "Delay");
 	 	
@@ -135,7 +134,7 @@ public interface Property extends Element
 
 
 	 	// *** name attribute***
-		@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	 	@Label(standard = "Value")
 	 	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
 	 	
@@ -154,7 +153,7 @@ public interface Property extends Element
 	
 	// Only
 	// TODO - add a service for only and exclude - has the platforms.
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Only")
     @Enablement( expr = "${ Exclude == null && Add == null}" )
 	
@@ -164,7 +163,7 @@ public interface Property extends Element
 	void setOnly(String value);
 	
 	// Exclude
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Exclude")
     @Enablement( expr = "${ Only == null && Add == null}" )
 	
@@ -174,7 +173,7 @@ public interface Property extends Element
 	void setExclude(String value);
 	
 	// Add 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Add")
     @Enablement( expr = "${ Only == null && Exclude == null}" )
 

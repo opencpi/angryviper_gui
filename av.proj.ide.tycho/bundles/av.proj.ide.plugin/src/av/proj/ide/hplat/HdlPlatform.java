@@ -35,15 +35,16 @@ import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
-import org.eclipse.sapphire.modeling.xml.annotations.XmlBinding;
 
 import av.proj.ide.common.Signal;
-import av.proj.ide.custom.bindings.list.PlatformDeviceXmlListBinding;
-import av.proj.ide.custom.bindings.list.PlatformSignalXmlListBinding;
-import av.proj.ide.custom.bindings.list.PlatformSlotXmlListBinding;
-import av.proj.ide.custom.bindings.list.PlatformSpecPropertyXmlListBinding;
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
+//import av.proj.ide.custom.bindings.list.PlatformSignalXmlListBinding;
+//import av.proj.ide.custom.bindings.list.PlatformSlotXmlListBinding;
+//import av.proj.ide.custom.bindings.list.PlatformSpecPropertyXmlListBinding;
+import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanNodePresentBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
 
 /***
@@ -56,7 +57,7 @@ public interface HdlPlatform extends Element
 	ElementType TYPE = new ElementType(HdlPlatform.class);
 
 	// *** Language attribute***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Language")
 	@Required
 	@Service(impl=NameValidationService.class)
@@ -66,11 +67,11 @@ public interface HdlPlatform extends Element
 	void setLanguage(String value);
 
 	// *** spec attribute***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "spec")
 	@Required
 	@Service(impl=NameValidationService.class)
-	ValueProperty PROP_SPEC = new ValueProperty(TYPE, "spec");
+	ValueProperty PROP_SPEC = new ValueProperty(TYPE, "Spec");
 
 	Value<String> getSpec();
 	void setSpec(String value);
@@ -79,7 +80,7 @@ public interface HdlPlatform extends Element
 
 	// *** Metadata Access Port ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding(impl=NodePresentValueBinding.class)
+	@CustomXmlValueBinding(impl=BooleanNodePresentBinding.class)
 	@Label( standard = "Metadata Access Port" )
 	@Enablement( expr="false")
 	ValueProperty PROP_METADATA = new ValueProperty(TYPE, "Metadata");
@@ -88,7 +89,7 @@ public interface HdlPlatform extends Element
 	
 	//  ***  Timebase Output Port
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding(impl=NodePresentValueBinding.class)
+	@CustomXmlValueBinding(impl=BooleanNodePresentBinding.class)
 	@Label( standard = "Timebase Output Port" )
 	@Enablement( expr="false")
 	ValueProperty PROP_TIMEBASE = new ValueProperty(TYPE, "Timebase");
@@ -96,6 +97,7 @@ public interface HdlPlatform extends Element
 	Value<Boolean> getTimebase();
 	
 	// *** Scalable Data Plane ***
+	// Note: Set the property name this way... 
 	@Type( base = Boolean.class )
 	@CustomXmlValueBinding(impl=ReadNodePresentValueBinding.class)
 	@Label( standard = "System Interconnect SDP" )
@@ -115,10 +117,10 @@ public interface HdlPlatform extends Element
 	//  ***  Control Plane Port
 	
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding(impl=MasterAttributeNodeValueBinding.class)
+	@CustomXmlValueBinding(impl=CpMasterNodeElementBinding.class)
 	@Label( standard = "Directly Support the Control Plane Port" )
 
-	ValueProperty PROP_CPMASTER = new ValueProperty(TYPE, "Cpmaster");
+	ValueProperty PROP_CPMASTER = new ValueProperty(TYPE, "CpMaster");
 	Value<Boolean> getCpmaster();
 	void setCpmaster(String value);
 	void setCpmaster(Boolean value);
@@ -128,7 +130,7 @@ public interface HdlPlatform extends Element
 	
 	// *** SpecProperties ***
 	@Type( base = SpecProperty.class )
-	@CustomXmlListBinding(impl = PlatformSpecPropertyXmlListBinding.class)
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
 	@Label( standard = "SpecProperties" )
 			
 	ListProperty PROP_SPEC_PROPERTIES = new ListProperty( TYPE, "SpecProperties" );
@@ -136,14 +138,14 @@ public interface HdlPlatform extends Element
 	ElementList<SpecProperty> getSpecProperties();
 	
 	// *** SDP element ***
-	@Type( base = ReadOnlySdpMaster.class )
-	@XmlBinding(path="sdp")
+	@Type( base = Sdp.class )
+	@CustomXmlValueBinding(impl = SDPElementValueBinding.class)
 	@Label( standard = "sdp" )
-	ImpliedElementProperty PROP_SDP = new ImpliedElementProperty(TYPE, "Sdp");
+	ImpliedElementProperty PROP_SDP = new ImpliedElementProperty(TYPE, "SDP");
 
 	// *** Devices ***
 	@Type( base = Device.class )
-	@CustomXmlListBinding(impl = PlatformDeviceXmlListBinding.class)
+	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class)
 	@Label( standard = "Devices" )
 			
 	ListProperty PROP_DEVICES = new ListProperty( TYPE, "Devices" );
@@ -152,7 +154,7 @@ public interface HdlPlatform extends Element
 	
   	// *** Slots ***
 	@Type( base = Slot.class )
-	@CustomXmlListBinding(impl = PlatformSlotXmlListBinding.class)
+	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class)
 	@Label( standard = "Slots" )
 			
 	ListProperty PROP_SLOTS = new ListProperty( TYPE, "Slots" );
@@ -161,11 +163,12 @@ public interface HdlPlatform extends Element
 
 	// *** Signals ***
 	@Type( base = Signal.class )
-	@CustomXmlListBinding(impl = PlatformSignalXmlListBinding.class)
+	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class)
 	@Label( standard = "Signals" )
 			
 	ListProperty PROP_SIGNALS = new ListProperty( TYPE, "Signals" );
 			
 	ElementList<Signal> getSignals();
+
 	
 }

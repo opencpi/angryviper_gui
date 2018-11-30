@@ -20,14 +20,12 @@
 
 package av.proj.ide.avps.internal;
 
-import av.proj.ide.internal.OcpidevVerb;
-
 /**
  * This interface allows communication between the BuildService and the Status Monitor
  */
 public interface StatusNotificationInterface {
 	public void setCompletedStatusEntry(Integer buildNumber, boolean completedSuccessfully);
 	public void updateBuildStatus(Integer buildNumber, OcpiBuildStatus status);
-	public void registerBuild(Integer buildNumber, OcpidevVerb verb, String consoleName, String buildLabel);
-	public void restartBuild(Integer myBuildNumber, OcpidevVerb verb);
+	public void registerBuild(Integer myBuildNumber, StatusRegistration registration);
+	public void restartBuild(Integer myBuildNumber, StatusRegistration reg);
 }

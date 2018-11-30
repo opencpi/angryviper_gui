@@ -29,14 +29,14 @@ import org.eclipse.swt.widgets.Display;
  * This class was apparently written to correct some changes XML.  This used to reside in a
  * class named GenericXmlValueBinding.
  */
-public class SpecialDualCaseXmlValueBinding extends BooleanAttributeRemoveIfFalseValueBinding {
+public class SpecialDualCaseXmlValueBinding extends CaseInsenitiveAttributeValueBinding {
 	private static boolean signaledFileModMessage = false;
 	
 	protected void presentModWarning() {
 		if(signaledFileModMessage == false) {
 			Display.getDefault().asyncExec(new Runnable(){
 				public void run() {
-					String message = "The Component XML editors are going to programmatically correct XML files when they are openned (type attribute set to certain primitives). Please save these files and make them part of your baseline.";
+					String message = "The Component XML editors are going to programmatically correct XML files when they are opened (type attribute set to certain primitives). Please save these files and make them part of your baseline.";
 					MessageDialog.openInformation(Display.getDefault().getActiveShell(), "XML File Modifications", message);
 				}
 			});
@@ -47,6 +47,7 @@ public class SpecialDualCaseXmlValueBinding extends BooleanAttributeRemoveIfFals
     public String read()
     {
 		String value = super.read();
+		if(value == null) return null;
         
         if (this.name.equals("@Type")) {
         	boolean changeOccured = false;

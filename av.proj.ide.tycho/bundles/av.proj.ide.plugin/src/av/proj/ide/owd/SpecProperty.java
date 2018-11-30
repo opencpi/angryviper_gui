@@ -30,14 +30,13 @@ import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface SpecProperty extends Element {
 	ElementType TYPE = new ElementType( SpecProperty.class );
 	
 	// *** Name ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Name")
 	@Required
 
@@ -102,7 +101,7 @@ public interface SpecProperty extends Element {
 	void setInitial(Boolean value);
 	
 	// *** ReadSync ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Type(base = Boolean.class)
 	@Label(standard = "ReadSync")
 
@@ -114,7 +113,7 @@ public interface SpecProperty extends Element {
 
 	// *** WriteSync ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "WriteSync")
 
 	ValueProperty PROP_WRITE_SYNC = new ValueProperty(TYPE, "WriteSync");
@@ -125,7 +124,7 @@ public interface SpecProperty extends Element {
 
 	// *** ReadError ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "ReadError")
 
 	ValueProperty PROP_READ_ERROR = new ValueProperty(TYPE, "ReadError");
@@ -136,7 +135,7 @@ public interface SpecProperty extends Element {
 
 	// *** WriteError ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "WriteError")
 
 	ValueProperty PROP_WRITE_ERROR = new ValueProperty(TYPE, "WriteError");

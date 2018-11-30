@@ -28,7 +28,7 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
 
 public interface InstanceProperty extends Element {
@@ -55,7 +55,7 @@ public interface InstanceProperty extends Element {
 	void setValue(String value);
 	
 	// *** ValueFile ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "ValueFile")
 	
 	ValueProperty PROP_VALUE_FILE = new ValueProperty(TYPE, "ValueFile");
@@ -64,7 +64,7 @@ public interface InstanceProperty extends Element {
 	void setValueFile(String value);
 	
 	// *** DumpFile ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "DumpFile")
 	
 	ValueProperty PROP_DUMP_FILE = new ValueProperty(TYPE, "DumpFile");

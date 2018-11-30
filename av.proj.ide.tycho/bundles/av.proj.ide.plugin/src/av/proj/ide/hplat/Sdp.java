@@ -25,29 +25,30 @@ import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.ReadOnly;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface Sdp extends Element {
 	ElementType TYPE = new ElementType(Sdp.class);
 
 	// *** Master ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@ReadOnly
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+	@Enablement( expr="false")
 	@Label(standard = "Master")
 
 	ValueProperty PROP_MASTER = new ValueProperty(TYPE, "Master");
-
 	Value<Boolean> getMaster();
-	void setMaster(String value);
-	void setMaster(Boolean value);
 	
 	// Name (optional)
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "name")
+	@Enablement( expr="false")
 
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
 	
@@ -57,7 +58,7 @@ public interface Sdp extends Element {
 	
 	// Count (optional)
 	@Type(base = Integer.class)
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "count")
 	
 	ValueProperty PROP_COUNT = new ValueProperty(TYPE, "Count");

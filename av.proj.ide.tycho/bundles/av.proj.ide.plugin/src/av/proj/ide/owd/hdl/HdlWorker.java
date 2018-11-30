@@ -35,7 +35,7 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import av.proj.ide.custom.bindings.list.ControlOperationsListBinding;
 import av.proj.ide.custom.bindings.list.OWDStreamInterfaceXmlListBinding;
 import av.proj.ide.custom.bindings.root.HdlWorkerRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.owd.ControlOperation;
 import av.proj.ide.owd.Worker;
 import av.proj.ide.services.HdlControlOperationsPossibleValueService;
@@ -56,7 +56,7 @@ public interface HdlWorker extends Worker {
 	ElementList<ControlOperation> getControlOperations();
 	
 	// *** DataWidth *** 
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "DataWidth") 
 		
 	ValueProperty PROP_DATA_WIDTH = new ValueProperty(TYPE, "DataWidth");
@@ -66,7 +66,6 @@ public interface HdlWorker extends Worker {
 	
 	// *** StreamInterfaces ***
 	@Type( base = StreamInterface.class )
-	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "StreamInterface", type = StreamInterface.class ), @XmlListBinding.Mapping( element = "streaminterface", type = StreamInterfaceLower.class ) } )
 	@CustomXmlListBinding(impl=OWDStreamInterfaceXmlListBinding.class)
 	@Label( standard = "StreamInterfaces" )
 				

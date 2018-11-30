@@ -59,7 +59,7 @@ public class AvpsResourceManager {
 
 	protected Map<String, BuildMessageConsole> buildConsoles = null;
 
-	protected int maxConsoles = 25;
+	protected int maxConsoles = 50;
 	protected int consolesInUse = 0;
 	protected int lastConsoleNumber = 0;
 	

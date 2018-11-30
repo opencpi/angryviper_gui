@@ -29,14 +29,14 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface Port extends Element {
 	ElementType TYPE = new ElementType( Port.class );
 	
 	// *** Name *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Name")
 	@Required 
 	
@@ -46,7 +46,7 @@ public interface Port extends Element {
 	void setName(String value);
 	
 	// *** MinBufferCount *** 
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "MinBufferCount")
 		
 	ValueProperty PROP_MIN_BUFFER_COUNT = new ValueProperty(TYPE, "MinBufferCount");
@@ -89,7 +89,7 @@ public interface Port extends Element {
 	*/
 	
 	// *** NumberOfOpCodes ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "NumberOfOpCodes")
 
 	ValueProperty PROP_NUMBER_OF_OP_CODES = new ValueProperty(TYPE, "NumberOfOpCodes");
@@ -98,7 +98,7 @@ public interface Port extends Element {
 	void setNumberOfOpCodes(String value);
 
 	// *** DataValueWidth ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "DataValueWidth")
 
 	ValueProperty PROP_DATA_VALUE_WIDTH = new ValueProperty(TYPE, "DataValueWidth");
@@ -107,7 +107,7 @@ public interface Port extends Element {
 	void setDataValueWidth(String value);
 
 	// *** DatValueGranularity ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "DataValueGranularity")
 
 	ValueProperty PROP_DATA_VALUE_GRANULARITY = new ValueProperty(TYPE, "DataValueGranularity");
@@ -117,7 +117,7 @@ public interface Port extends Element {
 
 	// *** ZeroLengthMessages ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "ZeroLengthMessages")
 
 	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
@@ -127,7 +127,7 @@ public interface Port extends Element {
 	void setZeroLengthMessages(Boolean value);
 
 	// *** MaxMessageValues ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "MaxMessageValues")
 
 	ValueProperty PROP_MAX_MESSAGE_VALUES = new ValueProperty(TYPE, "MaxMessageValues");
@@ -137,7 +137,7 @@ public interface Port extends Element {
 
 	// *** VariableMessageLength ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "VariableMessageLength")
 
 	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
@@ -148,7 +148,7 @@ public interface Port extends Element {
 
 	// *** DiverseDataSizes ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "DiverseDataSizes")
 
 	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
@@ -159,7 +159,7 @@ public interface Port extends Element {
 
 	// *** UnBounded ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "UnBounded")
 
 	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");

@@ -63,6 +63,9 @@ public class ReadTimeserverBinding extends StandardXmlValueBindingImpl {
         	Node theNode = element.getDomNode();
         	NamedNodeMap attributes = theNode.getAttributes();
         	Node worker = attributes.getNamedItem("worker");
+        	if(worker == null) {
+        		 worker = attributes.getNamedItem("Worker");
+        	}
         	if(worker != null) {
             	String text = worker.getNodeValue();
             	if("time_server".equals(text.toLowerCase())) {

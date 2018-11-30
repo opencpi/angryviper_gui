@@ -20,16 +20,22 @@
 
 package av.proj.ide.hplat;
 
-public class ReadNodePresentValueBinding extends NodePresentValueBinding {
+import org.eclipse.sapphire.Value;
+
+import av.proj.ide.custom.bindings.value.BooleanNodePresentBinding;
+
+public class ReadNodePresentValueBinding extends BooleanNodePresentBinding {
 	
-	
+	// Here the intent was to have just a property to read something to
+	// ensure it is there but won't allow the element to be removed.
+	// In this case if was the SDP.  The element has to be there but the
+	// user can augment it with another attribute so a true SDP property.
+	// The SdpRead property gave the two desired paths to the attribute.
 	@Override
-	protected void initBindingMetadata()
-    {
-		super.initBindingMetadata();
-        int suffixIdx = this.name.indexOf("Read");
-        
-        this.name = name.substring(0, suffixIdx);
-        this.lowerName = this.name.toLowerCase();
-    }
+	protected void getPropertyName() {
+        final Value<?> property = (Value<?>) property();
+        String propName = property.name();
+        int suffixIdx = propName.indexOf("Read");
+        propertyName = propName.substring(0, suffixIdx);
+	}
 }

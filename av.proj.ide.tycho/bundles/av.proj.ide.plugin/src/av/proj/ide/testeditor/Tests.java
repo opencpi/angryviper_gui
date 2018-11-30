@@ -37,8 +37,7 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
 
 @CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
@@ -47,7 +46,7 @@ public interface Tests extends Element
 	ElementType TYPE = new ElementType(Tests.class);
 
 	// *** spec attribute***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Component Spec")
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_SPEC = new ValueProperty(TYPE, "Spec");
@@ -57,7 +56,7 @@ public interface Tests extends Element
 
 	
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding(impl=GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl=CaseInsenitiveAttributeValueBinding.class)
 	@Label( standard = "HDL File IO" )
 
 	ValueProperty PROP_USE_HDL_FILE_IO = new ValueProperty(TYPE, "UseHDLFileIo");
@@ -66,7 +65,7 @@ public interface Tests extends Element
 	void setUseHDLFileIo(Boolean value);
 	
 	
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Time Out")
     @Enablement( expr = "${ Duration  == null }" )
 	
@@ -76,7 +75,7 @@ public interface Tests extends Element
 	void setTimeOut(String value);
 	
 	// Messages In File
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Duration")
     @Enablement( expr = "${ Timeout  == null }" )
 	
@@ -86,7 +85,7 @@ public interface Tests extends Element
 	void setDuration(String value);
 
 	// ***  ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Only Workers")
 	@Whitespace( trim = true, collapse = true )
 	
@@ -95,7 +94,7 @@ public interface Tests extends Element
 	Value<String> getOnlyWorkers();
 	void setOnlyWorkers(String value);
 
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Exclude Workers")
 	@Whitespace( trim = true, collapse = true )
 	
@@ -104,7 +103,7 @@ public interface Tests extends Element
 	Value<String> getExcludeWorkers();
 	void setExcludeWorkers(String value);
 
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Only Platforms")
 	@Whitespace( trim = true, collapse = true )
 	
@@ -113,7 +112,7 @@ public interface Tests extends Element
 	Value<String> getOnlyPlatforms();
 	void setOnlyPlatforms(String value);
 
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Exclude Platforms")
 	@Whitespace( trim = true, collapse = true )
 	

@@ -34,8 +34,8 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.OPSOperationXmlListBinding;
 import av.proj.ide.custom.bindings.root.ProtocolRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 @CustomXmlRootBinding( value = ProtocolRootXmlBinding.class )
 
@@ -43,7 +43,7 @@ public interface Protocol extends Element {
 	ElementType TYPE = new ElementType( Protocol.class );
 
 	// *** Name ***
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "Name")
 	
 	ValueProperty PROP_NAME = new ValueProperty( TYPE, "Name");
@@ -52,7 +52,7 @@ public interface Protocol extends Element {
 	void setName( String value );
 	
 	// *** NumberOfOpCodes ***
-	@CustomXmlValueBinding( impl = GenericMultiwordXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "NumberOfOpCodes")
 	
 	ValueProperty PROP_NUMBER_OF_OP_CODES = new ValueProperty( TYPE, "NumberOfOpCodes");
@@ -61,7 +61,7 @@ public interface Protocol extends Element {
 	void setNumberOfOpCodes( String value );
 	
 	// *** DataValueWidth ***
-	@CustomXmlValueBinding( impl = GenericMultiwordXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "DataValueWidth")
 	
 	ValueProperty PROP_DATA_VALUE_WIDTH = new ValueProperty( TYPE, "DataValueWidth");
@@ -70,7 +70,7 @@ public interface Protocol extends Element {
 	void setDataValueWidth( String value );
 	
 	// *** DatValueGranularity ***
-	@CustomXmlValueBinding( impl = GenericMultiwordXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "DataValueGranularity")
 	
 	ValueProperty PROP_DATA_VALUE_GRANULARITY = new ValueProperty( TYPE, "DataValueGranularity");
@@ -80,7 +80,7 @@ public interface Protocol extends Element {
 	
 	// *** ZeroLengthMessages ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "ZeroLengthMessages" )
 		
 	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
@@ -90,7 +90,7 @@ public interface Protocol extends Element {
 	void setZeroLengthMessages( Boolean value );
 	
 	// *** MaxMessageValues ***
-	@CustomXmlValueBinding( impl = GenericMultiwordXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "MaxMessageValues")
 	
 	ValueProperty PROP_MAX_MESSAGE_VALUES = new ValueProperty( TYPE, "MaxMessageValues");
@@ -100,7 +100,7 @@ public interface Protocol extends Element {
 	
 	// *** VariableMessageLength ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "VariableMessageLength" )
 		
 	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
@@ -111,7 +111,7 @@ public interface Protocol extends Element {
 	
 	// *** DiverseDataSizes ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "DiverseDataSizes" )
 		
 	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
@@ -122,7 +122,7 @@ public interface Protocol extends Element {
 	
 	// *** UnBounded ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "UnBounded" )
 		
 	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");

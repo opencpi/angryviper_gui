@@ -37,8 +37,8 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import av.proj.ide.custom.bindings.list.OCSPortXmlListBinding;
 import av.proj.ide.custom.bindings.list.OCSPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.root.ComponentSpecRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 @CustomXmlRootBinding(value = ComponentSpecRootXmlBinding.class)
 
@@ -46,7 +46,7 @@ public interface ComponentSpec extends Element {
 	ElementType TYPE = new ElementType( ComponentSpec.class );
 
 	// *** Name ***
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "Name" )
 	
 	ValueProperty PROP_NAME = new ValueProperty( TYPE, "Name" );
@@ -56,7 +56,7 @@ public interface ComponentSpec extends Element {
 	
 	// *** NoControl ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "NoControl")
 	
 	ValueProperty PROP_NO_CONTROL = new ValueProperty(TYPE, "NoControl");

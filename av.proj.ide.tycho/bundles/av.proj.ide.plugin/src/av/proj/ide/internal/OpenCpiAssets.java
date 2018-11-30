@@ -23,6 +23,7 @@ package av.proj.ide.internal;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -108,9 +109,9 @@ public class OpenCpiAssets {
 	// Leverages load order.
 	LinkedHashMap<AngryViperAsset, AssetModelData> assetLookup;
 	
-	List<HdlVendor> hdlVendors;
-	List<HdlPlatformInfo> hdlPlatforms;
-	List<RccPlatformInfo> rccPlatforms;
+	Collection<HdlVendor> hdlVendors;
+	Collection<HdlPlatformInfo> hdlPlatforms;
+	Collection<RccPlatformInfo> rccPlatforms;
 	
 	OpenCpiAssets() {
 		projects = new HashMap <String, AssetModelData> ();
@@ -118,7 +119,7 @@ public class OpenCpiAssets {
 		projectNameLookup = new HashMap <String, String>();
 		
 		EnvBuildTargets envBuildInfo = new EnvBuildTargets();
-		hdlVendors = envBuildInfo.getHdlVendors();
+		hdlVendors = envBuildInfo.getVendors();
 		hdlPlatforms = envBuildInfo.getHdlPlatforms();
 		rccPlatforms = envBuildInfo.getRccPlatforms();
 	};
@@ -662,8 +663,15 @@ public class OpenCpiAssets {
 					
 					for(Spec spec : specs) {
 						String specName = spec.getName().content();
+						OpenCPICategory type;
+						if(isSpecName(specName)) {
+							type = OpenCPICategory.component;
+						}
+						else {
+							type = OpenCPICategory.protocol;
+						}
 						AssetModelData s = new AssetModelData(
-							OpenCPIAssetFactory.createOcpiAsset(specName, library.asset.buildName, OpenCPICategory.component, location));
+							OpenCPIAssetFactory.createOcpiAsset(specName, library.asset.buildName, type, location));
 						s.asset.parent = librarySpecs.asset;
 						librarySpecs.childList.add(s);
 						lookup.put(s.asset, s);
@@ -850,7 +858,7 @@ public class OpenCpiAssets {
 	 */
 	OcpiAssetDifferences getPlatformDifferences (OpenCpiAssets otherOcpiAssets ) {
 		// See if the HDL platforms have changed.
-		List<HdlPlatformInfo> hdlPlats = otherOcpiAssets.hdlPlatforms;
+		Collection<HdlPlatformInfo> hdlPlats = otherOcpiAssets.hdlPlatforms;
 		ArrayList<HdlPlatformInfo> hdlAddList = new ArrayList<HdlPlatformInfo> ();
 
 		if(hdlPlats.size() > this.hdlPlatforms.size() ){
@@ -871,7 +879,7 @@ public class OpenCpiAssets {
 		}
 		
 		// See if the RCC platforms have changed.
-		List<RccPlatformInfo> rccPlats = otherOcpiAssets.rccPlatforms;
+		Collection<RccPlatformInfo> rccPlats = otherOcpiAssets.rccPlatforms;
 		ArrayList<RccPlatformInfo> rccAddList = new ArrayList<RccPlatformInfo> ();
 
 		if(rccPlats.size() > this.rccPlatforms.size() ){

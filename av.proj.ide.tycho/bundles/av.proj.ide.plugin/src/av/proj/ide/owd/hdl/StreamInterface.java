@@ -30,14 +30,13 @@ import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface StreamInterface extends Element {
 	ElementType TYPE = new ElementType( StreamInterface.class );
 	
 	// *** Name *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Name")
 	@Required 
 	
@@ -47,7 +46,7 @@ public interface StreamInterface extends Element {
 	void setName(String value);
 		
 	// *** DataWidth *** 
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "DataWidth")
 		
 	ValueProperty PROP_DATA_WIDTH = new ValueProperty(TYPE, "DataWidth");
@@ -57,7 +56,7 @@ public interface StreamInterface extends Element {
 	
 	// *** PreciseBurst ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "PreciseBurst" )
 			
 	ValueProperty PROP_PRECISE_BURST = new ValueProperty(TYPE, "PreciseBurst");
@@ -78,7 +77,7 @@ public interface StreamInterface extends Element {
 	void setAbortable( Boolean value );
 	
 	// *** Pattern *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Pattern")
 			
 	ValueProperty PROP_PATTERN = new ValueProperty(TYPE, "Pattern");
@@ -87,7 +86,7 @@ public interface StreamInterface extends Element {
 	void setPattern(String value);
 	
 	// *** Clock *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Clock")
 			
 	ValueProperty PROP_CLOCK = new ValueProperty(TYPE, "Clock");
@@ -97,7 +96,7 @@ public interface StreamInterface extends Element {
 	
 	// *** MyClock ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "MyClock" )
 		
 	ValueProperty PROP_MY_CLOCK = new ValueProperty(TYPE, "MyClock");
@@ -107,7 +106,7 @@ public interface StreamInterface extends Element {
 	void setMyClock( Boolean value );
 	
 	// *** NumberOfOpCodes ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "NumberOfOpCodes")
 			
 	ValueProperty PROP_NUMBER_OF_OP_CODES = new ValueProperty(TYPE, "NumberOfOpCodes");
@@ -116,7 +115,7 @@ public interface StreamInterface extends Element {
 	void setNumberOfOpCodes(String value);
 	
 	// *** DataValueWidth ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "DataValueWidth")
 			
 	ValueProperty PROP_DATA_VALUE_WIDTH = new ValueProperty(TYPE, "DataValueWidth");
@@ -125,7 +124,7 @@ public interface StreamInterface extends Element {
 	void setDataValueWidth(String value);
 	
 	// *** DataValueGranularity ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "DataValueGranularity")
 			
 	ValueProperty PROP_DATA_VALUE_GRANULARITY = new ValueProperty(TYPE, "DataValueGranularity");
@@ -135,7 +134,7 @@ public interface StreamInterface extends Element {
 	
 	// *** ZeroLengthMessages ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "ZeroLengthMessages" )
 		
 	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
@@ -145,7 +144,7 @@ public interface StreamInterface extends Element {
 	void setZeroLengthMessages( Boolean value );
 	
 	// *** MaxMessageValues ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "MaxMessageValues")
 
 	ValueProperty PROP_MAX_MESSAGE_VALUES = new ValueProperty(TYPE, "MaxMessageValues");
@@ -154,7 +153,7 @@ public interface StreamInterface extends Element {
 
 	// *** VariableMessageLength ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "VariableMessageLength")
 
 	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
@@ -165,7 +164,7 @@ public interface StreamInterface extends Element {
 
 	// *** DiverseDataSizes ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "DiverseDataSizes")
 
 	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
@@ -176,7 +175,7 @@ public interface StreamInterface extends Element {
 
 	// *** UnBounded ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label(standard = "UnBounded")
 
 	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");

@@ -18,16 +18,23 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.hplat;
+package av.proj.ide.custom.bindings.value;
 
-import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.ReadOnly;
-
-public interface ReadOnlySdpMaster extends Sdp {
-	ElementType TYPE = new ElementType(ReadOnlySdpMaster.class);
+public class BooleanNodePresentBinding extends CaseInsenitiveElementValueBinding {
 	
-	@ReadOnly
-	ValueProperty PROP_MASTER = new ValueProperty( TYPE, Sdp.PROP_MASTER );	
+	@Override
+	protected void initBindingMetadata()
+    {
+		super.initBindingMetadata();
+        this.treatExistanceAsValue = true;
+        this.valueWhenPresent = "true";
+        this.valueWhenNotPresent = "false";
+    }
 
+	// don't allow a change, however, the input for these cases
+	// should be disabled.
+    @Override
+    public void write( final String value )
+    {
+    }
 }

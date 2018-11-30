@@ -34,13 +34,13 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.OWDPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.list.OWDSpecPropertyXmlListBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface Worker extends Element {
 	ElementType TYPE = new ElementType( Worker.class );
 	
 	// *** Name ***
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Name")
 	
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
@@ -49,7 +49,7 @@ public interface Worker extends Element {
 	void setName(String value);
 	
 	// *** Spec ***
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Spec")
 	@Required
 		
@@ -59,7 +59,7 @@ public interface Worker extends Element {
 	void setSpec(String value);
 	
 	// *** Language ***
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Language")
 	
 	ValueProperty PROP_LANGUAGE = new ValueProperty(TYPE, "Language");
@@ -69,7 +69,7 @@ public interface Worker extends Element {
 	
 	// *** Endian ***
 	@Type( base = Endian.class)
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Endian")
 		
 	ValueProperty PROP_ENDIAN = new ValueProperty( TYPE, "Endian" );

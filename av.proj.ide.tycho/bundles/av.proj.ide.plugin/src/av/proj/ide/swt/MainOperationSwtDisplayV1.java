@@ -21,6 +21,7 @@
 package av.proj.ide.swt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -464,13 +465,13 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 	protected void populateBuildTypes() {
 		
 		AngryViperAssetService srv = AngryViperAssetService.getInstance();
-		List<HdlPlatformInfo> hdlPlatforms = srv.getHdlPlatforms();
+		Collection<HdlPlatformInfo> hdlPlatforms = srv.getHdlPlatforms();
 		buildSelectPanel.setHdlPlatforms(hdlPlatforms);
 		
-		List<RccPlatformInfo> rccPlatforms = srv.getRccPlatforms();
+		Collection<RccPlatformInfo> rccPlatforms = srv.getRccPlatforms();
 		buildSelectPanel.setRccPlatforms(rccPlatforms);
 		
-		List<HdlVendor> hdlVendors = srv.getHdlTargets();
+		Collection<HdlVendor> hdlVendors = srv.getHdlTargets();
 		buildSelectPanel.setHdlTargets(hdlVendors);
 	}
 	

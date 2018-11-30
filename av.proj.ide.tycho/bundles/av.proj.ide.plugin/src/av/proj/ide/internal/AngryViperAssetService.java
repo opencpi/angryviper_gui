@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -138,13 +139,13 @@ public class AngryViperAssetService {
 		return instance;
 	}
 	
-	public List<HdlPlatformInfo> getHdlPlatforms() {
+	public Collection<HdlPlatformInfo> getHdlPlatforms() {
 		return assetsRepo.hdlPlatforms;
 	}
-	public List<RccPlatformInfo> getRccPlatforms() {
+	public Collection<RccPlatformInfo> getRccPlatforms() {
 		return assetsRepo.rccPlatforms;
 	}
-	public List<HdlVendor> getHdlTargets() {
+	public Collection<HdlVendor> getHdlTargets() {
 		return assetsRepo.hdlVendors;
 	}
 	
