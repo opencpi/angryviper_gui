@@ -555,13 +555,25 @@ public class AngryViperAssetService {
 
 
 	public AngryViperAsset[] getProjectLibraries(String projectName) {
-		// This name could be the package Id or the name.  Get it right.
-		AngryViperProjectInfo info = environmentService.getProjectInfo(projectName);
-		if(info != null) {
-			projectName = info.name;
-		}
-
 		AssetModelData project = assetsRepo.getProject(projectName);
+		AngryViperProjectInfo info = environmentService.getProjectInfo(projectName);
+		// This may be unnecessary now. All references to a project seem to use the
+		// qualified name (project package-id);
+		if(project == null) {
+			if(info != null) {
+				project = assetsRepo.getProject(info.eclipseName);
+				if(project == null) {
+					project = assetsRepo.getProject(info.name);
+					if(project == null) {
+						project = assetsRepo.getProject(info.packageId);
+					}
+				}
+			}
+		}
+		if(project == null) {
+			return new AngryViperAsset[0];
+		}
+		
 		for(AssetModelData child : project.getChildList()) {
 			if(child.asset.category == OpenCPICategory.componentsLibrary) {
 				return new AngryViperAsset[] {child.asset};

@@ -31,13 +31,36 @@ import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.AssetDetails.AuthoringModel;
 import av.proj.ide.internal.OcpidevVerb;
 
-// TODO: this should be constructed from execComps = filters out appropriate assets.
+/***
+ * Part of the status notification interface to setup a new status bar or re-run an
+ * existing execution. StatusRegistration and OcpiBuildStatus integrate with the layout
+ * of the displayed status line and the information placed in each column.
+ *
+ */
 public class StatusRegistration {
 	protected OcpidevVerb verb;
 	String consoleName;
+	/***
+	 * The main status line has 3 columns.
+	 *  column 1 (idx 0) - consists of project & asset information.
+	 *  column 2 is a summary of the build targets
+	 *  column 3 has date/time and the verb.  This line is updated later with the total duration.
+	 */
 	String [] statusLineEntries = new String[3];
+	
+	/***
+	 * Each asset in the build configuration gets a status line in the details section.
+	 * Following a similar convention to the main status line, these have 3 columns.
+	 *  column 1 (idx 0) - the asset.
+	 *  column 2 is a summary of the applicable build targets
+	 *  column 3 hold start and finish time for the asset build/run.
+	 */
 	String[][] detailEntries;
 	
+	/***
+	 * The console config summary for the console is constructed here (for practical reasons).
+	 * This information is printed to the console when the execution starts.
+	 */
 	String configSummary = null;
 	
 	public OcpidevVerb getVerb() {
@@ -57,6 +80,9 @@ public class StatusRegistration {
 	}
 
 	public StatusRegistration(OcpidevVerb initialVerb, List<ExecutionAsset> exAssets, String[] hdlTargets, String[] rccTargets) {
+		// Initialize the main status line.
+		
+		// initialize column 3.
 		resetVerb(initialVerb);
 		StringBuilder configSummary = new StringBuilder("Configuration:\n");
 		configSummary.append(verb.getVerb());
@@ -68,6 +94,7 @@ public class StatusRegistration {
 		String hdlLine = null;
 		String summaryLine = null;
 
+		// Assemble target information
 		if(hdlTargets.length > 0 && rccTargets.length > 0) {
 			sb = new StringBuilder();
 			lineSb.append("HDL: ");
@@ -96,8 +123,9 @@ public class StatusRegistration {
 				summaryLine = rccLine;
 			}
 		}
-		statusLineEntries[2] = summaryLine;
-		
+		statusLineEntries[1] = summaryLine;
+
+		// Assemble the summary column information and the details entries.
 		int count = exAssets.size();
 		switch(count) {
 		case 1:
@@ -106,7 +134,7 @@ public class StatusRegistration {
 			detailEntries = new String[1][3];
 			detailEntries[0][2] = "BEGIN";
 			configSummary.append(statusLineEntries[0]); configSummary.append(" ");
-			configSummary.append(statusLineEntries[2]); configSummary.append("\n");
+			configSummary.append(statusLineEntries[1]); configSummary.append("\n");
 			break;
 		case 2:
 			sb = new StringBuilder();
@@ -117,14 +145,14 @@ public class StatusRegistration {
 			sb.append(entry2);
 			statusLineEntries[0] = sb.toString();
 			addDetailsEntries(exAssets, hdlLine, rccLine);
-			configSummary.append(statusLineEntries[2]); configSummary.append("\n");
+			configSummary.append(statusLineEntries[1]); configSummary.append("\n");
 			break;
 		case 0:
 			break;
 		default:
 			statusLineEntries[0] = formatCollection(exAssets);
 			addDetailsEntries(exAssets, hdlLine, rccLine);
-			configSummary.append(statusLineEntries[2]); configSummary.append("\n");
+			configSummary.append(statusLineEntries[1]); configSummary.append("\n");
 		}
 		if(detailEntries.length > 1) {
 			for(String[] detail : detailEntries) {
@@ -133,8 +161,6 @@ public class StatusRegistration {
 		}
 		configSummary.append("\n");
 		this.configSummary = configSummary.toString();
-		
-		
 	}
 	public void resetVerb(OcpidevVerb newverb) {
 		verb = newverb;
@@ -144,7 +170,7 @@ public class StatusRegistration {
     	SimpleDateFormat dateFormatter = new SimpleDateFormat(dateFormat, new Locale("en"));
     	String curDate = dateFormatter.format(sTime);
    	
-		statusLineEntries[1] = curTime + " " + curDate + " " +verb.toString();
+		statusLineEntries[2] = curTime + " " + curDate + " " +verb.toString();
 	}
 
 	public void printConfig(PrintStream log) {

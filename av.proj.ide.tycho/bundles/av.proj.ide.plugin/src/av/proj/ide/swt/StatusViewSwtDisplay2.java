@@ -234,13 +234,15 @@ public class StatusViewSwtDisplay2 extends Composite implements StatusNotificati
 		StatusItemControls control = (StatusItemControls)item.getData();
 		control.isActive = true;
 		
+		// Only the date,time, verb info may change in the main line.
 		String[] s = registration.getStatusLineEntries();
-		item.setText(1, s[1]);
+		item.setText(2, s[2]);
 		
 		String[][] detailLines = registration.getDetailEntries();
 		TreeItem[] childList = item.getItems();
 		for(int i = 0; i < childList.length; i++ ) {
 			String[] lineEntries = detailLines[i];
+			// Only the state and exec times change.
 			childList[i].setText(2, lineEntries[2]);
 		}
 	}

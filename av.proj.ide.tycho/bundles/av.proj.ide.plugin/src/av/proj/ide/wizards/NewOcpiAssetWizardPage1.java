@@ -743,6 +743,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		projectCombo.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				clearStatus();
 				List<String> currentOptions = libraryOptions;
 				getLibraryOptions();
 				int delta = currentOptions.size() - libraryOptions.size();
