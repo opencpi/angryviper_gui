@@ -542,7 +542,6 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			break;
 		case component:
 		case protocol:
-			libraryAsset = true;
 			
 			if(libraryOptions.size() > 1) {
 				if(libraryCombo == null || libraryCombo.isDisposed()) {
@@ -573,8 +572,10 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	
 	private String loadComponentInputSelections(int inputWidth) {
 		if(libraryOptions.size() == 0) {
-			return "A components library must be created before creating this asset.";
+			addToplevelSpecsDefault(inputWidth);
+			return null;
 		}
+		
 		if(libraryOptions.size() > 1) {
 			addRadioGroupForLibs(inputWidth);
 			addLibraryDropdown(inputWidth);
@@ -845,6 +846,17 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			b.setData(projectName);
 		}
 	}
+	private void addToplevelSpecsDefault(int inputWidth) {
+		Label label = new Label(container, SWT.NONE);
+		label.setText("Location:");
+		GridData gd = new GridData(SWT.END, SWT.CENTER, false, false);
+		label.setLayoutData(gd);
+		
+		topSpecsButton = new Button(container, SWT.CHECK);
+		topSpecsButton.setText("Top Level Specs");
+		topSpecsButton.setSelection(true);
+	}
+	
 	
 	private void addRadioGroupForSingleLib(int inputWidth, String selectedLib) {
 		Label label = new Label(container, SWT.NONE);

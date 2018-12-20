@@ -28,20 +28,10 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface Property extends av.proj.ide.ops.Argument {
+public interface Property extends Member  {
 	ElementType TYPE = new ElementType(Property.class);
 
-	// *** Default ***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label(standard = "Default")
-	
-	ValueProperty PROP_DEFAULT = new ValueProperty(TYPE, "Default");
-
-	Value<String> getDefault();
-	void setDefault(String value);
-	
 	// *** Parameter ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )

@@ -20,7 +20,6 @@
 
 package av.proj.ide.ops;
 
-import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.ListProperty;
@@ -31,15 +30,18 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.XmlListBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.XmlNamespace;
 
-import av.proj.ide.custom.bindings.list.OPSOperationXmlListBinding;
+import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.root.ProtocolRootXmlBinding;
-import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 @CustomXmlRootBinding( value = ProtocolRootXmlBinding.class )
 
-public interface Protocol extends Element {
+@XmlNamespace( uri = "http://www.w3.org/2001/XInclude", prefix = "xi" )
+
+public interface Protocol extends ProtocolSummary {
 	ElementType TYPE = new ElementType( Protocol.class );
 
 	// *** Name ***
@@ -51,93 +53,21 @@ public interface Protocol extends Element {
 	Value<String> getName();
 	void setName( String value );
 	
-	// *** NumberOfOpCodes ***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label( standard = "NumberOfOpCodes")
-	
-	ValueProperty PROP_NUMBER_OF_OP_CODES = new ValueProperty( TYPE, "NumberOfOpCodes");
-	
-	Value<String> getNumberOfOpCodes();
-	void setNumberOfOpCodes( String value );
-	
-	// *** DataValueWidth ***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label( standard = "DataValueWidth")
-	
-	ValueProperty PROP_DATA_VALUE_WIDTH = new ValueProperty( TYPE, "DataValueWidth");
-	
-	Value<String> getDataValueWidth();
-	void setDataValueWidth( String value );
-	
-	// *** DatValueGranularity ***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label( standard = "DataValueGranularity")
-	
-	ValueProperty PROP_DATA_VALUE_GRANULARITY = new ValueProperty( TYPE, "DataValueGranularity");
-	
-	Value<String> getDataValueGranularity();
-	void setDataValueGranularity( String value );
-	
-	// *** ZeroLengthMessages ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "ZeroLengthMessages" )
-		
-	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
-		
-	Value<Boolean> getZeroLengthMessages();
-	void setZeroLengthMessages( String value );
-	void setZeroLengthMessages( Boolean value );
-	
-	// *** MaxMessageValues ***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label( standard = "MaxMessageValues")
-	
-	ValueProperty PROP_MAX_MESSAGE_VALUES = new ValueProperty( TYPE, "MaxMessageValues");
-	
-	Value<String> getMaxMessageValues();
-	void setMaxMessageValues( String value );
-	
-	// *** VariableMessageLength ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "VariableMessageLength" )
-		
-	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
-		
-	Value<Boolean> getVariableMessageLength();
-	void setVariableMessageLength( String value );
-	void setVariableMessageLength( Boolean value );
-	
-	// *** DiverseDataSizes ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "DiverseDataSizes" )
-		
-	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
-		
-	Value<Boolean> getDiverseDataSizes();
-	void setDiverseDataSizes( String value );
-	void setDiverseDataSizes( Boolean value );
-	
-	// *** UnBounded ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "UnBounded" )
-		
-	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");
-		
-	Value<Boolean> getUnBounded();
-	void setUnBounded( String value );
-	void setUnBounded( Boolean value );
 	
 	// *** Operations ***
 	@Type( base = Operation.class )
-	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "Operation", type = Operation.class ), @XmlListBinding.Mapping( element = "operation", type = OperationLower.class ) } )
-	@CustomXmlListBinding(impl = OPSOperationXmlListBinding.class )
+	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class )
 	@Label( standard = "Operations" )
 		
 	ListProperty PROP_OPERATIONS = new ListProperty( TYPE, "Operations" );
 	
 	ElementList<Operation> getOperations();
+	
+	@Type( base = Include.class )
+    @XmlListBinding( mappings = @XmlListBinding.Mapping(element = "xi:include", type = Include.class ) )
+	@Label( standard = "Operation File Includes" )
+	
+	ListProperty PROP_INCLUDES = new ListProperty( TYPE, "Includes" );
+	ElementList<Include> geIncludes();
+
 }

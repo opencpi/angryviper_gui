@@ -21,38 +21,24 @@
 package av.proj.ide.ops;
 
 import org.eclipse.sapphire.Element;
-import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.ListProperty;
-import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.XmlBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.XmlNamespace;
 
-import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+@XmlNamespace( uri = "http://www.w3.org/2001/XInclude", prefix = "xi" )
 
-public interface Operation extends Element {
-	ElementType TYPE = new ElementType(Operation.class);
+public interface Include extends Element {
+	ElementType TYPE = new ElementType(Include.class);
 
-	// *** Name ***
-	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
-	@Label(standard = "Name")
+	// *** File Name ***
+    @XmlBinding( path = "@href" )
 	@Required
 	
-	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
+	ValueProperty PROP_HREF = new ValueProperty(TYPE, "href");
 
-	Value<String> getName();
-	void setName(String value);
-
-	// *** Arguments ***
-	@Type( base = Argument.class )
-	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class )
-	@Label(standard = "Arguments")
-	
-	ListProperty PROP_ARGUMENTS = new ListProperty(TYPE, "Arguments");
-	ElementList<Argument> getArguments();
+	Value<String> getHref();
+	void setHref(String value);
 }

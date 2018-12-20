@@ -20,19 +20,14 @@
 
 package av.proj.ide.owd;
 
-import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.ListProperty;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.list.OPSMemberXmlListBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.ocs.Member;
 
 public interface Property extends av.proj.ide.ocs.Property {
 	ElementType TYPE = new ElementType( Property.class );
@@ -94,11 +89,11 @@ public interface Property extends av.proj.ide.ocs.Property {
 	void setWriteError( Boolean value );
 	
 	// *** Members ***
-	@Type ( base = Member.class )
-	@CustomXmlListBinding(impl = OPSMemberXmlListBinding.class)
-	@Label( standard = "Members" )
-		
-	ListProperty PROP_MEMBERS = new ListProperty( TYPE, "Members" );
-	    
-	ElementList<Member> getMembers();
+//	@Type ( base = Member.class )
+//	@CustomXmlListBinding(impl = OPSMemberXmlListBinding.class)
+//	@Label( standard = "Members" )
+//		
+//	ListProperty PROP_MEMBERS = new ListProperty( TYPE, "Members" );
+//	    
+//	ElementList<Member> getMembers();
 }
