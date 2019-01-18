@@ -18,27 +18,37 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.ocs;
+package av.proj.ide.hdl.signal;
 
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.Value;
-import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.ListProperty;
+import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
+import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 
-public interface PropertiesFile extends av.proj.ide.common.Property {
-	ElementType TYPE = new ElementType(PropertiesFile.class);
+/***
+ * 
+ */
+@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
+
+public interface Signals extends Element
+{
+	ElementType TYPE = new ElementType(Signals.class);
+
+	// *** Signals ***
+	@Type( base = Signal.class )
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
+	@Label( standard = "Signals" )
+			
+	ListProperty PROP_SIGNALS = new ListProperty( TYPE, "Signals" );
+			
+	ElementList<Signal> getSignals();
+
 	
-	// *** href ***
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "href")
-	@Required
-
-	ValueProperty PROP_HREF = new ValueProperty(TYPE, "href");
-
-	Value<String> getHref();
-	void setHref(String value);
 }

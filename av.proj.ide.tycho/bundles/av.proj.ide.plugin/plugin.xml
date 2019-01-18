@@ -77,6 +77,16 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.Hplat" />
 			<contentTypeBinding contentTypeId="av.proj.ide.hplat" />
 		</editor>
+		<editor id="av.proj.ide.hdl.signal.SignalsFileEditor"  name="Signals File Editor"
+			 class="av.proj.ide.hdl.signal.SignalsFileEditor"  extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.signals.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.signals.lower" />
+		</editor>
+		<editor id="av.proj.ide.hdl.slot.SlotFileEditor"  name="Slot File Editor"
+			 class="av.proj.ide.hdl.slot.SlotFileEditor"  extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.slot.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.slot.lower" />
+		</editor>
 	</extension>
 
 	<!-- ### Content Types ### -->
@@ -218,6 +228,44 @@
 			<describer
 				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
 				<parameter name="element" value="hdlplatform" />
+			</describer>
+		</content-type>
+		
+		<!-- Signals Content Type -->
+		<content-type id="av.proj.ide.hdl.signals.lower" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="signals" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.hdl.signals.upper" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Signals" />
+			</describer>
+		</content-type>
+
+		<!-- Slot Content Type -->
+		<content-type id="av.proj.ide.hdl.slot.lower" priority="high"
+			name="Unit Test Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="slottype" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.hdl.slot.upper" priority="high"
+			name="Unit Test Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="SlotType" />
 			</describer>
 		</content-type>
 

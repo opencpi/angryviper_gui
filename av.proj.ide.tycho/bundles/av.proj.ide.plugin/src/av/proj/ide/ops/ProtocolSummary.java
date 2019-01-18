@@ -37,7 +37,17 @@ import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface ProtocolSummary extends Element {
 	ElementType TYPE = new ElementType( ProtocolSummary.class );
-
+	
+	// *** Name ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
+	@Label( standard = "Name")
+	
+	ValueProperty PROP_NAME = new ValueProperty( TYPE, "Name");
+	
+	Value<String> getName();
+	void setName( String value );
+	
+	
 	// *** NumberOfOpCodes ***
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "NumberOfOpCodes")
@@ -75,6 +85,15 @@ public interface ProtocolSummary extends Element {
 	Value<Boolean> getZeroLengthMessages();
 	void setZeroLengthMessages( String value );
 	void setZeroLengthMessages( Boolean value );
+	
+	// *** MinMessageValues ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
+	@Label( standard = "MinMessageValues")
+	
+	ValueProperty PROP_MIN_MESSAGE_VALUES = new ValueProperty( TYPE, "MinMessageValues");
+	
+	Value<String> getMinMessageValues();
+	void setMinMessageValues( String value );
 	
 	// *** MaxMessageValues ***
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 

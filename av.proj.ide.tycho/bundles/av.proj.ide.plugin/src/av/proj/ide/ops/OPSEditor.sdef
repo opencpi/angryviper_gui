@@ -1,324 +1,185 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <definition>
+    <import>
+        <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+        <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
+    </import>
     <editor-page>
         <id>OPSEditorPage</id>
         <element-type>av.proj.ide.ops.Protocol</element-type>
         <page-header-text>OPS Editor</page-header-text>
         <initial-selection>Protocol</initial-selection>
         <root-node>
-            <node>
-                <label>Protocol</label>
-                <section>
-                    <label>Protocol</label>
-                    <description>The OpenCPI Protocol Spec (OPS) defines the set of messages that may flow between the ports of components. Messages are defined by Operations. The protocol definition may also use additional attributes that further define messages and message data.</description>
-					<!--
-						======================================================================
-						Protocol Summary Panel
-					 -->
-                    <content>
-                        <section>
-                            <label>Summary View</label>
-                            <content>
-                                 
-                                <section>
-                                    <label>Protocol Summary Attributes</label>
-                                    <description>The protocol may specify the basic behavior of the ports using the protocol in top level attributes. The information is called a protocol summary. (If messages are specified, protocol summary attributes are inferred from the messages.) If protocol summary attributes are present when messages are specified, they override the attributes inferred from the message specifications.</description>
-                                    <content>
-		                               <split-form>
-		                                
-		                                    <block>
-		                                        <content>
-		                                        
-		                                            <section>
-		                                                <label>Protocol Data</label>
-		                                                <content>
-								                        	<property-editor>DefaultBufferSize</property-editor>
-								                        	<property-editor>NumberOfOpCodes</property-editor>
-								                        	<property-editor>DataValueWidth</property-editor>
-								                        	<property-editor>DataValueGranularity</property-editor>
-								                    		<property-editor>Name</property-editor>
-		                                                </content>
-		                                                
-		                                            </section>
-		                                        </content>
-		                                    </block>
-		                                    
-		                                    <block>
-		                                        <content>
-		                                        
-		                                            <section>
-		                                                <label>Message Specifics</label>
-		                                                <content>
-							                        	<property-editor>
-						                    				<property>ZeroLengthMessages</property>
-						                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-						                    				<hint>
-						                    					<name>checkbox.layout</name>
-						                    					<value>leading.label</value>
-						                    				</hint>
-						                    			</property-editor>
-							                        	<property-editor>MaxMessageValues</property-editor>
-							                        	<property-editor>
-						                    				<property>VariableMessageLength</property>
-						                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-						                    				<hint>
-						                    					<name>checkbox.layout</name>
-						                    					<value>leading.label</value>
-						                    				</hint>
-						                    			</property-editor>
-						                    			<property-editor>
-						                    				<property>DiverseDataSizes</property>
-						                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-						                    				<hint>
-						                    					<name>checkbox.layout</name>
-						                    					<value>leading.label</value>
-						                    				</hint>
-						                    			</property-editor>
-						                    			<property-editor>
-						                    				<property>UnBounded</property>
-						                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-						                    				<hint>
-						                    					<name>checkbox.layout</name>
-						                    					<value>leading.label</value>
-						                    				</hint>
-						                    			</property-editor>
-		                                                </content>
-		                                            </section>
-		                                            
-		                                        </content>
-		                                    </block>
-		                                    
-		                                </split-form>
-                                    </content>
-                                    <collapsible>true</collapsible>
-                                    <collapsed-initially>true</collapsed-initially>
-                                </section>
-                                 
-                                <section>
-                                    <label>Protocol Operations</label>
-                                    <description>A protocol may define a set of messages (called operations). A protocol can effectively extend common operations by including operations file(s). Note that operation definitions and the inclusion of other operations are order dependent.</description>
-                                    <content>
-		                                <split-form>
-		                                    <block>
-		                                        <content>
-		                                            <section>
-		                                                <content>
-		                                                    <property-editor>Operations</property-editor>
-		                                                </content>
-		                                                <label>Protocol Operation List</label>
-		                                            </section>
-		                                        </content>
-		                                    </block>
-		                                    <block>
-		                                        <content>
-		                                            <section>
-		                                                <content>
-		                                                    <property-editor>Includes</property-editor>
-		                                                </content>
-		                                                <label>Include Operation Files</label>
-		                                            </section>
-		                                        </content>
-		                                    </block>
-		                                </split-form>
-                                    </content>
-                                </section>
-                                
-                             </content>
-                        </section>
-                    </content>
-					<!--
-						Protocol Summary Panel
-						======================================================================
-					 -->
-
-                </section>
-
-				<node>
-                    <label>Protocol Operations</label>
-                    <section>
-                        <label>Operations</label>
-                        <content>
-                            <actuator>
-                                <action-id>Sapphire.Add</action-id>
-                                <label>Add an Operation</label>
-                            </actuator>
-                            <include>OperationsView</include>
-                        </content>
-                    </section>
-	
-	               	<node-factory>
-	               		<property>Operations</property>
-	               		<case>
-	               			<label>${ Name == null ? "&lt;operation&gt;" : Name }</label>
-	               			<section>
-	               				<label>Operation</label>
-	               				<description>In OPS XML, messages are called operations, and fields of messages are called arguments. This terminology is based on Remote Procedure Call (RPC), or Remote Method Invocation (RMI), model of communications.</description>
-	               				<content>
-	               					<actuator>
-		               					<action-id>Sapphire.Add</action-id>
-		               					<label>Add an Argument</label>
-		               				</actuator>
-	               					<property-editor>Name</property-editor>
-	               				</content>
-	               			</section>
-	               			
-	               			<node-factory>
-	               				<property>Arguments</property>
-	               				<case>
-	               					<label>${ Name == null ? "&lt;argument&gt;" : Name }</label>
-	               					<section>
-	               						<label>Argument</label>
-	               						<description>Modify attributes of this argument.</description>
-	               						<content>
-	               							<actuator>
-		               							<action-id>Sapphire.Add</action-id>
-		               							<label>Add a Member</label>
-		               						</actuator>
-	                                        <include>ArgumentForm</include>
-	               						</content>
-	               					</section>
-	               					
-	               					<node-factory>
-		            					<property>Members</property>
-		            					<case>
-		               						<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
-		               						<section>
-		               							<label>Member</label>
-		               							<description>Modify attributes of this member.</description>
-		               							<content>
-		               								<actuator>
-						               					<action-id>Sapphire.Add</action-id>
-						               					<label>Add a Member</label>
-						               				</actuator>
-	                                        		<include>ArgumentForm</include>
-		               							</content>
-		               						</section>
-		               						<node-factory>
-		               							<property>Members</property>
-		               							<case>
-		               								<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
-					               					<section>
-					               						<label>Member</label>
-					               						<description>Modify attributes of this member.</description>
-					               						<content>
-	                                        				<include>ArgumentForm</include>
-					               						</content>
-					               					</section>
-		               							</case>
-		               							<visible-when>${ Type == &quot;struct&quot; }</visible-when>
-		               						</node-factory>
-		               					</case>
-		               					<visible-when>${ Type == &quot;struct&quot; }</visible-when>
-		            				</node-factory>
-	               				</case>
-	               			</node-factory>
-	               		</case>
-	               	</node-factory>
-	
-                </node>
-                
-            </node>
         
+            <node>
+                <label>${ Name == null ? &quot;Protocol&quot; : Name }</label>
+                <section>
+                	<label>Protocol</label>
+                    <description>The OpenCPI Protocol Spec (OPS) defines the set of messages that may flow between the ports of components.
+                    A protocol can effectively extend common operations by including other protocol files. 
+                    </description>
+                    <content>
+               	
+		                <section>
+		                    <collapsed-initially>true</collapsed-initially>
+		                    <collapsible>true</collapsible>
+		                    <content>
+                                <property-editor>
+                                    <show-label>false</show-label>
+                                    <property>Includes</property>
+                                </property-editor>
+		                    </content>
+		                    <label>Include Files</label>
+                            <description>Include a protocol file to inherit it's operations. Note: The order of included files and this protocol operations is important. This is typically placed as the first element in the file. This control will place it as the next element in the file. View your source to ensure it is in the correct location.</description>
+		                </section>
+                    
+                    	<actuator>
+               				<action-id>Sapphire.Add</action-id>
+               				<label>Add an operation</label>
+               			</actuator>
+                        <include>protocol.summary.form</include>
+	            	</content>
+                </section>
+                
+               	<node-factory>
+               		<property>Operations</property>
+                		
+               		<case>
+               			<label>${ Name == null ? "&lt;operation&gt;" : Name }</label>
+               			<section>
+               				<label>Operation</label>
+               				<description>Modify this operation.</description>
+               				<content>
+               					<actuator>
+	               					<action-id>Sapphire.Add</action-id>
+	               					<label>Add an Argument</label>
+	               				</actuator>
+               					<property-editor>Name</property-editor>
+               				</content>
+               			</section>
+               			
+               			<node-factory>
+               				<property>Arguments</property>
+               				<case>
+               					<label>${ Name == null ? "&lt;argument&gt;" : Name }</label>
+               					<section>
+               						<label>Argument</label>
+               						<description>Modify attributes of this argument.</description>
+               						<content>
+               							<actuator>
+	               							<action-id>Sapphire.Add</action-id>
+	               							<label>Add a Member</label>
+	               						</actuator>
+ 	               						<include>DataTypeForm</include>
+               						</content>
+               					</section>
+               					
+               					<node-factory>
+	            					<property>Members</property>
+	            					<case>
+	               						<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+	               						<section>
+	               							<label>Member</label>
+	               							<description>Modify attributes of this member.</description>
+	               							<content>
+	               								<actuator>
+					               					<action-id>Sapphire.Add</action-id>
+					               					<label>Add a Member</label>
+					               				</actuator>
+	               								<include>DataTypeForm</include>
+	               							</content>
+	               						</section>
+	               						
+	               						<node-factory>
+	               							<property>Members</property>
+	               							<case>
+	               								<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+				               					<section>
+				               						<label>Member</label>
+				               						<description>Modify attributes of this member.</description>
+				               						<content>
+	               										<include>DataTypeForm</include>
+				               						</content>
+				               					</section>
+	               							</case>
+	               							<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+	               						</node-factory>
+	               					</case>
+	               					<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+	            				</node-factory>
+	            				
+               				</case>
+               			</node-factory>
+               		</case>
+               	</node-factory>
+            </node>
+
         </root-node>
-        <page-name>OPS</page-name>
     </editor-page>
     
-    <form>
-        <id>ArgumentForm</id>
-		 <content>
-			<property-editor>Name</property-editor>
-			<property-editor>Type</property-editor>
-			<property-editor>
-				<visible-when>${ Type == &quot;string&quot; }</visible-when>
-				<property>StringLength</property>
-			</property-editor>
-			<property-editor>
-				<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-				<property>Enums</property>
-			</property-editor>
-			<property-editor>SequenceLength</property-editor>
-			<property-editor>ArrayLength</property-editor>
-			<property-editor>ArrayDimensions</property-editor>
-			<property-editor>
-				<property>Members</property>
-				<child-property>Name</child-property>
-				<child-property>Type</child-property>
-                <visible-when>${ Type == &quot;struct&quot; }</visible-when>
-			</property-editor>
-			
-       </content>
-    </form>
-
-	<form>
-		<id>OperationsView</id>
-		<content>
-
+    <composite>
+        <id>protocol.summary.form</id>
+        <content>
+        
 			<section>
-				<label>Protocol Operations</label>
+				<label>Advanced Protocol XML</label>
 				<content>
-					<property-editor>
-						<property>Operations</property>
-						<child-property>Name</child-property>
-					</property-editor>
-					<!-- -->
-					<detail-section>
-						<property>Operations</property>
-						<case>
-							<element-type>av.proj.ide.ops.Operation</element-type>
-							<content>
-								<section>
-									<label>Details</label>
-									<content>
-										<property-editor>
-											<property>Name</property>
-										</property-editor>
-										<!-- include>SignalCharacteristicsForm</include -->
-										<section>
-											<label>Arguments List</label>
-											<content>
-												<property-editor>
-													<property>Arguments</property>
-													<child-property>Name</child-property>
-													<child-property>Type</child-property>
-													<child-property>SequenceLength</child-property>
-													<child-property>
-														<visible-when>${ ArrayDimensions == null }</visible-when>
-														<property>ArrayLength</property>
-													</child-property>
-													<child-property>
-														<visible-when>${ ArrayLength == null }</visible-when>
-														<property>ArrayDimensions</property>
-													</child-property>
-												</property-editor>
-												<detail-section>
-													<property>Arguments</property>
-													<case>
-														<element-type>av.proj.ide.ops.Argument</element-type>
-														<content>
-															<section>
-																<label>Attributes</label>
-																<content>
-																	<include>ArgumentForm</include>
-																</content>
-															</section>
-														</content>
-													</case>
-												</detail-section>
-
-											</content>
-										</section>
-
-									</content>
-                                    <scroll-horizontally>true</scroll-horizontally>
-								</section>
-
-							</content>
-						</case>
-					</detail-section>
-
+			
+					<section>
+						<label>Protocol Name</label>
+						<content>
+							<property-editor>Name</property-editor>
+						</content>
+						<description>In the typical case a name for the protocol is not
+							specified and by default the name is derived from the name of this
+							XML file. A specific name can be provided that overrides the
+							default name and it must be different than the default name. Know
+							what you're doing if you give it a name.
+						</description>
+					</section>
+			
+					<section>
+						<label>Protocol Summary Attributes</label>
+						<content>
+						    <include>ProtocolSummaryForm</include>
+						</content>
+						<description>The protocol may specify the basic behavior of the
+							ports using the protocol in top level attributes. The information is
+							called a protocol summary. (If messages are specified, protocol
+							summary
+							attributes are inferred from the messages.) If protocol summary
+							attributes are present when messages are specified, they override
+							the attributes inferred from the message specifications.
+						</description>
+					</section>
+			
 				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
 			</section>
+	
+	    </content>
+    </composite>
 
-		</content>
-	</form>
+    
 </definition>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+    <editor-page>
+        <id>SlotFileEditorPage</id>
+        <page-header-text>Slot File Editor</page-header-text>
+        <initial-selection>Slot</initial-selection>
+        <element-type>av.proj.ide.hdl.slot.SlotType</element-type>
+        <root-node>
+            <node>
+                <label>Slot</label>
+                
+                <section>
+                    <content>
+                        <actuator>
+                            <action-id>Sapphire.Add</action-id>
+                            <label>New Signal</label>
+                        </actuator>
+                    </content>
+                </section>
+                
+                <node-factory>
+                    <property>Signals</property>
+                    <case>
+                        <element-type>av.proj.ide.hdl.signal.Signal</element-type>
+                        <section>
+                            <label>Signal Details</label>
+                            <content>
+                                <include>SignalCharacteristicsForm</include>
+                            </content>
+                            <scroll-vertically>true</scroll-vertically>
+                        </section>
+                        <label>${ Name == null ? "new_name" : Name }</label>
+                    </case>
+                </node-factory>
+                
+            </node>
+        </root-node>
+    </editor-page>
+<!--     
+    <form>
+        <id>signal.definition.form</id>
+        <content>
+            <property-editor>Name</property-editor>
+            <property-editor>
+                <hint>
+                    <name>checkbox.layout</name>
+                    <value>leading.label</value>
+                </hint>
+                <property>Direction</property>
+                <style>Sapphire.PropertyEditor.RadioButtonGroup</style>
+            </property-editor>
+            <property-editor>Width</property-editor>
+            <property-editor>Pin</property-editor>
+            <property-editor>Differential</property-editor>
+
+            <section>
+                <content>
+                     <section>
+                        <label>Advanced: Override In-Out Naming</label>
+                        <description>Note: Use &quot;%s&quot; in the name string to have the signal name in the desired location; e.g. &quot;my%s_in&quot; produces my&lt;signal_name&gt;_in.</description>
+                        <collapsible>true</collapsible>
+                        <collapsed-initially>true</collapsed-initially>
+                        <content>
+		                    <property-editor>In</property-editor>
+		                    <property-editor>Out</property-editor>
+		                    <property-editor>Oe</property-editor>
+                        </content>
+                    </section>
+                </content>
+                <label>In-Out Signal Naming Convention</label>
+                <visible-when>${ Direction == 'Inout' }</visible-when>
+                <description>By default the OpenCPI names for in-out signal names are: &lt;signal_name&gt;_I &lt;signal_name&gt;_O and &lt;signal_name&gt;_OE. Expand the advanced section to name these differently.</description>
+            </section>
+          
+            <section>
+                <content>
+                    <section>
+                        <label>Advanced: Override Differential Naming</label>
+                        <description>Note: Use &quot;%s&quot; in the name string to have the signal name in the desired location; e.g. &quot;my%s_pos&quot; produces my&lt;signal_name&gt;_pos.</description>
+                        <collapsible>true</collapsible>
+                        <collapsed-initially>true</collapsed-initially>
+                        <content>
+                      <property-editor>
+                          <property>Pos</property>
+                      </property-editor>
+                            <property-editor>Neg</property-editor>
+                        </content>
+                    </section>
+                </content>
+                <label>Differential Signal Pos/Neg Naming Convention</label>
+                <visible-when>${ Differential == true }</visible-when>
+                <description>By default the OpenCPI names for the positive and negative signal names are: P_&lt;signal_name&gt; N_&lt;signal_name&gt;. Expand the advanced section to name these differently.</description>
+            </section>
+                    
+        </content>
+    </form>
+-->    
+    <import>
+        <definition>av.proj.ide.sdef.shared.SignalCharacteristicsForm</definition>
+    </import>
+    
+</definition>

@@ -78,13 +78,7 @@ public interface PropertyAttributes extends Element {
 
 	// *** StringLength ***
 	// This needs to appear in the OPS Argument interface and OCS Property.
-	// It is not required in an Argument.  
-//	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-//	@Label(standard = "StringLength")
-//	@Required( "${ Type == 'String' }" )
-//	ValueProperty PROP_STRING_LENGTH = new ValueProperty(TYPE, "StringLength");
-//	Value<String> getStringLength();
-//	void setStringLength(String value);
+	// It is not required in an Argument but is in the OCS Property.  
 
 	// *** SequenceLength ***
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
@@ -99,7 +93,7 @@ public interface PropertyAttributes extends Element {
 	// ArrayLength and ArrayDimensions (a multi-dimensional array) are mutually
 	// exclusive.
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-    @Enablement( expr = "${ ArrayDimensions == null}" )
+    @Enablement( expr = "${ false }" )
 	@Label(standard = "ArrayLength")
 
 	ValueProperty PROP_ARRAY_LENGTH = new ValueProperty(TYPE, "ArrayLength");

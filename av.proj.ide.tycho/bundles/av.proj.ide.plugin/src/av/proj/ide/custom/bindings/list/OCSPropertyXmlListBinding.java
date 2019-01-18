@@ -39,7 +39,7 @@ import org.eclipse.sapphire.modeling.xml.XmlPath;
 import org.eclipse.sapphire.modeling.xml.XmlResource;
 import org.eclipse.sapphire.util.ListFactory;
 
-import av.proj.ide.ocs.Property;
+import av.proj.ide.ocs.OcsProperty;
 
 public class OCSPropertyXmlListBinding extends StandardXmlListBindingImpl {
 	
@@ -49,8 +49,8 @@ public class OCSPropertyXmlListBinding extends StandardXmlListBindingImpl {
         final XmlNamespaceResolver xmlNamespaceResolver = ( (XmlResource) property().element().resource() ).getXmlNamespaceResolver();
 		this.path = new XmlPath( "", xmlNamespaceResolver );
 		this.modelElementTypes = new ElementType[2];
-		this.modelElementTypes[0] = new ElementType(Property.class);
-		this.modelElementTypes[1] = new ElementType(Property.class);
+		this.modelElementTypes[0] = new ElementType(OcsProperty.class);
+		this.modelElementTypes[1] = new ElementType(OcsProperty.class);
 		//this.modelElementTypes[2] = new ElementType(PropertiesFile.class);
 		this.xmlElementNames = new QName[ this.modelElementTypes.length ];            
 

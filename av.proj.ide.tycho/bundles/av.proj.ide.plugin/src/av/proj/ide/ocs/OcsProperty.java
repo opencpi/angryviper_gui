@@ -24,18 +24,32 @@ import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.LongString;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface Property extends Member  {
-	ElementType TYPE = new ElementType(Property.class);
+public interface OcsProperty extends Member  {
+	ElementType TYPE = new ElementType(OcsProperty.class);
+
+	// *** Description ***
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Description")
+	@LongString
+	
+	ValueProperty PROP_DESCRIPTION = new ValueProperty(TYPE, "Description");
+
+	Value<String> getDescription();
+	void setDescription(String value);
 
 	// *** Parameter ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Parameter")
+    @Enablement( expr = "${  Writable == null && Initial == null }" )
 	
 	ValueProperty PROP_PARAMETER = new ValueProperty(TYPE, "Parameter");
 	
@@ -43,31 +57,11 @@ public interface Property extends Member  {
 	void setParameter(String value);
 	void setParameter(Boolean value);
 	
-	// *** Readable ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Readable")
-	
-	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
-	
-	Value<Boolean> getReadable();
-	void setReadable(String value);
-	void setReadable(Boolean value);
-	
-	// *** Volatile ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Volatile")
-	
-	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
-	
-	Value<Boolean> getVolatile();
-	void setVolatile(String value);
-	void setVolatile(Boolean value);
 	
 	// *** Writable ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${  Parameter == null && Initial == null }" )
 	@Label(standard = "Writable")
 	
 	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
@@ -79,6 +73,7 @@ public interface Property extends Member  {
 	// *** Initial ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${  Parameter == null && Writable == null }" )
 	@Label(standard = "Initial")
 	
 	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
@@ -86,4 +81,19 @@ public interface Property extends Member  {
 	Value<Boolean> getInitial();
 	void setInitial(String value);
 	void setInitial(Boolean value);
+	
+	
+	// *** Volatile ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Initial != null || Writable != null }" )
+	@Label(standard = "Volatile")
+	
+	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
+	
+	Value<Boolean> getVolatile();
+	void setVolatile(String value);
+	void setVolatile(Boolean value);
+	
+	
 }

@@ -18,42 +18,39 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.ops;
+package av.proj.ide.hdl.slot;
 
+import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.ListProperty;
 import org.eclipse.sapphire.Type;
-import org.eclipse.sapphire.Value;
-import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 
 import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
+import av.proj.ide.hdl.signal.Signal;
 
-public interface Argument extends av.proj.ide.common.PropertyAttributes {
-	ElementType TYPE = new ElementType(Argument.class);
+/***
+ * Interface to the HDL Platform XML document. The root tag = <HdlPlatform  Language="" spec="">
+ */
+@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
 
-	// *** StringLength ***
-	// This is a property attribute. It is separated out because it is 
-	// not required in an Argument description but is in OCS Property.
-	// 
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "StringLength")
+public interface SlotType extends Element
+{
+	ElementType TYPE = new ElementType(SlotType.class);
 
-	ValueProperty PROP_STRING_LENGTH = new ValueProperty(TYPE, "StringLength");
 
-	Value<String> getStringLength();
-	void setStringLength(String value);
+	// *** Signals ***
+	@Type( base = Signal.class )
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
+	@Label( standard = "Signals" )
+			
+	ListProperty PROP_SIGNALS = new ListProperty( TYPE, "Signals" );
+			
+	ElementList<Signal> getSignals();
+
 	
-	// *** Members ***
-	@Type ( base = Argument.class )
-	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class )
-	@Label( standard = "Members" )
-		
-	ListProperty PROP_MEMBERS = new ListProperty( TYPE, "Members" );
-	    
-	ElementList<Argument> getMembers();
 }

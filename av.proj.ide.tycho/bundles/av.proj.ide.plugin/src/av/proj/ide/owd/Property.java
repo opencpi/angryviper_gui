@@ -29,7 +29,7 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 
-public interface Property extends av.proj.ide.ocs.Property {
+public interface Property extends av.proj.ide.ocs.OcsProperty {
 	ElementType TYPE = new ElementType( Property.class );
 	
 	
@@ -43,6 +43,18 @@ public interface Property extends av.proj.ide.ocs.Property {
 	Value<Boolean> getPadding();
 	void setPadding(String value);
 	void setPadding(Boolean value);
+	
+	// TODO:  Setup a new OWD property with its own set of access
+	// *** TEMP Fix Readable ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Readable")
+
+	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
+
+	Value<Boolean> getReadable();
+	void setReadable(String value);
+	void setReadable(Boolean value);
 		
 	// *** ReadSync ***
 	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
