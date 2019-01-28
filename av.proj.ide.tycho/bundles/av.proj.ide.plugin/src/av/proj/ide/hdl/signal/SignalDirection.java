@@ -26,13 +26,13 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 
 public enum SignalDirection
 {
-    @Label( standard = "Input" )
+    @Label( standard = "In" )
     
-    input,
+    in,
     
-    @Label( standard = "Output" )
+    @Label( standard = "Out" )
     
-    output,
+    out,
     
     @Label( standard = "Inout" )
     

@@ -38,6 +38,19 @@
             <property-editor>Differential</property-editor>
 
             <section>
+               <content>
+	            <label>- Recommend setting the name to the pin name from corresponding device datasheet, e.g. SCL.</label>
+	            <label>- Signal direction is from the perspective of the FPGA, e.g. a pin output from a device to an FPGA will have an 'input' direction.</label>
+	            <label>- Width is useful in defining buses.</label>
+	            <label>- See https://en.wikipedia.org/wiki/Differential_signaling</label>
+	            <label>- Within device worker inner layer code, a pin signal must connect to an explicitly instanced I/O buffer primitive.</label>
+               </content>
+                <label>Notes on Defining HDL Signals</label>
+                <collapsible>true</collapsible>
+                <collapsed-initially>true</collapsed-initially>
+			</section>
+			
+            <section>
                 <content>
                      <section>
                         <label>Advanced: Override In-Out Naming</label>
@@ -78,6 +91,5 @@
                     
         </content>
     </form>
-    
 
 </definition>

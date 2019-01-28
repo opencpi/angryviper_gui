@@ -22,8 +22,10 @@ package av.proj.ide.ocs;
 
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
+import org.eclipse.sapphire.Validation;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.LongString;
@@ -74,6 +76,9 @@ public interface OcsProperty extends Member  {
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
     @Enablement( expr = "${  Parameter == null && Writable == null }" )
+	@Validation(   rule = "${  Parameter != null && Writable != null || Initial != null}" ,
+    message = "An access attribute must be set.  Initial is the least restrictive OCS property access.",
+    severity = Status.Severity.WARNING)
 	@Label(standard = "Initial")
 	
 	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");

@@ -29,14 +29,13 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 
-import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
-import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.hdl.signal.Signal;
+import av.proj.ide.hdl.signal.SignalXmlListBinding;
 
 /***
  * Interface to the HDL Platform XML document. The root tag = <HdlPlatform  Language="" spec="">
  */
-@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
+@CustomXmlRootBinding( value = SlotTypeRootXmlBinding.class )
 
 public interface SlotType extends Element
 {
@@ -45,7 +44,7 @@ public interface SlotType extends Element
 
 	// *** Signals ***
 	@Type( base = Signal.class )
-	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
+	@CustomXmlListBinding(impl = SignalXmlListBinding.class)
 	@Label( standard = "Signals" )
 			
 	ListProperty PROP_SIGNALS = new ListProperty( TYPE, "Signals" );

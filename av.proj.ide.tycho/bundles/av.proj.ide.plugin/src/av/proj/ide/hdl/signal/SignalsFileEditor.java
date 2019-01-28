@@ -41,8 +41,8 @@ public class SignalsFileEditor extends SapphireEditor {
 	protected String      me;
 	protected HashSet<String> modMessages = new HashSet<String>();
 	
-	protected String messageInfo = "has programmatically updated this files XML to use the current signal name and direction attributes."
-			+ " Any signals modified or added to this file will use this convention. If the file is saved, the new format will remain it it."
+	protected String messageInfo = "has changed the contents of the file to use the 'name' and 'direction' attributes."
+			+ " Any signals modified or added to this file will use this convention. If the file is saved, the new format will remain in it."
 			+ " This message appears one time per Eclipse session.";
 
 	protected String modificationMessage; 
@@ -51,8 +51,8 @@ public class SignalsFileEditor extends SapphireEditor {
 	public SignalsFileEditor() {
 		type = Signals.TYPE;
 		name = "SignalsFileEditorPage";
-		modificationMessage = "The Signals File XML editor " + messageInfo;
-		messageHeader = "Signal Definition XML Modifications";
+		modificationMessage = "WARNING: The Signals File XML editor " + messageInfo;
+		messageHeader = "Signals File XML Modifications";
 		me = this.getClass().toString();
 	}
 	
@@ -89,12 +89,12 @@ public class SignalsFileEditor extends SapphireEditor {
     		
     		changed = true;
     		if(signal.getInput().content() != null) {
-    			signal.setDirection(SignalDirection.input);
+    			signal.setDirection(SignalDirection.in);
     			signal.setName(signal.getInput().content());
     			signal.setInput(null);
     		}
     		else if(signal.getOutput().content() != null) {
-    			signal.setDirection(SignalDirection.output);
+    			signal.setDirection(SignalDirection.out);
     			signal.setName(signal.getOutput().content());
     			signal.setOutput(null);
 	   		}

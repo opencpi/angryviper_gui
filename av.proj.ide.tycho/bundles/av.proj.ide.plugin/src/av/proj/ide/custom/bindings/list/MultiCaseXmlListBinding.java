@@ -47,11 +47,11 @@ import org.eclipse.sapphire.util.ListFactory;
  * convention of capitalized name while older ones can be in lower case.
  */
 public class MultiCaseXmlListBinding extends StandardXmlListBindingImpl {
-	String name = null;
-	String lowerName = null;
+	protected String name = null;
+	protected String lowerName = null;
 //	String camelName = null;
 	protected XmlElement parentElement;
-	Map<String, QName> theseDocElements;	
+	protected Map<String, QName> theseDocElements;	
 
 	protected void initNames(Property p) {
 		String name = p.name();

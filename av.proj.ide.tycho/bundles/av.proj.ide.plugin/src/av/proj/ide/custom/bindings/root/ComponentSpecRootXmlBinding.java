@@ -20,38 +20,10 @@
 
 package av.proj.ide.custom.bindings.root;
 
-import static org.eclipse.sapphire.modeling.util.MiscUtil.equal;
-
-import org.eclipse.sapphire.modeling.xml.RootXmlResource;
-import org.eclipse.sapphire.modeling.xml.StandardRootElementController;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-public class ComponentSpecRootXmlBinding extends StandardRootElementController {
+public class ComponentSpecRootXmlBinding extends GenericMultiCaseRootBinding {
 
 	public ComponentSpecRootXmlBinding()
     {
         super("ComponentSpec");
     }
-	
-	@Override
-	public void createRootElement() {
-		super.createRootElement();
-	}
-
-	@Override
-	public boolean checkRootElement() {
-		return checkRootElement( resource().adapt( RootXmlResource.class ).getDomDocument(), getRootElementInfo() );
-	}
-	
-	@Override
-	protected boolean checkRootElement(final Document document, final RootElementInfo rinfo) {
-		final Element root = document.getDocumentElement();
-
-		final String localName = root.getLocalName().toLowerCase();
-		final String namespace = root.getNamespaceURI();
-
-		return equal(localName, rinfo.elementName.toLowerCase()) && equal(namespace, rinfo.namespace);
-	}
-
 }

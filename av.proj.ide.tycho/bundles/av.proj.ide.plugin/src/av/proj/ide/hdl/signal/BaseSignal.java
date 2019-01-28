@@ -23,10 +23,11 @@ package av.proj.ide.hdl.signal;
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
+import org.eclipse.sapphire.Validation;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.ClearOnDisable;
-import org.eclipse.sapphire.modeling.annotations.DefaultValue;
 import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
@@ -55,7 +56,9 @@ public interface BaseSignal extends Element {
     @Type( base = SignalDirection.class )
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
     @Label( standard = "Direction" )
-	@DefaultValue(text="input")
+	@Validation(   rule = "${  Direction != null }" ,
+    message = "A signal direction must be set.",
+    severity = Status.Severity.WARNING)
    
     ValueProperty PROP_DIRECTION = new ValueProperty( TYPE, "Direction" );
     
@@ -73,7 +76,7 @@ public interface BaseSignal extends Element {
 	
 	// *** In/Out signal names format override attributes ***
 	// Inbound Signal format
-    @Enablement( expr = "${ Direction == 'INOUT' || Inout != null }" )
+    @Enablement( expr = "${ Direction == 'inout' || inout != null }" )
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label(standard = "Inbound Name Format Override")
     @ClearOnDisable
@@ -96,7 +99,7 @@ public interface BaseSignal extends Element {
 	
 	
 	// Outbound Signal format
-    @Enablement( expr = "${ Direction == 'INOUT' || Inout != null }" )
+    @Enablement( expr = "${ Direction == 'inout' || inout != null }" )
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label(standard = "Onbound Name Format Override")
     @ClearOnDisable
@@ -107,7 +110,7 @@ public interface BaseSignal extends Element {
 	void setOut(String value);
 
 	// Output Enabled format
-    @Enablement( expr = "${ Direction == 'INOUT'  || Inout != null }" )
+    @Enablement( expr = "${ Direction == 'inout'  || inout != null }" )
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label(standard = "Output Enabled Override")
     @ClearOnDisable
@@ -119,9 +122,9 @@ public interface BaseSignal extends Element {
 
 	// *** differential signal attribute***
 	@Type(base = Boolean.class)
-    @Enablement( expr = "${ Direction != 'Inout' || Inout != null }" )
+    @Enablement( expr = "${ Direction != 'inout' || inout != null }" )
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label(standard = "Differential Signal")
+	@Label(standard = "Differential")
     @ClearOnDisable
     
 	ValueProperty PROP_DIFFERENTIAL = new ValueProperty(TYPE, "Differential");

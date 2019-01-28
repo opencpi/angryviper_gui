@@ -29,13 +29,10 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 
-import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
-import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
-
 /***
  * 
  */
-@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
+@CustomXmlRootBinding( value = SignalsRootXmlBinding.class )
 
 public interface Signals extends Element
 {
@@ -43,7 +40,7 @@ public interface Signals extends Element
 
 	// *** Signals ***
 	@Type( base = Signal.class )
-	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
+	@CustomXmlListBinding(impl = SignalXmlListBinding.class)
 	@Label( standard = "Signals" )
 			
 	ListProperty PROP_SIGNALS = new ListProperty( TYPE, "Signals" );

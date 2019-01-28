@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+
+	<form>
+		<id>OcsAccessibilityForm</id>
+        <content>
+            <section>
+                <label>How it's Set</label>
+                <content>
+                    <property-editor>Initial</property-editor>
+                    <property-editor>Writable</property-editor>
+                    <property-editor>Parameter</property-editor>
+                    <label>
+                        <visible-when>${ Parameter != null }</visible-when>
+                        <text>A parameter property is effectively a compile time constant.</text>
+                    </label>
+                </content>
+                <description>At least one of these must be set. 
+                Note that Initial is the least restrictive access setting for the OCS.
+                </description>
+            </section>
+            <section>
+                <label>Is it Volatile</label>
+                <content>
+                    <property-editor>Volatile</property-editor>
+                </content>
+            </section>
+        </content>
+	</form>
+
+</definition>

@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.custom.bindings.list;
+package av.proj.ide.hdl.signal;
 
 import static org.eclipse.sapphire.modeling.xml.XmlUtil.createQualifiedName;
 
@@ -33,12 +33,14 @@ import org.eclipse.sapphire.modeling.xml.XmlNamespaceResolver;
 import org.eclipse.sapphire.modeling.xml.XmlPath;
 import org.eclipse.sapphire.modeling.xml.XmlResource;
 
-public class OCSPropertyXmlListBinding extends MultiCaseXmlListBinding {
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
+
+public class SignalXmlListBinding extends MultiCaseXmlListBinding {
 	
 	
     @Override
 	protected void initNames(Property p) {
-        this.name = "Property";
+        this.name = "Signal";
         this.lowerName = this.name.toLowerCase();
 		theseDocElements = new LinkedHashMap<String, QName>();
         final XmlNamespaceResolver xmlNamespaceResolver = ( (XmlResource) p.element().resource() ).getXmlNamespaceResolver();
@@ -53,8 +55,8 @@ public class OCSPropertyXmlListBinding extends MultiCaseXmlListBinding {
     {
     	XmlElement childElement = (XmlElement)super.insertUnderlyingObject(type, position);
         final XmlNamespaceResolver xmlNamespaceResolver = ( (XmlResource) property().element().resource() ).getXmlNamespaceResolver();
-		XmlPath tmpPath = new XmlPath("@Initial", xmlNamespaceResolver);
-		childElement.setChildNodeText(tmpPath, "true", false);
+		XmlPath tmpPath = new XmlPath("@Direction", xmlNamespaceResolver);
+		childElement.setChildNodeText(tmpPath, "in", false);
    	
     	return childElement;
 

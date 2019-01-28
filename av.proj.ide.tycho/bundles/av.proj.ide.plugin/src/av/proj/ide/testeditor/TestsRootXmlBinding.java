@@ -18,12 +18,14 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.custom.bindings.root;
+package av.proj.ide.testeditor;
 
-public class ProtocolRootXmlBinding extends GenericMultiCaseRootBinding {
+import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 
-	public ProtocolRootXmlBinding()
+public class TestsRootXmlBinding extends GenericMultiCaseRootBinding {
+
+	public TestsRootXmlBinding()
     {
-        super("Protocol");
+        super("Tests");
     }
 }

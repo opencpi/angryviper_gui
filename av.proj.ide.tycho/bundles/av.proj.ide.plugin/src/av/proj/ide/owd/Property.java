@@ -24,31 +24,83 @@ import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.LongString;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface Property extends av.proj.ide.ocs.OcsProperty {
+public interface Property extends  OwdPropertyAttributes {
 	ElementType TYPE = new ElementType( Property.class );
 	
+	// *** Description ***
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Description")
+	@LongString
 	
+	ValueProperty PROP_DESCRIPTION = new ValueProperty(TYPE, "Description");
+
+	Value<String> getDescription();
+	void setDescription(String value);
+
+	/*%%%%%%%%%%%%%%%  Special Access property attributes %%%%%%%%%%%%%%%%%%%*/
 	// *** Padding ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Padding")
+    @Enablement( expr = "${ Parameter == null && Volatile == null && Writable == null && Initial == null  && Readable == null }" )
 
 	ValueProperty PROP_PADDING = new ValueProperty(TYPE, "Padding");
 
 	Value<Boolean> getPadding();
 	void setPadding(String value);
 	void setPadding(Boolean value);
+
+	// *** Parameter ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Parameter")
+    @Enablement( expr = "${ Padding == null && Volatile == null && Writable == null && Initial == null }" )
 	
-	// TODO:  Setup a new OWD property with its own set of access
-	// *** TEMP Fix Readable ***
+	ValueProperty PROP_PARAMETER = new ValueProperty(TYPE, "Parameter");
+	
+	Value<Boolean> getParameter();
+	void setParameter(String value);
+	void setParameter(Boolean value);
+	
+	/*%%%%%%%%%%%%%%%  Write attributes %%%%%%%%%%%%%%%%%%%*/
+	// *** Writable ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Initial == null }" )
+	@Label(standard = "Writable")
+	
+	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
+	
+	Value<Boolean> getWritable();
+	void setWritable(String value);
+	void setWritable(Boolean value);
+	
+	// *** Initial ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Writable == null}" )
+	@Label(standard = "Initial")
+	
+	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
+	
+	Value<Boolean> getInitial();
+	void setInitial(String value);
+	void setInitial(Boolean value);
+	
+	
+	/*%%%%%%%%%%%%%%%  Read attributes %%%%%%%%%%%%%%%%%%%*/
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Readable")
+	   @Enablement( expr = "${ Padding == null && Volatile == null}" )
 
 	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
 
@@ -56,56 +108,17 @@ public interface Property extends av.proj.ide.ocs.OcsProperty {
 	void setReadable(String value);
 	void setReadable(Boolean value);
 		
-	// *** ReadSync ***
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Type( base = Boolean.class )
-	@Label( standard = "ReadSync" )
+	// *** Volatile ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Readable == null}" )
+	@Label(standard = "Volatile")
 	
-	ValueProperty PROP_READ_SYNC = new ValueProperty(TYPE, "ReadSync");
-
-	Value<Boolean> getReadSync();
-	void setReadSync( String value );
-	void setReadSync( Boolean value ); 
+	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
 	
-	// *** WriteSync ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "WriteSync" )
-		
-	ValueProperty PROP_WRITE_SYNC = new ValueProperty(TYPE, "WriteSync");
-
-	Value<Boolean> getWriteSync();
-	void setWriteSync( String value );
-	void setWriteSync( Boolean value ); 
+	Value<Boolean> getVolatile();
+	void setVolatile(String value);
+	void setVolatile(Boolean value);
 	
-	// *** ReadError ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "ReadError" )
 	
-	ValueProperty PROP_READ_ERROR = new ValueProperty(TYPE, "ReadError");
-
-	Value<Boolean> getReadError();
-	void setReadError( String value );
-	void setReadError( Boolean value ); 
-	
-	// *** WriteError ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "WriteError" )
-		
-	ValueProperty PROP_WRITE_ERROR = new ValueProperty(TYPE, "WriteError");
-
-	Value<Boolean> getWriteError();
-	void setWriteError( String value );
-	void setWriteError( Boolean value );
-	
-	// *** Members ***
-//	@Type ( base = Member.class )
-//	@CustomXmlListBinding(impl = OPSMemberXmlListBinding.class)
-//	@Label( standard = "Members" )
-//		
-//	ListProperty PROP_MEMBERS = new ListProperty( TYPE, "Members" );
-//	    
-//	ElementList<Member> getMembers();
 }

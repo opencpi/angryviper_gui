@@ -23,7 +23,7 @@
     <import>
         <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
         <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
-        <definition>av.proj.ide.sdef.shared.AccessibilityForm2</definition>
+        <definition>av.proj.ide.sdef.shared.OcsAccessibilityForm</definition>
         <package>av.proj.ide</package>
         <package>av.proj.ide.ocs</package>
     </import>
@@ -80,7 +80,6 @@
                     
             				<actuator>
             					<action-id>Sapphire.Add</action-id>
-            					<action-handler-id>Sapphire.Add.Property</action-handler-id>
             					<label>Add a Property</label>
             				</actuator>
             			</content>
@@ -98,12 +97,12 @@
 	               						<action-id>Sapphire.Add</action-id>
 	               						<label>Add a Member</label>
 	               					</actuator>
-	               					<include>PropertyForm</include>
+ 	               					<include>PropertyForm</include>
 	               					
                                     <section>
                							<label>Accessibility</label>
                							<content>
-											<include>AccessibilityForm2</include>
+											<include>OcsAccessibilityForm</include>
                							</content>
                						</section>
                						
@@ -208,44 +207,6 @@
        </content>
     </form>
     
-	<form>
-		<id>OcsAccessibilityForm</id>
-		<content>
-		
-            <group>
-                <label>How is the Property Set</label>
-                <content>
-                    <property-editor>
-                        <property>Parameter</property>
-                        <style>Sapphire.PropertyEditor.RadioButtonGroup.Horizontal</style>
-                    </property-editor>
-            <property-editor>
-                <property>Initial</property>
-                <style>Sapphire.PropertyEditor.RadioButtonGroup.Horizontal</style>
-            </property-editor>
-            <property-editor>
-                <property>Writable</property>
-                <style>Sapphire.PropertyEditor.RadioButtonGroup.Horizontal</style>
-            </property-editor>
-                </content>
-            </group>
-			
-			<section>
-				<label>Is the Property Volatile</label>
-				<content>
-					<property-editor>
-						<property>Volatile</property>
-						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-						<hint>
-							<name>checkbox.layout</name>
-							<value>leading.label</value>
-						</hint>
-					</property-editor>              								
-				</content>
-                <visible-when>${ Parameter == null }</visible-when>
-			</section>
-		</content>
-	</form>
 
     <composite>
         <id>advanced.port.form</id>

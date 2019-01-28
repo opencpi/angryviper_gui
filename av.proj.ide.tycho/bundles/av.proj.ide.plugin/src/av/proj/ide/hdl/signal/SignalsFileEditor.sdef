@@ -36,6 +36,7 @@
                             <label>New Signal</label>
                         </actuator>
                     </content>
+                    <description>Signals map to a physical wire connecting the device to the FPGA, e.g. connection of I2C SCL pin in I2C that is connected to FPGA pad.</description>
                 </section>
                 
                 <node-factory>

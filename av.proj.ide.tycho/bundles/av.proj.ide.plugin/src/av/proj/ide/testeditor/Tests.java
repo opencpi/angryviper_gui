@@ -36,11 +36,10 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
-import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
 
-@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
+@CustomXmlRootBinding( value = TestsRootXmlBinding.class )
 public interface Tests extends Element
 {
 	ElementType TYPE = new ElementType(Tests.class);

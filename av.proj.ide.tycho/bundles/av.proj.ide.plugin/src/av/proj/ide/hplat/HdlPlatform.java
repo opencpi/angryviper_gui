@@ -42,7 +42,6 @@ import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
 //import av.proj.ide.custom.bindings.list.PlatformSlotXmlListBinding;
 //import av.proj.ide.custom.bindings.list.PlatformSpecPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
-import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.custom.bindings.value.BooleanNodePresentBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
@@ -50,7 +49,7 @@ import av.proj.ide.services.NameValidationService;
 /***
  * Interface to the HDL Platform XML document. The root tag = <HdlPlatform  Language="" spec="">
  */
-@CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
+@CustomXmlRootBinding( value = HdlPlatformRootXmlBinding.class )
 
 public interface HdlPlatform extends Element
 {
