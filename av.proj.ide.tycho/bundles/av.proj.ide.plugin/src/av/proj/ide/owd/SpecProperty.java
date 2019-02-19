@@ -25,6 +25,7 @@ import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
@@ -54,93 +55,140 @@ public interface SpecProperty extends Element {
 	Value<String> getDefault();
 	void setDefault(String value);
 	
-	// *** Readable ***
+	/*%%%%%%%%%%%%%%%  Special Access property attributes %%%%%%%%%%%%%%%%%%%*/
+	// *** Padding ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Padding")
+    @Enablement( expr = "${ Parameter == null && Volatile == null && Writable == null && Initial == null  && Readable == null }" )
+
+	ValueProperty PROP_PADDING = new ValueProperty(TYPE, "Padding");
+
+	Value<Boolean> getPadding();
+	void setPadding(String value);
+	void setPadding(Boolean value);
+
+	// *** Parameter ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Parameter")
+    @Enablement( expr = "${ Padding == null && Volatile == null && Writable == null && Initial == null }" )
+	
+	ValueProperty PROP_PARAMETER = new ValueProperty(TYPE, "Parameter");
+	
+	Value<Boolean> getParameter();
+	void setParameter(String value);
+	void setParameter(Boolean value);
+	
+	/*%%%%%%%%%%%%%%%  Write attributes %%%%%%%%%%%%%%%%%%%*/
+	// *** Writable ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Initial == null }" )
+	@Label(standard = "Writable")
+	
+	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
+	
+	Value<Boolean> getWritable();
+	void setWritable(String value);
+	void setWritable(Boolean value);
+	
+	// *** Initial ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Writable == null}" )
+	@Label(standard = "Initial")
+	
+	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
+	
+	Value<Boolean> getInitial();
+	void setInitial(String value);
+	void setInitial(Boolean value);
+	
+	
+	/*%%%%%%%%%%%%%%%  Read attributes %%%%%%%%%%%%%%%%%%%*/
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Readable")
-    //@Enablement( expr = "${ Volatile  == null }" )
+	   @Enablement( expr = "${ Padding == null && Volatile == null}" )
 
 	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
 
 	Value<Boolean> getReadable();
 	void setReadable(String value);
 	void setReadable(Boolean value);
-
+		
 	// *** Volatile ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Readable == null}" )
 	@Label(standard = "Volatile")
-    //@Enablement( expr = "${ Readable  == null }" )
-
+	
 	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
-
+	
 	Value<Boolean> getVolatile();
 	void setVolatile(String value);
 	void setVolatile(Boolean value);
-
-	// *** Writable ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
-	@Label(standard = "Writable")
-
-	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
-
-	Value<Boolean> getWritable();
-	void setWritable(String value);
-	void setWritable(Boolean value);
-
-	// *** Initial ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
-	@Label(standard = "Initial")
-
-	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
-
-	Value<Boolean> getInitial();
-	void setInitial(String value);
-	void setInitial(Boolean value);
+	
 	
 	// *** ReadSync ***
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
-	@Type(base = Boolean.class)
-	@Label(standard = "ReadSync")
-
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Type( base = Boolean.class )
+	@Label( standard = "ReadSync" )
+	@Enablement(expr="${  (Parameter==null && Padding == null) && (Readable != null || Volatile != null) }")
+	
 	ValueProperty PROP_READ_SYNC = new ValueProperty(TYPE, "ReadSync");
 
 	Value<Boolean> getReadSync();
-	void setReadSync(String value);
-	void setReadSync(Boolean value);
-
+	void setReadSync( String value );
+	void setReadSync( Boolean value ); 
+	
 	// *** WriteSync ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
-	@Label(standard = "WriteSync")
-
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "WriteSync" )
+	@Enablement(expr="${ (Parameter==null && Padding == null) && (Initial != null || Writable != null) }")
+		
 	ValueProperty PROP_WRITE_SYNC = new ValueProperty(TYPE, "WriteSync");
 
 	Value<Boolean> getWriteSync();
-	void setWriteSync(String value);
-	void setWriteSync(Boolean value);
-
+	void setWriteSync( String value );
+	void setWriteSync( Boolean value ); 
+	
 	// *** ReadError ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
-	@Label(standard = "ReadError")
-
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "ReadError" )
+	@Enablement(expr="${  (Parameter==null && Padding == null) && (Readable != null || Volatile != null) }")
+	
 	ValueProperty PROP_READ_ERROR = new ValueProperty(TYPE, "ReadError");
 
 	Value<Boolean> getReadError();
-	void setReadError(String value);
-	void setReadError(Boolean value);
-
+	void setReadError( String value );
+	void setReadError( Boolean value ); 
+	
 	// *** WriteError ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class)
-	@Label(standard = "WriteError")
-
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "WriteError" )
+	@Enablement(expr="${ (Parameter==null && Padding == null) && (Initial != null || Writable != null) }")
+		
 	ValueProperty PROP_WRITE_ERROR = new ValueProperty(TYPE, "WriteError");
 
 	Value<Boolean> getWriteError();
-	void setWriteError(String value);
-	void setWriteError(Boolean value);
+	void setWriteError( String value );
+	void setWriteError( Boolean value );
+	
+	// *** Raw Properties ***
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Raw Properties" )
+		
+	ValueProperty PROP_RAW_PROPERTIES = new ValueProperty(TYPE, "RawProperties");
+		
+	Value<Boolean> getRawProperties();
+	void setRawProperties( String value );
+	void setRawProperties( Boolean value );
+	
+
 }

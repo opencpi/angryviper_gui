@@ -18,12 +18,27 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.custom.bindings.root;
+package av.proj.ide.owd.hdl;
 
-public class HdlWorkerRootXmlBinding extends GenericMultiCaseRootBinding {
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-	public HdlWorkerRootXmlBinding()
-    {
-        super("HdlWorker");
-    }
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+
+public interface ControlInterface extends Element {
+	ElementType TYPE = new ElementType( ControlInterface.class );
+	
+	// *** DataWidth *** 
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Timeout")
+		
+	ValueProperty PROP_DATA_TIMEOUT = new ValueProperty(TYPE, "Timeout");
+
+	Value<String> getTimeout();
+	void setTimeout(String value);
+	
 }

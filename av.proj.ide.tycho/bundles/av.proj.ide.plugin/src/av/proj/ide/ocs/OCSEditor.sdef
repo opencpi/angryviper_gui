@@ -22,8 +22,9 @@
 <definition>
     <import>
         <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+        <definition>av.proj.ide.sdef.shared.MemberDataTypeForm</definition>
         <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
-        <definition>av.proj.ide.sdef.shared.OcsAccessibilityForm</definition>
+        <definition>av.proj.ide.ocs.sdef.OcsAccessibilityForm</definition>
         <package>av.proj.ide</package>
         <package>av.proj.ide.ocs</package>
     </import>
@@ -37,7 +38,7 @@
             <node>
                 <label>${ Name == null ? &quot;ComponentSpec&quot; : Name }</label>
                 <section>
-                	<description>Modify attributes of the ComponentSpec element.</description>
+                	<description>Top-level attributes of the OpenCPI Component Specification XML.</description>
                     <content>
                     	<section>
                     		<label>Advanced Attributes</label>
@@ -62,7 +63,7 @@
             		<label>Properties</label>
             		<section>
             			<label>Properties</label>
-            			<description>Add a property to your spec xml.</description>
+            			<description>OpenCPI Component Specification XML Property Definitions.</description>
             			<content>
                	
 			                <section>
@@ -75,7 +76,12 @@
 	                                </property-editor>
 			                    </content>
 			                    <label>Include Files</label>
-	                            <description>Include a property file to inherit it's properties. Note: The order of included files and properties is important. This is typically placed as the first element in the file. This control will place it as the next element in the file. View your source to ensure it is in the correct location.</description>
+	                            <description>
+Include a property file to inherit it's properties. Note: The order of included files and OCS properties is
+important as it directly impacts the indexing. This insert tool places an include file as the next element in the file.
+Review the source XML to ensure it is positioned in the desired location. Reordering of include files with respect
+to properties must be performed manually in the source."
+								</description>
 			                </section>
                     
             				<actuator>
@@ -90,22 +96,13 @@
             				<element-type>OcsProperty</element-type>
             				<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
             				<section>
-            					<label>Property</label>
-            					<description>Modify attributes of this Property.</description>
+            					<label>OCS Property Definition</label>
             					<content>
             						<actuator>
 	               						<action-id>Sapphire.Add</action-id>
 	               						<label>Add a Member</label>
 	               					</actuator>
- 	               					<include>PropertyForm</include>
-	               					
-                                    <section>
-               							<label>Accessibility</label>
-               							<content>
-											<include>OcsAccessibilityForm</include>
-               							</content>
-               						</section>
-               						
+ 	               					<include>OcsPropertyForm</include>
             					</content>
             				</section>
             				<node-factory>
@@ -113,14 +110,13 @@
             					<case>
                						<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
                						<section>
-               							<label>Member</label>
-               							<description>Modify attributes of this member.</description>
+               							<label>OCS Structure Member Definition</label>
                							<content>
                								<actuator>
 	               								<action-id>Sapphire.Add</action-id>
 				               					<label>Add a Member</label>
 				               				</actuator>
- 	               							<include>DataTypeForm</include>
+					               				<include>MemberDataTypeForm</include>
                							</content>
                						</section>
                						<node-factory>
@@ -128,10 +124,9 @@
                							<case>
                								<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
 			               					<section>
-			               						<label>Member</label>
-			               						<description>Modify attributes of this member.</description>
+			               						<label>OCS Structure Member Definition</label>
 			               						<content>
-	               									<include>DataTypeForm</include>
+					               					<include>MemberDataTypeForm</include>
 			               						</content>
 			               					</section>
                							</case>
@@ -148,7 +143,7 @@
             		<label>Ports</label>
             		<section>
             			<label>Ports</label>
-            			<description>Add a Port to your spec xml.</description>
+            			<description>OpenCPI Component Specification XML Port Definitions.</description>
             			<content>
             				<actuator>
             					<action-id>Sapphire.Add</action-id>
@@ -161,8 +156,7 @@
             			<case>
             				<label>${ Name == null ? "&lt;port&gt;" : Name }</label>
             				<section>
-            					<label>Port</label>
-            					<description>Modify attributes of this Port.</description>
+            					<label>OCS Port Definition</label>
             					<content>
             						<property-editor>Name</property-editor>
             						<property-editor>
@@ -195,18 +189,61 @@
         </root-node>
     </editor-page>
     
-    
-     <form>
-        <id>PropertyForm</id>
-		 <content>
-            <property-editor>
-                <height>80</height>
-                <property>Description</property>
-            </property-editor>
-			<include>DataTypeForm</include>
-       </content>
-    </form>
-    
+	<composite>
+		<id>OcsPropertyForm</id>
+		<content>
+		
+            <section>
+                <label>Property Data Type</label>
+				<content>
+					<include>DataTypeForm</include>
+				</content>
+                <collapsible>true</collapsible>
+            </section>
+            <section>
+                <label>Property Accessibility</label>
+				<content>
+					<include>OcsAccessibilityForm</include>
+				</content>
+                <collapsible>true</collapsible>
+                <description>Property Accessibility may be defined for OCS but it is not required.</description>
+            </section>
+            <section>
+                <label>Advanced</label>
+                <collapsible>true</collapsible>
+                <content>
+                    <property-editor>
+                        <property>Parameter</property>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    </property-editor>
+                    <property-editor>
+                        <visible-when>${Padding != null}</visible-when>
+                        <property>Padding</property>
+ 						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    </property-editor>
+                    <label>
+                        <visible-when>${ Parameter != null }</visible-when>
+                        <text>A parameter property is effectively a build-time constant; see documentation.</text>
+                    </label>
+                    <label>
+                        <visible-when>${ Padding != null }</visible-when>
+                        <text>Padding in the OCS is deprecated. It is intending as special parameter for the worker.</text>
+                    </label>
+                </content>
+                <collapsed-initially>true</collapsed-initially>
+            </section>
+
+		</content>
+
+	</composite>
 
     <composite>
         <id>advanced.port.form</id>
@@ -215,7 +252,7 @@
 				<label>Advanced Port Attributes</label>
 				<content>
 					<section>
-						<label>Override Summary Protocol Attributes</label>
+						<label>Override Protocol Summary Attributes</label>
 						<content>
 						    <include>ProtocolSummaryForm</include>
 						</content>

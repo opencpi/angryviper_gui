@@ -21,9 +21,13 @@
 
 <definition>
     <import>
-        <package>av.proj.ide</package>
         <package>av.proj.ide.owd</package>
         <package>av.proj.ide.owd.rcc</package>
+        <definition>av.proj.ide.sdef.shared.BuildForm</definition>
+        <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+        <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
+        <definition>av.proj.ide.owd.sdef.OwdPropertyForm</definition>
+        <definition>av.proj.ide.owd.sdef.OwdSpecPropertyForm</definition>
     </import>
     <editor-page>
         <id>RccWorkerEditorPage</id>
@@ -43,23 +47,69 @@
             				<property>ControlOperations</property>
             				<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
             			</property-editor>
-            			<section>
+            		    <include>build.form</include>      			           		   			   
+    			       <section>
             				<label>Advanced Attributes</label>
             				<content>
             					<property-editor>Name</property-editor>
             					<property-editor>Endian</property-editor>
+            					<property-editor>  
+					                <property>ExternMethods</property>
+					                <style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+					                <hint>
+					                    <name>checkbox.layout</name>
+					                    <value>leading.label</value>
+					                </hint>
+					                <visible-when>${ Language == &quot;c&quot; }</visible-when>
+            					</property-editor>
+            					<property-editor>  
+					                <property>StaticMethods</property>
+					                <style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+					                <hint>
+					                    <name>checkbox.layout</name>
+					                    <value>leading.label</value>
+					                </hint>
+					                <visible-when>${ Language == &quot;c&quot; }</visible-when>
+            					</property-editor>
+                                <section>
+                                    <label>Slave</label>
+                                    <description>Deprecated: Setting up slave workers is now done with slave elements. This is provided for presentation only.</description>
+                                    <content>
+                                        <property-editor>Slave</property-editor>
+                                    </content>
+                                    <visible-when>${ Language == &quot;c++&quot;  &amp;&amp; Slave != null}</visible-when>
+                                </section>
             				</content>
             				<collapsible>true</collapsible>
 	                    	<collapsed-initially>true</collapsed-initially>
             			</section>
             		</content>
             	</section>
+            	
+            	<!-- This 'Properties' interface is defined in 'Worker.java' class -->
             	<node>
             		<label>Properties</label>
             		<section>
             			<label>Properties</label>
             			<description>Add a Property to your worker xml.</description>
             			<content>
+ 			                <section>
+			                    <collapsed-initially>true</collapsed-initially>
+			                    <collapsible>true</collapsible>
+			                    <content>
+	                                <property-editor>
+	                                    <show-label>false</show-label>
+	                                    <property>Includes</property>
+	                                </property-editor>
+			                    </content>
+			                    <label>Include Files</label>
+	                            <description>
+Include a property file to inherit it's properties. Note: The order of included files and OWD properties is
+important as it directly impacts the indexing. This insert tool places an include file as the next element in the file.
+Review the source XML to ensure it is positioned in the desired location. Reordering of include files with respect
+to properties must be performed manually in the source."
+								</description>
+			                </section>
             				<actuator>
             					<action-id>Sapphire.Add</action-id>
             					<label>Add a Property.</label>
@@ -71,121 +121,16 @@
             			<case>
             				<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
             				<section>
-            					<label>Property</label>
-            					<description>Modify attributes of this Property.</description>
+            					<label>OWD Property Definition</label>
             					<content>
-	            					<actuator>
-		               					<action-id>Sapphire.Add</action-id>
-		               					<label>Add a Member</label>
-		               				</actuator>
-            						<property-editor>Name</property-editor>
-                                	<property-editor>Type</property-editor>
-                                    <property-editor>
-                                        <visible-when>${ Type == &quot;string&quot; }</visible-when>
-                                        <property>StringLength</property>
-                                    </property-editor>
-                                    <property-editor>
-                                    	<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-                                    	<property>Enums</property>
-                                    </property-editor>
-                                    <property-editor>Default</property-editor>
-                                	<!--<property-editor>ArrayLength</property-editor>-->
-                                	<property-editor>SequenceLength</property-editor>
-                                	<property-editor>ArrayDimensions</property-editor>
-                                	<property-editor>  
-			                    		<property>Parameter</property>
-			                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    		<hint>
-			                    			<name>checkbox.layout</name>
-			                    			<value>leading.label</value>
-			                    		</hint>
-			                    	</property-editor>
-                                    <section>
-               							<label>Accessibility</label>
-               							<content>
-               								<property-editor>  
-					                    		<property>Readable</property>
-					                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-					                    		<hint>
-					                    			<name>checkbox.layout</name>
-					                    			<value>leading.label</value>
-					                    		</hint>
-					                    	</property-editor>
-					                    	<property-editor>  
-					                    		<property>Volatile</property>
-					                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-					                    		<hint>
-					                    			<name>checkbox.layout</name>
-					                    			<value>leading.label</value>
-					                    		</hint>
-					                    	</property-editor>
-					                    	<property-editor>  
-					                    		<property>Writable</property>
-					                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-					                    		<hint>
-					                    			<name>checkbox.layout</name>
-					                    			<value>leading.label</value>
-					                    		</hint>
-					                    	</property-editor>
-					                    	<property-editor>  
-					                    		<property>Initial</property>
-					                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-					                    		<hint>
-					                    			<name>checkbox.layout</name>
-					                    			<value>leading.label</value>
-					                    		</hint>
-					                    	</property-editor>
-					                    	<property-editor>  
-					                    		<property>Padding</property>
-					                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-					                    		<hint>
-					                    			<name>checkbox.layout</name>
-					                    			<value>leading.label</value>
-					                    		</hint>
-					                    	</property-editor>                								
-               							</content>
-               						</section>
-                                    <section>
-                                        <label>Advanced Attributes</label>
-                                        <content>
-                                            <property-editor>
-                                                <hint>
-                                                    <name>checkbox.layout</name>
-                                                    <value>leading.label</value>
-                                                </hint>
-                                                <property>ReadSync</property>
-                                                <style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                                            </property-editor>
-                                            <property-editor>
-                                                <hint>
-                                                    <name>checkbox.layout</name>
-                                                    <value>leading.label</value>
-                                                </hint>
-                                                <property>WriteSync</property>
-                                                <style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                                            </property-editor>
-                                            <property-editor>
-                                                <hint>
-                                                    <name>checkbox.layout</name>
-                                                    <value>leading.label</value>
-                                                </hint>
-                                                <property>ReadError</property>
-                                                <style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                                            </property-editor>
-                                            <property-editor>
-                                                <hint>
-                                                    <name>checkbox.layout</name>
-                                                    <value>leading.label</value>
-                                                </hint>
-                                                <property>WriteError</property>
-                                                <style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                                            </property-editor>
-                                            <collapsible>true</collapsible>
-	                    					<collapsed-initially>true</collapsed-initially>
-                                        </content>
-                                    </section>
+            						<actuator>
+	               						<action-id>Sapphire.Add</action-id>
+	               						<label>Add a Member</label>
+	               					</actuator>
+   	               					<include>OwdPropertyForm</include>
             					</content>
             				</section>
+            				
             				<node-factory>
             					<property>Members</property>
             					<case>
@@ -198,19 +143,7 @@
 	               								<action-id>Sapphire.Add</action-id>
 				               					<label>Add a Member</label>
 				               				</actuator>
-               								<property-editor>Name</property-editor>
-               								<property-editor>Type</property-editor>
-               								<property-editor>
-               									<property>Enums</property>
-               									<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-               								</property-editor>
-               								<property-editor>
-               									<property>StringLength</property>
-               									<visible-when>${ Type == &quot;string&quot; }</visible-when>
-               								</property-editor>
-               								<property-editor>Default</property-editor>
-               								<property-editor>SequenceLength</property-editor>
-               								<property-editor>ArrayDimensions</property-editor>
+  	               							<include>DataTypeForm</include>
                							</content>
                						</section>
                						<node-factory>
@@ -221,19 +154,7 @@
 			               						<label>Member</label>
 			               						<description>Modify attributes of this member.</description>
 			               						<content>
-			               							<property-editor>Name</property-editor>
-			               							<property-editor>Type</property-editor>
-			               							<property-editor>
-			               								<property>Enums</property>
-			               								<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-			               							</property-editor>
-			               							<property-editor>
-			               								<property>StringLength</property>
-			               								<visible-when>${ Type == &quot;string&quot; }</visible-when>
-			               							</property-editor>
-			               							<property-editor>Default</property-editor>
-			               							<property-editor>SequenceLength</property-editor>
-			               							<property-editor>ArrayDimensions</property-editor>
+  	               								<include>DataTypeForm</include>
 			               						</content>
 			               					</section>
                							</case>
@@ -242,9 +163,12 @@
             					</case>
             					<visible-when>${ Type == &quot;struct&quot; }</visible-when>
             				</node-factory>
+                            <element-type>Property</element-type>
+            				
             			</case>
             		</node-factory>
             	</node>
+            	
             	<node>
             		<label>SpecProperties</label>
             		<section>
@@ -262,59 +186,17 @@
             			<case>
             				<label>${ Name == null ? "&lt;spec property&gt;" : Name }</label>
             				<section>
-            					<label>SpecProperty</label>
-            					<description>Modify attributes of this SpecProperty.</description>
+            					<label>OWD SpecProperty Definition</label>
             					<content>
-            						<property-editor>Name</property-editor>
-            						<property-editor>Default</property-editor>
-            						<property-editor>  
-			                    		<property>ReadSync</property>
-			                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    		<hint>
-			                    			<name>checkbox.layout</name>
-			                    			<value>leading.label</value>
-			                    		</hint>
-			                    	</property-editor>
-			                    	<property-editor>  
-			                    		<property>WriteSync</property>
-			                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    		<hint>
-			                    			<name>checkbox.layout</name>
-			                    			<value>leading.label</value>
-			                    		</hint>
-			                    	</property-editor>
-			                    	<property-editor>  
-			                    		<property>ReadError</property>
-			                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    		<hint>
-			                    			<name>checkbox.layout</name>
-			                    			<value>leading.label</value>
-			                    		</hint>
-			                    	</property-editor>
-			                    	<property-editor>  
-			                    		<property>WriteError</property>
-			                    		<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    		<hint>
-			                    			<name>checkbox.layout</name>
-			                    			<value>leading.label</value>
-			                    		</hint>
-			                    	</property-editor>
-									<section>
-										<label>Accessibility</label>
-										<content>
-											<property-editor>Readable</property-editor>
-											<property-editor>Volatile</property-editor>
-											<property-editor>Writable</property-editor>
-											<property-editor>Initial</property-editor>
-										</content>
-									</section>
-            					</content>
+            						<include>OwdSpecPropertyForm</include>
+             					</content>
             				</section>
             			</case>
             		</node-factory>
             	</node>
+            	
             	<node>
-            		<label>Ports</label>
+            		<label>ports</label>
             		<section>
             			<label>Ports</label>
             			<description>Add a Port to your worker xml.</description>
@@ -331,59 +213,137 @@
             				<label>${ Name == null ? "&lt;port&gt;" : Name }</label>
             				<section>
             					<label>Port</label>
-            					<description>Modify attributes of this Port.</description>
+            					<description>This port name must match the corresponding port name in the OCS</description>
             					<content>
-            						<property-editor>Name</property-editor>
-            						<section>
-            							<label>Advanced Attributes</label>
-            							<content>
-	            							<property-editor>MinBufferCount</property-editor>
-			            					<property-editor>NumberOfOpCodes</property-editor>
-			            					<property-editor>DataValueWidth</property-editor>
-			            					<property-editor>DataValueGranularity</property-editor>
-			            					<property-editor>  
-			                    				<property>ZeroLengthMessages</property>
-			                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    				<hint>
-			                    					<name>checkbox.layout</name>
-			                    					<value>leading.label</value>
-			                    				</hint>
-			                    			</property-editor>
-            								<property-editor>MaxMessageValues</property-editor>
-            								<property-editor>
-			                    				<property>VariableMessageLength</property>
-			                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    				<hint>
-			                    					<name>checkbox.layout</name>
-			                    					<value>leading.label</value>
-			                    				</hint>
-			                    			</property-editor>
-			                    			<property-editor>
-			                    				<property>DiverseDataSizes</property>
-			                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    				<hint>
-			                    					<name>checkbox.layout</name>
-			                    					<value>leading.label</value>
-			                    				</hint>
-			                    			</property-editor>
-			                    			<property-editor>
-			                    				<property>UnBounded</property>
-			                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-			                    				<hint>
-			                    					<name>checkbox.layout</name>
-			                    					<value>leading.label</value>
-			                    				</hint>
-			                    			</property-editor>
-            							</content>
-            							<collapsible>true</collapsible>
-	                    				<collapsed-initially>true</collapsed-initially>
-            						</section>          						
+									<include>rcc.worker.port.form</include>
+
             					</content>
             				</section>
             			</case>
             		</node-factory>
-            	</node>
+            	</node>   
+            	
+            	<node>
+                    <label>Slave Workers</label>
+            	    <section>
+            	        <label>Slave Workers</label>
+            	        <content>
+            	            <actuator>
+            		            <action-id>Sapphire.Add</action-id>
+            			        <label>Add a Slave.</label>
+            		        </actuator>
+            		    <separtor></separtor>
+            		    <section>
+            		        <label>Slave List</label>
+            		        <content>
+            		            <property-editor>
+            		                <property>Slaves</property>
+            		                <child-property>Worker</child-property>
+            		                <child-property>Name</child-property>
+            		            </property-editor>
+            		        </content>
+            		    </section>
+            	        </content>
+            	        <description>If this worker is a proxy for one or more workers, those workers are placed in the slave list. The worker must be listed; the name is optional. See the RCC Development Guide for details on the name attribute.</description>
+            	    </section>    	
+            	    <node-factory>
+            	        <property>Slaves</property>
+            	        <case>
+            	            <label>${Worker == null ? &quot;&lt;slave property&gt;&quot; : Worker}</label>
+            	            <section>
+            	                <label>SlaveProperty</label>
+            	                <content>
+            	                    <property-editor>Worker</property-editor>
+            	                    <property-editor>Name</property-editor>
+            	                </content>
+            	            </section>
+            	        </case>
+            	    </node-factory>
+                    <visible-when>${ Language == &quot;c++&quot;  &amp;&amp; slave == null}</visible-when>        
+            	</node>  
+            	        
             </node>
         </root-node>
     </editor-page>
+ 
+    <composite>
+        <id>build.form</id>
+            <content>
+                <section>
+                    <label>Build Attributes</label>
+                    <content>                    
+                        <include>BuildForm</include>
+                    </content>
+                    <collapsible>true</collapsible>
+		            <collapsed-initially>true</collapsed-initially>
+                </section>
+            </content>    
+    </composite>
+    
+    <composite>
+        <id>rcc.worker.port.form</id>
+        <content>
+           	<property-editor>Name</property-editor>
+			<section>
+				<label>Advanced Port Attributes</label>
+				<content>
+	            	<property-editor>MinBufferCount</property-editor>
+					<section>
+						<label>Override Protocol Summary Attributes</label>
+						<content>
+						    <include>ProtocolSummaryForm</include>
+						</content>
+					</section>
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+	    </content>
+    </composite>
+
+	<form>
+		<id>RccAdvancedAttributesForm</id>
+		<content>
+			<section>
+				<label>Advanced Attributes</label>
+				<content>
+					<property-editor>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<property>ReadSync</property>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+					</property-editor>
+					<property-editor>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<property>WriteSync</property>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+					</property-editor>
+					<property-editor>
+						<property>ReadError</property>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+					</property-editor>
+					<property-editor>
+						<property>WriteError</property>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+					</property-editor>
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+		</content>
+	</form>
+    
 </definition>

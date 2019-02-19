@@ -25,55 +25,56 @@ import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
+import av.proj.ide.custom.bindings.root.ProtocolRootXmlBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface StreamInterface extends HdlDataPortSpecific {
-	ElementType TYPE = new ElementType( StreamInterface.class );
-	
-	// *** Name *** 
-	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
-	@Label(standard = "Name")
-	@Required 
-	
-	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
+@CustomXmlRootBinding( value = ProtocolRootXmlBinding.class )
 
-	Value<String> getName();
-	void setName(String value);
+public interface HdlDataPortSpecific extends HdlPortSummary {
+	ElementType TYPE = new ElementType( HdlDataPortSpecific.class );
 
-	// These two have yet to be supported.  Leave them.
-	// *** Clock *** 
+	// *** DataWidth *** 
 	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
-	@Label(standard = "Clock")
+	@Label(standard = "DataWidth") 
+		
+	ValueProperty PROP_DATA_WIDTH = new ValueProperty(TYPE, "DataWidth");
+
+	Value<String> getDataWidth();
+	void setDataWidth(String value);
+
+	// *** DataValueSize ***
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "DataValueSize")
+		
+	ValueProperty PROP_DATA_VALUE_SIZE = new ValueProperty(TYPE, "DataValueSize");
+
+	Value<String> getDataValueSize();
+	void setDataValueSize(String value);
+	
+	// *** PreciseBurst ***
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "PreciseBurst" )
 			
-	ValueProperty PROP_CLOCK = new ValueProperty(TYPE, "Clock");
+	ValueProperty PROP_PRECISE_BURST = new ValueProperty(TYPE, "PreciseBurst");
+			
+	Value<Boolean> getPreciseBurst();
+	void setPreciseBurst( String value );
+	void setPreciseBurst( Boolean value );
+	
+	// *** Abortable ***
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Abortable" )
+				
+	ValueProperty PROP_ABORTABLE = new ValueProperty(TYPE, "Abortable");
+				
+	Value<Boolean> getAbortable();
+	void setAbortable( String value );
+	void setAbortable( Boolean value );
 
-	Value<String> getClock();
-	void setClock(String value);
-	
-	// *** MyClock ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "MyClock" )
-		
-	ValueProperty PROP_MY_CLOCK = new ValueProperty(TYPE, "MyClock");
-		
-	Value<Boolean> getMyClock();
-	void setMyClock( String value );
-	void setMyClock( Boolean value );
-	
-	// *** MyClock ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "Producer" )
-		
-	ValueProperty PROP_PRODUCER = new ValueProperty(TYPE, "Producer");
-		
-	Value<Boolean> getProducer();
-	void setProducer( String value );
-	void setProducer( Boolean value );
-	
 }

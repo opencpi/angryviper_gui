@@ -25,6 +25,7 @@ import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
@@ -36,6 +37,16 @@ import av.proj.ide.services.ProtocolPossibleValuesService;
 public interface Port extends ProtocolSummary {
 	ElementType TYPE = new ElementType(Port.class);
 
+	// *** Name ***(required for name attribute of Protocol in OPS Editor)
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
+	@Label( standard = "Name")
+	@Required
+	
+	ValueProperty PROP_NAME = new ValueProperty( TYPE, "Name");
+	
+	Value<String> getName();
+	void setName( String value );
+	
 	// *** Producer ***
 	@Type ( base = Boolean.class )
 	@CustomXmlValueBinding( impl = BooleanAttributeRemoveIfFalseValueBinding.class )

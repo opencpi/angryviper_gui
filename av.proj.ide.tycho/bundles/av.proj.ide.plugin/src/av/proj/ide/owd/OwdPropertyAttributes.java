@@ -24,6 +24,7 @@ import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
@@ -36,6 +37,7 @@ public interface OwdPropertyAttributes extends av.proj.ide.ocs.Member {
 	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Type( base = Boolean.class )
 	@Label( standard = "ReadSync" )
+	@Enablement(expr="${  (Parameter==null && Padding == null) && (Readable != null || Volatile != null) }")
 	
 	ValueProperty PROP_READ_SYNC = new ValueProperty(TYPE, "ReadSync");
 
@@ -47,6 +49,7 @@ public interface OwdPropertyAttributes extends av.proj.ide.ocs.Member {
 	@Type( base = Boolean.class )
 	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "WriteSync" )
+	@Enablement(expr="${ (Parameter==null && Padding == null) && (Initial != null || Writable != null) }")
 		
 	ValueProperty PROP_WRITE_SYNC = new ValueProperty(TYPE, "WriteSync");
 
@@ -58,6 +61,7 @@ public interface OwdPropertyAttributes extends av.proj.ide.ocs.Member {
 	@Type( base = Boolean.class )
 	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "ReadError" )
+	@Enablement(expr="${  (Parameter==null && Padding == null) && (Readable != null || Volatile != null) }")
 	
 	ValueProperty PROP_READ_ERROR = new ValueProperty(TYPE, "ReadError");
 
@@ -69,11 +73,23 @@ public interface OwdPropertyAttributes extends av.proj.ide.ocs.Member {
 	@Type( base = Boolean.class )
 	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "WriteError" )
+	@Enablement(expr="${ (Parameter==null && Padding == null) && (Initial != null || Writable != null) }")
 		
 	ValueProperty PROP_WRITE_ERROR = new ValueProperty(TYPE, "WriteError");
 
 	Value<Boolean> getWriteError();
 	void setWriteError( String value );
 	void setWriteError( Boolean value );
+	
+	// *** Raw Properties ***
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Raw Properties" )
+		
+	ValueProperty PROP_RAW_PROPERTIES = new ValueProperty(TYPE, "RawProperties");
+		
+	Value<Boolean> getRawProperties();
+	void setRawProperties( String value );
+	void setRawProperties( Boolean value );
 	
 }

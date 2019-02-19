@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+
+	<composite>
+		<id>HdlWorkerAttributesForm</id>
+		<content>
+
+			<section>
+				<label>HDL Worker Attributes</label>
+				<content>
+					<include>WorkerAttributesForm</include>
+           			<property-editor>DataWidth</property-editor>
+				</content>
+			</section>
+
+			<section>
+				<label>Advanced Attributes</label>
+				<content>
+					<include>WorkerAdvancedAttributesForm</include>
+             		<property-editor>FirstRawProperty</property-editor>
+		  			<property-editor>
+		   				<property>RawProperties</property>
+		   				<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+		                <hint>
+		               		<name>checkbox.layout</name><value>leading.label</value>
+		                </hint>
+                        <related-content>
+                            <label>
+                                <visible-when>${RawProperties != null}</visible-when>
+                                <text>The top level raw properties attribute is now deprecated.</text>
+                            </label>
+                        </related-content>
+                        <related-content-width>80</related-content-width>
+                        <visible-when>${RawProperties != null}</visible-when>
+		   			</property-editor>
+                    <spacer></spacer>
+                    <label>Infrastructure Worker Attributes</label>
+                    <spacer></spacer>
+					<include>InfrastructureWorkerAttributesForm</include>
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+
+		</content>
+	</composite>
+	<import>
+		<definition>av.proj.ide.owd.sdef.WorkerAttributesForm</definition>
+        <definition>av.proj.ide.owd.sdef.WorkerAdvancedAttributesForm</definition>
+        <definition>av.proj.ide.owd.hdl.sdef.InfrastructureWorkerAttributesForm</definition>
+	</import>
+
+</definition>

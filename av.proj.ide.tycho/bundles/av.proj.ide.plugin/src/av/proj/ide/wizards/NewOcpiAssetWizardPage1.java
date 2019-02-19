@@ -25,12 +25,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
@@ -56,20 +59,19 @@ import av.proj.ide.wizards.internal.WizardInputConverter;
 
 
 public class NewOcpiAssetWizardPage1 extends WizardPage {
-	private Composite container;
+	Composite container;
 	
 
-	private final String[] modelOptions = {"RCC", "HDL"};
-	private final String[] hdlLangOptions = {"VHDL"};
-	private final String[] rccLangOptions = {"C", "C++"};
+	final String[] modelOptions = {"RCC", "HDL"};
+	final String[] hdlLangOptions = {"VHDL"};
+	final String[] rccLangOptions = {"C++", "C"};
 	
-	private final String[] assetOptions = {"Project", "Library", "Component",
+	final String[] assetOptions = {"Project", "Library", "Component",
 			                               "Worker", "Protocol","Application",
 			                               "HDL Assembly", "HDL Primitive Library",
                                              "HDL Platform", "Unit Test"
                                             };
 
-	//private DataBindingContext ctx;
 	
 	// Services for the OpenCPI Project view to relate
 	// initial selection info to the wizard.
@@ -97,6 +99,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	public void setInitialAssetWizard(OpenCPICategory selectedAssetType) {
 		this.presentInitialWizard = selectedAssetType;
 	}
+	
 	public void setInitialAssetSelection(AngryViperAsset initialSelection) {
 		initialAssetSelection = initialSelection;
 		initialProjectSelected = initialSelection.projectLocation.packageId;
@@ -138,9 +141,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		}
 	}
 
-	
-
-	// general across all assets except projects:
+	// general across all assets except projects and unit tests:
 	Label assetType;
 	Combo assetSelection;
 	String selectedAsset;
@@ -195,23 +196,23 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	Set<String> depsList;
 	
 	// Applications
-	private Button xmlApp;
-	private Button[] projectDepButtons;
+	Button xmlApp;
+	Button[] projectDepButtons;
 	
 	// Specs and protocols
-	private List<String> libraryOptions;
-	private Combo libraryCombo;
-	private Combo specCombo;
-	private Button topSpecsButton;
-	private Button libButton;
+	List<String> libraryOptions;
+	Combo libraryCombo;
+	Combo specCombo;
+	Button topSpecsButton;
+	Button libButton;
 	
 	// Workers
-	private Combo modelCombo;
-	private Combo languageCombo;
+	Combo modelCombo;
+	Combo languageCombo;
 
 	// HDL Platform 
-	private Text partNumber;
-	private Text timeServerFreq;
+	Text partNumber;
+	Text timeServerFreq;
 	
 	public NewOcpiAssetWizardPage1(NewOcpiAssetWizard wizard, ISelection selection) {
 		super("wizardPage");
@@ -219,7 +220,6 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		setDescription("Select the asset type from the drop down and complete the form.");
 		//ctx = new DataBindingContext();
 		libraryOptions = new ArrayList<String>();
-		
 	}
 
 	// Flow of control:
@@ -270,7 +270,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		setControl(container);
 		container.layout();
 	}
-	private String helpMessage = null;
+	
+	String helpMessage = null;
+	
 	@Override
 	public void performHelp() {
 		if(helpMessage != null) {
@@ -345,6 +347,14 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		dimension.height = 400;
 		
 		boolean needsBasePanel = (projectCombo == null || assetName == null || assetName.isDisposed() );
+		boolean initialFormComplete = false;
+		if(! needsBasePanel) {
+			int len = getAssetName().length();
+			if(len > 2) {
+				initialFormComplete = true;
+			}
+		}
+		
 		clearStatus();
 		setMessage(null);
 		helpMessage = stdHelpMessage;
@@ -366,15 +376,18 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			setMessage("Create and register a new OpenCPI project. Press help (\"?\" below) for more information.", IMessageProvider.INFORMATION);
 			helpMessage = sb.toString();
 			addNewProjectGroup(width);
+			
 			dimension.resize = true;
 			dimension.width = 650;
 			dimension.height = 550;
+			initialFormComplete = true;
 			break;
 		
 		case application:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Add a new Application");
 			assetLabel.setText("Application Name:");
@@ -392,13 +405,15 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case library:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Add a new library");
 			assetLabel.setText("Library Name:");
 			if(libraryOptions == null || libraryOptions.isEmpty()) {
 				assetName.setText("components");
+				initialFormComplete = true;
 			}
 			// This project already has a library, this is an additional
 			// lib.  Leave the input blank.
@@ -406,8 +421,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case assembly:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Add a new HDL Assembly");
 			assetLabel.setText("Assembly Name:");
@@ -415,8 +431,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case platform:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Generate a new HDL platfrom");
 			assetLabel.setText("HDL Platform Name:");
@@ -430,8 +447,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case primitive:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Add a new HDL Primitive Library");
 			assetLabel.setText("Primitive Lib Name:");
@@ -439,8 +457,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case component:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Add a new Component");
 			assetLabel.setText("Component Name:");
@@ -455,8 +474,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case protocol:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
+			if(needsBasePanel) {
 				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Add a new Protocol");
 			assetLabel.setText("Protocol Name:");
@@ -471,17 +491,20 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			
 		case worker:
 			clearAccessoryWidgets();
-			if(needsBasePanel)
-				addBasicAssetInputs(550);
+			if(needsBasePanel) {
+				addBasicAssetInputs(width);
+			}
 			
 			setDescription("Create a new Worker");
 			assetLabel.setText("Worker Name:");
-			addLibAndSpecInputs(550);
-			addWorkerInputs(550);
+			addWorkerInputs(width);
+			addLibraryDropdown(width);
+			addSpecDropdown(550);
 			
 			status = loadWorkerInputSelections();
 			if(status != null) {
 				updateStatus(status);
+				initialFormComplete = false;
 			}
 			dimension.height = 600;
 			dimension.width  = 750;
@@ -502,6 +525,10 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			status = loadTestInputSelections();
 			if(status != null) {
 				updateStatus(status);
+				initialFormComplete = false;
+			}
+			else {
+				initialFormComplete = true;
 			}
 			dimension.height = 450;
 			dimension.resize = true;
@@ -510,10 +537,11 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		default:
 			break;
 		}
+		this.setPageComplete(initialFormComplete);
 		return dimension;
 	}
 
-	private void loadLibraryOptions() {
+	void loadLibraryOptions() {
 		int idx = 0;
 		int libIdx = -1;
 		if(libraryOptions.size() == 0) return;
@@ -535,7 +563,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	
 	private OpenCPICategory currentAsset = null;
 
-	private void reloadLibOptions() {
+	void reloadLibOptions() {
 		boolean libraryAsset = false;
 		switch(currentAsset) {
 		default:
@@ -570,7 +598,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		}
 	}
 	
-	private String loadComponentInputSelections(int inputWidth) {
+	String loadComponentInputSelections(int inputWidth) {
 		if(libraryOptions.size() == 0) {
 			addToplevelSpecsDefault(inputWidth);
 			return null;
@@ -601,7 +629,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		return null;
 	}
 
-	private String loadTestInputSelections() {
+	String loadTestInputSelections() {
 		String projectName = getProjectSelection();
 		if(libraryOptions.size() == 0) {
 			return "A components library must be created before creating this asset.";
@@ -634,7 +662,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		
 		return null;
 	}
-	private String loadSpecCombo (Collection<String> comps) {
+	
+	String loadSpecCombo (Collection<String> comps) {
 		if(comps == null || comps.isEmpty()) {
 			return "There are no available components in this library.";
 		}
@@ -658,13 +687,14 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		if( specIdx != -1) {
 			specCombo.select(specIdx);
 		}
-		else if (comps.size() == 1) {
+		else if (comps.size() >= 1) {
 			specCombo.select(0);
 		}
 		return null;
 		
 	}
-	private String loadWorkerInputSelections() {
+	
+	String loadWorkerInputSelections() {
 		String projectName = getProjectSelection();
 		if(libraryOptions.size() == 0) {
 			return "A components library must be created before creating this asset.";
@@ -707,7 +737,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		
 	}
 	
-	private void addBasicAssetInputs(int inputWidth) {
+	void addBasicAssetInputs(int inputWidth) {
 		// +++++++++++++++++
 		assetLabel = new Label(container, SWT.NULL);
 		assetLabel.setText("Asset Name");
@@ -721,9 +751,43 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		assetName.setLayoutData(gd);
 		addProjectInput(inputWidth);
 		assetName.setMessage("required");
+		
+		// Add basic asset Name validation.
+		// TODO: Need a way to control setting
+		// page complete when other inputs require
+		// validation.
+		NewOcpiAssetWizardPage1 me = this;
+		assetName.addModifyListener( new ModifyListener() {
+			boolean displayedMessage = false;
+			@Override
+			public void modifyText(ModifyEvent e) {
+		       String currentText = ((Text)e.widget).getText();
+				if (currentText.length() > 2) {
+					boolean bad = p.matcher(currentText).find();
+					if(bad) {
+						me.updateStatus("Invalid characters used in asset name.");
+						displayedMessage = true;
+					}
+					else {
+						me.setPageComplete(true);
+						if(displayedMessage) {
+							setErrorMessage(null);
+							displayedMessage = false;
+						}
+					}
+				}
+				else {
+					me.setPageComplete(false);
+				}
+			}
+		});
 	}
 	
-	private void addProjectInput(int inputWidth) {
+	// Regex notes: \p{Punct} - build it for all punctuation characters (backslash is escaped),
+	// and not underscore, dash or period; dash and period escaped.
+	private Pattern p = Pattern.compile("[\\p{Punct} && [^_\\-\\.]]");
+	
+	void addProjectInput(int inputWidth) {
 		
 		if(projectCombo != null) {
 			return;
@@ -771,7 +835,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		});	
 	}
 	
-	private void addNewProjectGroup(int inputWidth) {
+	void addNewProjectGroup(int inputWidth) {
 		//+++++++++++++++++++++++++++++++++++++++++++
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Project Name");
@@ -846,7 +910,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			b.setData(projectName);
 		}
 	}
-	private void addToplevelSpecsDefault(int inputWidth) {
+	void addToplevelSpecsDefault(int inputWidth) {
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Location:");
 		GridData gd = new GridData(SWT.END, SWT.CENTER, false, false);
@@ -858,7 +922,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	}
 	
 	
-	private void addRadioGroupForSingleLib(int inputWidth, String selectedLib) {
+	void addRadioGroupForSingleLib(int inputWidth, String selectedLib) {
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Location:");
 		GridData gd = new GridData(SWT.END, SWT.CENTER, false, false);
@@ -877,7 +941,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		libButton.setSelection(true);
 	}
 
-	private void addRadioGroupForLibs(int inputWidth) {
+	void addRadioGroupForLibs(int inputWidth) {
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Location:");
 		GridData gd = new GridData(SWT.END, SWT.CENTER, false, false);
@@ -896,7 +960,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		libButton.setSelection(true);
 	}
 
-	private void addLibraryDropdown(int inputWidth) {
+	void addLibraryDropdown(int inputWidth) {
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Add to Library");
 		GridData gd = new GridData(SWT.END, SWT.CENTER, false, false);
@@ -909,7 +973,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		libraryCombo.setLayoutData(gd);
 	}
 	
-	private void addWorkerInputs(int inputWidth) {
+	void addWorkerInputs(int inputWidth) {
 		Label label = new Label(container, SWT.NONE);
 		label.setText("Model");
 		GridData gd = new GridData(SWT.END, SWT.CENTER, false, false);
@@ -966,8 +1030,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		
 	}
 
-	private void addLibAndSpecInputs(int inputWidth) {
-		addLibraryDropdown(inputWidth);
+	void addSpecDropdown(int inputWidth) {
 		// +++++++++++++++++
 		Label label = new Label(container, SWT.NULL);
 		label.setText("Component Spec:");
@@ -980,7 +1043,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	}
 
 	
-	private void addUnitTestInputs(int inputWidth) {
+	void addUnitTestInputs(int inputWidth) {
 		
 		addProjectInput(inputWidth); // gets the library option when loaded
 		addLibraryDropdown(inputWidth);
@@ -1025,7 +1088,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 //			createLibraryOptionGroup();
 //		}
 //	}
-	private void addHDLPlatfromGroup(int inputWidth){
+	void addHDLPlatfromGroup(int inputWidth){
 		
 		//+++++++++++++++++++++++++++++++++++++++++++
 		Label label = new Label(container, SWT.NONE);
@@ -1050,7 +1113,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		timeServerFreq.setLayoutData(gd);
 		
 	}
-	private void clearAllAssetWidgets() {
+	void clearAllAssetWidgets() {
 		// Delete all widgets currently being displayed in wizard
 		for (Control widget : container.getChildren()) {
 			if (	widget.equals(assetType) ||
@@ -1064,7 +1127,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		assetName = null;
 	}
 	
-	private void clearAccessoryWidgets() {
+	void clearAccessoryWidgets() {
 		
 		for (Control widget : container.getChildren()) {
 			if (	widget.equals(assetType) ||
@@ -1080,9 +1143,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		}
 	}
 	
-	private void clearStatus() {
+	void clearStatus() {
 		setErrorMessage(null);
-		setPageComplete(true);
+		setPageComplete(false);
 	}
 	
 	// validators use this.
@@ -1093,6 +1156,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		setErrorMessage(message);
 		setPageComplete(message == null);
 	}
+	
 	/****************************
 	 *    Setters and getters
 	 ****************************/

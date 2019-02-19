@@ -22,36 +22,22 @@ package av.proj.ide.ocs;
 
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
-import org.eclipse.sapphire.Validation;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.LongString;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface OcsProperty extends Member  {
 	ElementType TYPE = new ElementType(OcsProperty.class);
-
-	// *** Description ***
-	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
-	@Label(standard = "Description")
-	@LongString
-	
-	ValueProperty PROP_DESCRIPTION = new ValueProperty(TYPE, "Description");
-
-	Value<String> getDescription();
-	void setDescription(String value);
 
 	// *** Parameter ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Parameter")
-    @Enablement( expr = "${  Writable == null && Initial == null }" )
+    @Enablement( expr = "${  Writable == null && Initial == null && Volatile == null && Padding == null }" )
 	
 	ValueProperty PROP_PARAMETER = new ValueProperty(TYPE, "Parameter");
 	
@@ -59,11 +45,23 @@ public interface OcsProperty extends Member  {
 	void setParameter(String value);
 	void setParameter(Boolean value);
 	
+	// *** Parameter ***
+	// Padding should not be set in the OCS.  This is put here to display it and 
+	// indicate it is deprecated.
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Padding")
+    @Enablement( expr = "${  false }" )
+	
+	ValueProperty PROP_PADDING = new ValueProperty(TYPE, "Padding");
+	
+	Value<Boolean> getPadding();
+	
 	
 	// *** Writable ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-    @Enablement( expr = "${  Parameter == null && Initial == null }" )
+    @Enablement( expr = "${  Parameter == null && Initial == null && Padding == null }" )
 	@Label(standard = "Writable")
 	
 	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
@@ -75,10 +73,7 @@ public interface OcsProperty extends Member  {
 	// *** Initial ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-    @Enablement( expr = "${  Parameter == null && Writable == null }" )
-	@Validation(   rule = "${  Parameter != null && Writable != null || Initial != null}" ,
-    message = "An access attribute must be set.  Initial is the least restrictive OCS property access.",
-    severity = Status.Severity.WARNING)
+    @Enablement( expr = "${  Parameter == null && Writable == null && Padding == null }" )
 	@Label(standard = "Initial")
 	
 	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
@@ -91,7 +86,7 @@ public interface OcsProperty extends Member  {
 	// *** Volatile ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-    @Enablement( expr = "${ Initial != null || Writable != null }" )
+    @Enablement( expr = "${ Parameter == null && Padding == null }" )
 	@Label(standard = "Volatile")
 	
 	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");

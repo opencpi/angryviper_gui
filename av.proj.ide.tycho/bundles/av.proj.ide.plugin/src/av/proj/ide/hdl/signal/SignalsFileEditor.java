@@ -76,13 +76,13 @@ public class SignalsFileEditor extends SapphireEditor {
         setPageText( index, "Source" );
     }
 	
-	protected void modifyOldAttributes(ElementList<Signal> signals) {
+	private void modifyOldAttributes(ElementList<DeviceSignal> signals) {
     	/**
     	 * For simplicity the UI currently present signal definitions using
     	 * the current attribute set defining a name and a direction.
     	 */
 		boolean changed = false;
-    	for(Signal signal : signals) {
+    	for(DeviceSignal signal : signals) {
     		String name = signal.getName().content();
     		if( name != null )
     			continue;
@@ -98,16 +98,6 @@ public class SignalsFileEditor extends SapphireEditor {
     			signal.setName(signal.getOutput().content());
     			signal.setOutput(null);
 	   		}
-	    		else if(signal.getInout().content() != null) {
-	    			signal.setDirection(SignalDirection.inout);
-	    			signal.setName(signal.getInout().content());
-	    			signal.setInout(null);
-	   		}
-    		else if(signal.getBidirectional().content() != null) {
-    			signal.setDirection(SignalDirection.bidirectional);
-    			signal.setName(signal.getBidirectional().content());
-    			signal.setBidirectional(null);
-    		}
     	}
     	if(changed) {
     		if(modMessages.contains(me)) {
@@ -120,7 +110,7 @@ public class SignalsFileEditor extends SapphireEditor {
 	
 	protected void updateSignalDefinitions(Element element) {
     	Signals fileElement = (Signals)element;
-    	ElementList<Signal> signals = fileElement.getSignals();
+    	ElementList<DeviceSignal> signals = fileElement.getSignals();
     	modifyOldAttributes(signals);
 	}
     

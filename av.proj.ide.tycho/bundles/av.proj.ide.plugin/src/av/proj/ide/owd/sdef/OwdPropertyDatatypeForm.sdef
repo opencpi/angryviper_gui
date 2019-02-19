@@ -22,34 +22,14 @@
 <definition>
 
 	<form>
-		<id>DataTypeForm</id>
+		<id>OwdPropertyDatatypeForm</id>
 		<content>
-			<property-editor>Name</property-editor>
-			<property-editor>Type</property-editor>
-			<property-editor>
-				<height>80</height>
-				<property>Description</property>
-			</property-editor>
-			<property-editor>
-				<visible-when>${ Type == &quot;string&quot; }</visible-when>
-				<property>StringLength</property>
-			</property-editor>
-			<property-editor>
-				<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-				<property>Enums</property>
-			</property-editor>
-			<property-editor>SequenceLength</property-editor>
-			<property-editor>ArrayDimensions</property-editor>
-			<section>
-				<visible-when>${ArrayLength != null}</visible-when>
-				<description>ArrayLength is being deprecated. This is now expressed in ArrayDimensions.
-				</description>
-				<content>
-					<property-editor>ArrayLength</property-editor>
-				</content>
-				<label>Notice</label>
-			</section>
+			<include>DataTypeForm</include>
+            <property-editor>Default</property-editor>
 		</content>
 	</form>
+    <import>
+        <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+    </import>
 
 </definition>

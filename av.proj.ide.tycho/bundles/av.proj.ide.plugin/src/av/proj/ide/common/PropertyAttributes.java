@@ -36,7 +36,7 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.EnumsListBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
-import av.proj.ide.custom.bindings.value.SpecialDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.SpecialPropertyTypeValueBinding;
 
 public interface PropertyAttributes extends Element {
 	ElementType TYPE = new ElementType(PropertyAttributes.class);
@@ -54,7 +54,7 @@ public interface PropertyAttributes extends Element {
 	// types cover primitive data types and more complex types like
 	// Strings, Enumerations, and structures.
 	@Type(base = PropertyType.class)
-	@CustomXmlValueBinding(impl = SpecialDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = SpecialPropertyTypeValueBinding.class)
 	@Label(standard = "Type")
 	@DefaultValue(text = "uLong")
 

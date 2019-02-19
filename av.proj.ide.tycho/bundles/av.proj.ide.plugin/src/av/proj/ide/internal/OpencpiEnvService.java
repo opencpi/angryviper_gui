@@ -607,13 +607,18 @@ public class OpencpiEnvService {
 		String workerList = CommandExecutor.getCommandResult(getWorkersCmd, cons, errMessage);
 		String[] ocpiWorkers;
 		if(workerList != null) {
-			String[] outputLines = workerList.split("\n");
+//			String[] outputLines = workerList.split("\n");
+//			ArrayList<String> list = new ArrayList<String>(outputLines.length);
+//			for(String line : outputLines) {
+//				String[] parts = line.split(":");
+//				if(parts[0].contains("Wor")) {
+//					list.add(parts[1].trim());
+//				}
+//			}
+			String[] outputLines = workerList.split(" ");
 			ArrayList<String> list = new ArrayList<String>(outputLines.length);
-			for(String line : outputLines) {
-				String[] parts = line.split(":");
-				if(parts[0].contains("Wor")) {
-					list.add(parts[1].trim());
-				}
+			for(String worker : outputLines) {
+				list.add(worker);
 			}
 			ocpiWorkers = list.toArray(new String[list.size()]);
 		}

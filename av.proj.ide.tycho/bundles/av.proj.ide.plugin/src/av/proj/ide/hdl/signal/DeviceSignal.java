@@ -20,17 +20,57 @@
 
 package av.proj.ide.hdl.signal;
 
+import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Type;
+import org.eclipse.sapphire.Validation;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
+/***
+ * Device signals are a subset of HDL signals.  A separate definition had to be made
+ * to use the the smaller direction enum needed here.
+ */
+public interface DeviceSignal extends Element {
+	ElementType TYPE = new ElementType(DeviceSignal.class);
 
-public interface Signal extends BaseSignal {
-	ElementType TYPE = new ElementType(Signal.class);
+	// *** Name ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
+	@Label( standard = "Name" )
+	@Required
+	
+	ValueProperty PROP_NAME = new ValueProperty( TYPE, "Name" );
+	
+	Value<String> getName();
+	void setName( String value );
+	
+	// *** Direction ***
+    @Type( base = DeviceSignalDirection.class )
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
+    @Label( standard = "Direction" )
+	@Validation(   rule = "${  Direction != null }" ,
+    message = "A signal direction must be set.",
+    severity = Status.Severity.WARNING)
+   
+    ValueProperty PROP_DIRECTION = new ValueProperty( TYPE, "Direction" );
+    
+    Value<SignalDirection> getDirection();
+    void setDirection( String value );
+    void setDirection( SignalDirection value );
+	
+	// ***  signal width ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
+	@Label(standard = "Width")
+	ValueProperty PROP_WIDTH = new ValueProperty(TYPE, "Width");
+	
+	Value<String> getWidth();
+	void setWidth(String value);
 	
 	/***
 	 * Signal direction/name attributes
@@ -53,22 +93,4 @@ public interface Signal extends BaseSignal {
 	Value<String> getOutput();
 	void setOutput(String value);
 	
-	// *** bidirectional signal attribute***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label(standard = "Bidirectional Signal Name")
- 
-	ValueProperty PROP_BIDIRECTIONAL = new ValueProperty(TYPE, "Bidirectional");
-	
-	Value<String> getBidirectional();
-	void setBidirectional(String value);
-
-	// *** in/out signal attribute***
-	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
-	@Label(standard = "In/Out Signal Name")
-
-	ValueProperty PROP_INOUT = new ValueProperty(TYPE, "Inout");
-	
-	Value<String> getInout();
-	void setInout(String value);
-
 }

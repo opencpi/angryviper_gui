@@ -50,7 +50,12 @@
                                 </property-editor>
 		                    </content>
 		                    <label>Include Files</label>
-                            <description>Include a protocol file to inherit it's operations. Note: The order of included files and this protocol operations is important. This is typically placed as the first element in the file. This control will place it as the next element in the file. View your source to ensure it is in the correct location.</description>
+                            <description>
+Include a protocol file to inherit it's operations. Note: The order of included files and this protocol operations is
+important as it directly impacts the indexing. This insert tool places an include file as the next element in the file.
+Review the source XML to ensure it is positioned in the desired location. Reordering of include files with respect
+to Operations must be performed manually in the source."
+                            </description>
 		                </section>
                     
                     	<actuator>

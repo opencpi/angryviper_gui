@@ -22,28 +22,28 @@
 <definition>
 
 	<form>
-		<id>AccessibilityForm2</id>
-        <content>
-            <section>
-                <label>How it's Set</label>
-                <content>
-                    <property-editor>Initial</property-editor>
-                    <property-editor>Writable</property-editor>
-                    <property-editor>Parameter</property-editor>
-                    <label>
-                        <visible-when>${ Parameter != null }</visible-when>
-                        <text>A parameter property is effectively a compile time constant.</text>
-                    </label>
-                </content>
-                <description>At least one of these must be set.</description>
-            </section>
-            <section>
-                <label>Is it Volatile</label>
-                <content>
-                    <property-editor>Volatile</property-editor>
-                </content>
-            </section>
-        </content>
+		<id>InfrastructureWorkerAttributesForm</id>
+		<content>
+
+   			<property-editor>
+   				<property>Outer</property>
+   				<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                 <hint>
+               		<name>checkbox.layout</name><value>leading.label</value>
+               </hint>
+   			</property-editor>
+       		<property-editor>Pattern</property-editor>
+       		<property-editor>PortPattern</property-editor>
+       		<property-editor>SizeOfConfigSpace</property-editor>
+  			<property-editor>
+   				<property>Sub32BitConfigProperties</property>
+   				<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                <hint>
+               		<name>checkbox.layout</name><value>leading.label</value>
+               </hint>
+   			</property-editor>
+
+		</content>
 	</form>
 
 </definition>

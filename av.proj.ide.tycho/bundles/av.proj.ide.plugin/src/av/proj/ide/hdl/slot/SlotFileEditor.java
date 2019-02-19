@@ -26,6 +26,7 @@ import org.eclipse.sapphire.modeling.xml.RootXmlResource;
 import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
 
 import av.proj.ide.hdl.signal.Signal;
+import av.proj.ide.hdl.signal.SignalDirection;
 import av.proj.ide.hdl.signal.SignalsFileEditor;
 
 public class SlotFileEditor extends SignalsFileEditor {
@@ -36,6 +37,48 @@ public class SlotFileEditor extends SignalsFileEditor {
 		modificationMessage = "The Slot File XML editor " + messageInfo;
 		messageHeader = "Signal Definition XML Modifications";
 		me = this.getClass().toString();
+	}
+	
+	protected void modifyOldAttributes(ElementList<Signal> signals) {
+    	/**
+    	 * For simplicity the UI currently present signal definitions using
+    	 * the current attribute set defining a name and a direction.
+    	 */
+		boolean changed = false;
+    	for(Signal signal : signals) {
+    		String name = signal.getName().content();
+    		if( name != null )
+    			continue;
+    		
+    		changed = true;
+    		if(signal.getInput().content() != null) {
+    			signal.setDirection(SignalDirection.in);
+    			signal.setName(signal.getInput().content());
+    			signal.setInput(null);
+    		}
+    		else if(signal.getOutput().content() != null) {
+    			signal.setDirection(SignalDirection.out);
+    			signal.setName(signal.getOutput().content());
+    			signal.setOutput(null);
+	   		}
+	    		else if(signal.getInout().content() != null) {
+	    			signal.setDirection(SignalDirection.inout);
+	    			signal.setName(signal.getInout().content());
+	    			signal.setInout(null);
+	   		}
+    		else if(signal.getBidirectional().content() != null) {
+    			signal.setDirection(SignalDirection.bidirectional);
+    			signal.setName(signal.getBidirectional().content());
+    			signal.setBidirectional(null);
+    		}
+    	}
+    	if(changed) {
+    		if(modMessages.contains(me)) {
+    			return;
+    		}
+    		presentModWarning();
+    		modMessages.add(me);
+    	}
 	}
 	
 	@Override

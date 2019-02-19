@@ -36,17 +36,17 @@
                             <label>New Signal</label>
                         </actuator>
                     </content>
-                    <description>Signals map to a physical wire connecting the device to the FPGA, e.g. connection of I2C SCL pin in I2C that is connected to FPGA pad.</description>
+                    <description>The signals file bundles signal(s) related to a common interface. Typically these are wires within an FPGA design that are connected between device workers (via a devsignal port).</description>
                 </section>
                 
                 <node-factory>
                     <property>Signals</property>
                     <case>
-                        <element-type>av.proj.ide.hdl.signal.Signal</element-type>
+                        <element-type>av.proj.ide.hdl.signal.DeviceSignal</element-type>
                         <section>
                             <label>Signal Details</label>
                             <content>
-                                <include>SignalCharacteristicsForm</include>
+                                <include>DeviceSignalsForm</include>
                             </content>
                             <scroll-vertically>true</scroll-vertically>
                         </section>
@@ -59,7 +59,7 @@
     </editor-page>
     
     <import>
-        <definition>av.proj.ide.sdef.shared.SignalCharacteristicsForm</definition>
+        <definition>av.proj.ide.hdl.signal.DeviceSignalsForm</definition>
     </import>
     
 </definition>

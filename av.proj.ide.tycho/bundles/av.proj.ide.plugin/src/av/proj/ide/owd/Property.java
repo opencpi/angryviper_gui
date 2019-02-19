@@ -34,7 +34,8 @@ import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface Property extends  OwdPropertyAttributes {
 	ElementType TYPE = new ElementType( Property.class );
-	
+	// TODO:  If this gets nailed down and SpecProperty does not somehow diverge,
+	// SepcProperty can be in the parent tree of Property.
 	// *** Description ***
 	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Description")
@@ -119,6 +120,5 @@ public interface Property extends  OwdPropertyAttributes {
 	Value<Boolean> getVolatile();
 	void setVolatile(String value);
 	void setVolatile(Boolean value);
-	
 	
 }

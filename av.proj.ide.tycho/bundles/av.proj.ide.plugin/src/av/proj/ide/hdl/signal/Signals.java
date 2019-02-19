@@ -39,13 +39,13 @@ public interface Signals extends Element
 	ElementType TYPE = new ElementType(Signals.class);
 
 	// *** Signals ***
-	@Type( base = Signal.class )
+	@Type( base = DeviceSignal.class )
 	@CustomXmlListBinding(impl = SignalXmlListBinding.class)
 	@Label( standard = "Signals" )
 			
 	ListProperty PROP_SIGNALS = new ListProperty( TYPE, "Signals" );
 			
-	ElementList<Signal> getSignals();
+	ElementList<DeviceSignal> getSignals();
 
 	
 }

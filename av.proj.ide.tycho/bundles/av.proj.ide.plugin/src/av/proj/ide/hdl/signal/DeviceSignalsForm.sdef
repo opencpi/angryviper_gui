@@ -21,31 +21,31 @@
 
 <definition>
 
-	<form>
-		<id>OcsAccessibilityForm</id>
+    <form>
+        <id>DeviceSignalsForm</id>
         <content>
+            <property-editor>Name</property-editor>
+            <property-editor>
+                <hint>
+                    <name>checkbox.layout</name>
+                    <value>leading.label</value>
+                </hint>
+                <property>Direction</property>
+                <style>Sapphire.PropertyEditor.RadioButtonGroup</style>
+            </property-editor>
+            <property-editor>Width</property-editor>
+
             <section>
-                <label>How it's Set</label>
-                <content>
-                    <property-editor>Initial</property-editor>
-                    <property-editor>Writable</property-editor>
-                    <property-editor>Parameter</property-editor>
-                    <label>
-                        <visible-when>${ Parameter != null }</visible-when>
-                        <text>A parameter property is effectively a compile time constant.</text>
-                    </label>
-                </content>
-                <description>At least one of these must be set. 
-                Note that Initial is the least restrictive access setting for the OCS.
-                </description>
-            </section>
-            <section>
-                <label>Is it Volatile</label>
-                <content>
-                    <property-editor>Volatile</property-editor>
-                </content>
-            </section>
+               <content>
+	            <label>- Direction: Signal direction is relative to the master devsignal port.</label>
+	            <label>- Width: is useful in defining buses.</label>
+               </content>
+                <label>Notes on Defining HDL Signals</label>
+                <collapsible>true</collapsible>
+                <collapsed-initially>true</collapsed-initially>
+			</section>
+                    
         </content>
-	</form>
+    </form>
 
 </definition>

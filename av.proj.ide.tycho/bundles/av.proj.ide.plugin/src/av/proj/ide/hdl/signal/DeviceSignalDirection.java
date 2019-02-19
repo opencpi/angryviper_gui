@@ -18,33 +18,19 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.wizards.internal.validators;
+package av.proj.ide.hdl.signal;
 
-import org.eclipse.core.databinding.validation.IValidator;
-import org.eclipse.core.databinding.validation.ValidationStatus;
-import org.eclipse.core.runtime.IStatus;
+import org.eclipse.sapphire.modeling.annotations.Label;
 
-import av.proj.ide.wizards.NewOcpiAssetWizardPage1;
+@Label( standard = "Signal Direction" )
 
-public class ApplicationValidator implements IValidator {
-	
-	private NewOcpiAssetWizardPage1 page;
-	
-	public ApplicationValidator(NewOcpiAssetWizardPage1 page) {
-		super();
-		this.page = page;
-	}
-	
-	@Override
-	public IStatus validate(Object arg0) {
-		String value = arg0.toString();
-		if (value.length() == 0) {
-			String err = "Application name must be specified";
-			this.page.updateStatus(err);
-			return ValidationStatus.error(err);
-		}
-		this.page.updateStatus(null);
-		return ValidationStatus.ok();
-	}
-
+public enum DeviceSignalDirection
+{
+    @Label( standard = "In" )
+    
+    in,
+    
+    @Label( standard = "Out" )
+    
+    out    
 }

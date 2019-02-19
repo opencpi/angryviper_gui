@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+
+	<form>
+		<id>OwdAdvancedPropertyForm</id>
+		<content>
+            <section>
+                <label>Advanced Property Access</label>
+                <collapsible>true</collapsible>
+                <content>
+                    <property-editor>
+                        <property>Parameter</property>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    </property-editor>
+                     <property-editor>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                        <property>Padding</property>
+                    </property-editor>
+                    <label>
+                        <visible-when>${ Parameter != null }</visible-when>
+                        <text>A parameter property is effectively a build-time constant; see documentation.</text>
+                    </label>
+                    <label>
+                        <visible-when>${ Padding != null }</visible-when>
+                        <text>Padding is special case parameter and stands alone; see documentation.</text>
+                    </label>
+                </content>
+                <collapsed-initially>false</collapsed-initially>
+            </section>
+            <section>
+                <collapsible>true</collapsible>
+                <collapsed-initially>true</collapsed-initially>
+                <content>
+                    <include>OwdPropertyNotificationsForm</include>
+                </content>
+                <label>Notifications</label>
+            </section>
+		</content>
+	</form>
+    <import>
+        <definition>av.proj.ide.owd.sdef.OwdPropertyNotificationsForm</definition>
+    </import>
+
+</definition>

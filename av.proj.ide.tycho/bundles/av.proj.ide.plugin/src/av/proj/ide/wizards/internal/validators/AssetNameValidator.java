@@ -18,19 +18,33 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.custom.bindings.list;
+package av.proj.ide.wizards.internal.validators;
 
-import org.eclipse.sapphire.modeling.xml.StandardXmlNamespaceResolver;
-import org.eclipse.sapphire.modeling.xml.XmlDelimitedListBindingImpl;
-import org.eclipse.sapphire.modeling.xml.XmlPath;
+import org.eclipse.core.databinding.validation.IValidator;
+import org.eclipse.core.databinding.validation.ValidationStatus;
+import org.eclipse.core.runtime.IStatus;
 
-import av.proj.ide.common.Property;
+import av.proj.ide.wizards.NewOcpiAssetWizardPage1;
 
-public class MembersListBinding extends XmlDelimitedListBindingImpl {
-	private static final StandardXmlNamespaceResolver NAMESPACE_RESOLVER = new StandardXmlNamespaceResolver( Property.TYPE );
-	private static final XmlPath PATH_MEMBERS = new XmlPath( "@members", NAMESPACE_RESOLVER );
+public class AssetNameValidator implements IValidator {
 	
-	public MembersListBinding() {
-		super( PATH_MEMBERS );
+	private NewOcpiAssetWizardPage1 page;
+	
+	public AssetNameValidator(NewOcpiAssetWizardPage1 page) {
+		super();
+		this.page = page;
 	}
+	
+	@Override
+	public IStatus validate(Object arg0) {
+		String value = arg0.toString();
+		if (value.length() == 0) {
+			String err = "Application name must be specified";
+			this.page.updateStatus(err);
+			return ValidationStatus.error(err);
+		}
+		this.page.updateStatus(null);
+		return ValidationStatus.ok();
+	}
+
 }

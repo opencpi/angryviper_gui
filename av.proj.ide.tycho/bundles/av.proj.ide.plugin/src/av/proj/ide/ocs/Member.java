@@ -27,6 +27,7 @@ import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.LongString;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
@@ -36,6 +37,16 @@ import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface Member extends av.proj.ide.common.PropertyAttributes  {
 	ElementType TYPE = new ElementType(Member.class);
+
+	// *** Description ***
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Description")
+	@LongString
+	
+	ValueProperty PROP_DESCRIPTION = new ValueProperty(TYPE, "Description");
+
+	Value<String> getDescription();
+	void setDescription(String value);
 
 	// *** StringLength ***
 	// This is a property attribute. It is separated out because it is 

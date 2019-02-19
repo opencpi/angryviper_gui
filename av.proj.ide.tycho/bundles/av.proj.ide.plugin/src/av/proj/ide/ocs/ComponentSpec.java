@@ -83,7 +83,7 @@ public interface ComponentSpec extends Element {
 	
 	@Type( base = Include.class )
     @XmlListBinding( mappings = @XmlListBinding.Mapping(element = "xi:include", type = Include.class ) )
-	@Label( standard = "Operation File Includes" )
+	@Label( standard = "Property File Includes" )
 	
 	ListProperty PROP_INCLUDES = new ListProperty( TYPE, "Includes" );
 	ElementList<Include> geIncludes();
