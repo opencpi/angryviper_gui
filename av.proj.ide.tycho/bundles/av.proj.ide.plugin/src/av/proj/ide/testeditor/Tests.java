@@ -20,31 +20,29 @@
 
 package av.proj.ide.testeditor;
 
-import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.ListProperty;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Service;
-import org.eclipse.sapphire.modeling.annotations.Whitespace;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
 
 @CustomXmlRootBinding( value = TestsRootXmlBinding.class )
-public interface Tests extends Element
+public interface Tests extends CoreTestAttributes
 {
 	ElementType TYPE = new ElementType(Tests.class);
 
-	// *** spec attribute***
+
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Component Spec")
 	@Service(impl=NameValidationService.class)
@@ -55,7 +53,7 @@ public interface Tests extends Element
 
 	
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding(impl=CaseInsenitiveAttributeValueBinding.class)
+	@CustomXmlValueBinding(impl=BooleanAttributeRemoveIfFalseValueBinding.class)
 	@Label( standard = "HDL File IO" )
 
 	ValueProperty PROP_USE_HDL_FILE_IO = new ValueProperty(TYPE, "UseHDLFileIo");
@@ -63,62 +61,7 @@ public interface Tests extends Element
 	void setUseHDLFileIo(String value);
 	void setUseHDLFileIo(Boolean value);
 	
-	
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "Time Out")
-    @Enablement( expr = "${ Duration  == null }" )
-	
-	ValueProperty PROP_TIMEOUT = new ValueProperty(TYPE, "Timeout");
-	
-	Value<String> getTimeOut();
-	void setTimeOut(String value);
-	
-	// Messages In File
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "Duration")
-    @Enablement( expr = "${ Timeout  == null }" )
-	
-	ValueProperty PROP_DURATION = new ValueProperty(TYPE, "Duration");
-	
-	Value<String> getDuration();
-	void setDuration(String value);
 
-	// ***  ***
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "Only Workers")
-	@Whitespace( trim = true, collapse = true )
-	
-	ValueProperty PROP_ONLY_WORKERS = new ValueProperty(TYPE, "OnlyWorkers");
-
-	Value<String> getOnlyWorkers();
-	void setOnlyWorkers(String value);
-
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "Exclude Workers")
-	@Whitespace( trim = true, collapse = true )
-	
-	ValueProperty PROP_EXCLUDE_WORKERS = new ValueProperty(TYPE, "ExcludeWorkers");
-
-	Value<String> getExcludeWorkers();
-	void setExcludeWorkers(String value);
-
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "Only Platforms")
-	@Whitespace( trim = true, collapse = true )
-	
-	ValueProperty PROP_ONLY_PLATFORMS = new ValueProperty(TYPE, "OnlyPlatforms");
-
-	Value<String> getOnlyPlatforms();
-	void setOnlyPlatforms(String value);
-
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "Exclude Platforms")
-	@Whitespace( trim = true, collapse = true )
-	
-	ValueProperty PROP_EXCLUDE_PLATFORMS = new ValueProperty(TYPE, "ExcludePlatforms");
-
-	Value<String> getExcludePlatforms();
-	void setExcludePlatforms(String value);
 	
 	//  Elements
 	

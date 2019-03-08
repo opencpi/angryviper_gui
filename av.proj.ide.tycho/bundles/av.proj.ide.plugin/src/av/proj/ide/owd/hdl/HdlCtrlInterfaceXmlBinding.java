@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.custom.bindings.list;
+package av.proj.ide.owd.hdl;
 
 import static org.eclipse.sapphire.modeling.xml.XmlUtil.createQualifiedName;
 
@@ -30,12 +30,14 @@ import org.eclipse.sapphire.Property;
 import org.eclipse.sapphire.modeling.xml.XmlNamespaceResolver;
 import org.eclipse.sapphire.modeling.xml.XmlResource;
 
-public class OCSPropertyXmlListBinding extends MultiCaseXmlListBinding {
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
+
+public class HdlCtrlInterfaceXmlBinding extends MultiCaseXmlListBinding {
 	
 	
     @Override
 	protected void initNames(Property p) {
-        this.name = "Property";
+        this.name = "ControlInterface";
         this.lowerName = this.name.toLowerCase();
 		theseDocElements = new LinkedHashMap<String, QName>();
         final XmlNamespaceResolver xmlNamespaceResolver = ( (XmlResource) p.element().resource() ).getXmlNamespaceResolver();

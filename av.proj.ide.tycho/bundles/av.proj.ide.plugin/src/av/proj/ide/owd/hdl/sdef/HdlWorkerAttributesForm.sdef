@@ -29,34 +29,79 @@
 				<label>HDL Worker Attributes</label>
 				<content>
 					<include>WorkerAttributesForm</include>
-           			<property-editor>DataWidth</property-editor>
+					<property-editor>DataWidth</property-editor>
 				</content>
 			</section>
 
 			<section>
-				<label>Advanced Attributes</label>
+				<label>Advanced Configuration</label>
 				<content>
-					<include>WorkerAdvancedAttributesForm</include>
-             		<property-editor>FirstRawProperty</property-editor>
-		  			<property-editor>
-		   				<property>RawProperties</property>
-		   				<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
-		                <hint>
-		               		<name>checkbox.layout</name><value>leading.label</value>
-		                </hint>
-                        <related-content>
-                            <label>
-                                <visible-when>${RawProperties != null}</visible-when>
-                                <text>The top level raw properties attribute is now deprecated.</text>
-                            </label>
-                        </related-content>
-                        <related-content-width>80</related-content-width>
-                        <visible-when>${RawProperties != null}</visible-when>
-		   			</property-editor>
-                    <spacer></spacer>
-                    <label>Infrastructure Worker Attributes</label>
-                    <spacer></spacer>
-					<include>InfrastructureWorkerAttributesForm</include>
+
+					<section>
+						<label>Add to the Control Interface</label>
+						<collapsible>true</collapsible>
+						<collapsed-initially>false</collapsed-initially>
+						<content>
+							<with>
+								<path>ControlInterface</path>
+								<case>
+									<content>
+										<property-editor>Timeout</property-editor>
+									</content>
+								</case>
+                                <label>Modify the Control Interface</label>
+							</with>
+						</content>
+					</section>
+
+					<split-form>
+						<block>
+							<content>
+								<section>
+									<label>Advanced Attributes</label>
+									<content>
+										<include>WorkerAdvancedAttributesForm</include>
+										<property-editor>FirstRawProperty</property-editor>
+										<property-editor>
+											<property>RawProperties</property>
+											<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+											<hint>
+												<name>checkbox.layout</name>
+												<value>leading.label</value>
+											</hint>
+											<related-content>
+												<label>
+													<visible-when>${RawProperties != null}</visible-when>
+													<text>The top level raw properties attribute is now
+														deprecated.</text>
+												</label>
+											</related-content>
+											<related-content-width>80</related-content-width>
+											<visible-when>${RawProperties != null}</visible-when>
+										</property-editor>
+									</content>
+                                    <collapsible>true</collapsible>
+								</section>
+							</content>
+						</block>
+
+						<block>
+							<content>
+								<section>
+									<label>Infrastructure Worker Attributes</label>
+									<content>
+										<include>InfrastructureWorkerAttributesForm</include>
+									</content>
+                                    <collapsible>true</collapsible>
+								</section>
+							</content>
+
+						</block>
+						<orientation>vertical</orientation>
+
+					</split-form>
+
+
 				</content>
 				<collapsible>true</collapsible>
 				<collapsed-initially>true</collapsed-initially>
@@ -66,8 +111,10 @@
 	</composite>
 	<import>
 		<definition>av.proj.ide.owd.sdef.WorkerAttributesForm</definition>
-        <definition>av.proj.ide.owd.sdef.WorkerAdvancedAttributesForm</definition>
-        <definition>av.proj.ide.owd.hdl.sdef.InfrastructureWorkerAttributesForm</definition>
+		<definition>av.proj.ide.owd.sdef.WorkerAdvancedAttributesForm
+		</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.InfrastructureWorkerAttributesForm
+		</definition>
 	</import>
 
 </definition>

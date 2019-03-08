@@ -357,9 +357,6 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 					AngryViperAsset asset = (AngryViperAsset)sels[i].getData();
 					userSelections.assetSelections.add(asset);
 				}
-				if(userSelections.buildDescription == null) {
-					userSelections.buildDescription = MainOperationSwtDisplayV1.makeBuildLabel(userSelections);
-				}
 				srv.processBuildRequest(userSelections);
 			}
 		}

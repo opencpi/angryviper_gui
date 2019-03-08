@@ -785,7 +785,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	
 	// Regex notes: \p{Punct} - build it for all punctuation characters (backslash is escaped),
 	// and not underscore, dash or period; dash and period escaped.
-	private Pattern p = Pattern.compile("[\\p{Punct} && [^_\\-\\.]]");
+	private Pattern p = Pattern.compile("[\\p{Punct} && [^_\\-]]");
 	
 	void addProjectInput(int inputWidth) {
 		

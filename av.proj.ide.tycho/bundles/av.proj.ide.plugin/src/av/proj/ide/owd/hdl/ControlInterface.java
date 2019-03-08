@@ -25,6 +25,7 @@ import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
@@ -32,11 +33,12 @@ import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 public interface ControlInterface extends Element {
 	ElementType TYPE = new ElementType( ControlInterface.class );
 	
-	// *** DataWidth *** 
+	// *** Timeout *** 
 	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Timeout")
+	@Required
 		
-	ValueProperty PROP_DATA_TIMEOUT = new ValueProperty(TYPE, "Timeout");
+	ValueProperty PROP_TIMEOUT = new ValueProperty(TYPE, "Timeout");
 
 	Value<String> getTimeout();
 	void setTimeout(String value);

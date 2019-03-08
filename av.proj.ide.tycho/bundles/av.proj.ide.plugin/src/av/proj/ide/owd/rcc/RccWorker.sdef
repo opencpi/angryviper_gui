@@ -39,7 +39,7 @@
             	<label>${ Name == null ? &quot;RccWorker&quot; : Name }</label>
             	<section>
             		<label>RccWorker</label>
-            		<description>Modify attributes of the RccWorker.</description>
+            		<description>Top-level attributes of the OpenCPI RCC Worker XML</description>
             		<content>
             			<property-editor>Spec</property-editor>
             			<property-editor>Language</property-editor>
@@ -91,7 +91,7 @@
             		<label>Properties</label>
             		<section>
             			<label>Properties</label>
-            			<description>Add a Property to your worker xml.</description>
+            			<description>OpenCPI Worker Description XML Property Definitions</description>
             			<content>
  			                <section>
 			                    <collapsed-initially>true</collapsed-initially>
@@ -173,7 +173,7 @@ to properties must be performed manually in the source."
             		<label>SpecProperties</label>
             		<section>
             			<label>SpecProperties</label>
-            			<description>Add a SpecProperty to your worker xml.</description>
+            			<description>OpenCPI Worker Description XML Spec Property Definitions</description>
             			<content>
             				<actuator>
             					<action-id>Sapphire.Add</action-id>
@@ -199,7 +199,7 @@ to properties must be performed manually in the source."
             		<label>ports</label>
             		<section>
             			<label>Ports</label>
-            			<description>Add a Port to your worker xml.</description>
+            			<description>OpenCPI Worker Description XML Port Definitions</description>
             			<content>
             				<actuator>
             					<action-id>Sapphire.Add</action-id>

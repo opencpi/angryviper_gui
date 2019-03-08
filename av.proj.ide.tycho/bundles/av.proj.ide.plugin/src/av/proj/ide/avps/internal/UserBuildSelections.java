@@ -30,14 +30,12 @@ public class UserBuildSelections {
 	
 	public OcpidevVerb    verb;
 	public Boolean        noAssemblies = true;
-	public String         buildDescription = null;
 	public List<AngryViperAsset>  assetSelections = new ArrayList<AngryViperAsset>();
 	public BuildTargetSelections  buildTargetSelections = null;
 	
 	public UserBuildSelections() {}
 	public UserBuildSelections(UserBuildSelections cmd) {
 		noAssemblies = cmd.noAssemblies;
-		buildDescription = cmd.buildDescription;
 		assetSelections = cmd.assetSelections;
 		buildTargetSelections = cmd.buildTargetSelections;
 	}

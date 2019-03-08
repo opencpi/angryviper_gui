@@ -110,7 +110,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 			}
 			assetSelections.add(asset);
 			selectionsChanged = true;
-			selectionPanel.text.setText("");
 			if(selectionPanel.selectedComponents.indexOf(item) <1) {
 				TreeItem copy = new TreeItem(selectionPanel.selectedComponents, SWT.NONE);
 				makeCopy(item, copy);
@@ -362,9 +361,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 	
 	protected void doNewBuild(ProjectBuildService pb, OcpidevVerb verb) {
 		UserBuildSelections userSelections = getUserSelections();
-		if(userSelections.buildDescription == null) {
-			userSelections.buildDescription = makeBuildLabel(userSelections);
-		}
 		userSelections.verb = verb;
 		int buildNumber = pb.processBuildRequest(userSelections);
 		if(buildNumber == -1) {
@@ -413,7 +409,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		TreeItem[] selectedItems = selectionPanel.selectedComponents.getSelection();
 		if(selectedItems.length > 0) {
 			selectionsChanged = true;			
-			selectionPanel.text.setText("");
 		}
 
 		for (TreeItem item : selectedItems){
@@ -428,7 +423,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		if(itemCount > 0) {
 			assetSelections.clear();
 			selectionsChanged = true;			
-			selectionPanel.text.setText("");
 			selectionPanel.selectedComponents.removeAll();
 		}
 	}
@@ -506,11 +500,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 			asset  =  (AngryViperAsset)selection.getData();
 			selections.assetSelections.add(asset);
 		}
-		String descript = selectionPanel.text.getText();
-		if(descript.length() == 0) {
-			descript = null;
-		}
-		selections.buildDescription = descript;
 		return selections;
 	}
 	public UserTestSelections getUserTestSelections() {

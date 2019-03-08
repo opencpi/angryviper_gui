@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+	<import>
+		<package>av.proj.ide</package>
+		<package>av.proj.ide.owd</package>
+		<package>av.proj.ide.owd.hdl</package>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlDataPortForm</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlWorkerAttributesForm
+		</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlPropertyForm</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlSpecPropertyForm</definition>
+		<definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+	</import>
+	<editor-page>
+		<id>HdlWorkerEditorPage</id>
+		<element-type>av.proj.ide.owd.hdl.HdlWorker</element-type>
+		<initial-selection>HdlWorker</initial-selection>
+		<page-header-text>HDL OWD Editor</page-header-text>
+		<root-node>
+			<node>
+				<label>${ Name == null ? &quot;HdlWorker&quot; : Name }</label>
+				<section>
+					<label>HdlWorker</label>
+					<description>Top-level attributes of the OpenCPI HDL Worker XML
+					</description>
+					<content>
+						<include>HdlWorkerAttributesForm</include>
+					</content>
+				</section>
+
+				<node>
+					<label>Service Interfaces</label>
+					<!-- -->
+
+					<section>
+						<label>Time Interface</label>
+						<content>
+							<with>
+								<case>
+									<content>
+										<property-editor>Name</property-editor>
+										<property-editor>SecondsWidth</property-editor>
+										<property-editor>FractionWidth</property-editor>
+                                        <property-editor>
+                                            <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                            <property>AllowUnavailable</property>
+                                            <hint>
+                                                <name>checkbox.layout</name>
+                                                <value>leading.label</value>
+                                            </hint>
+                                        </property-editor>
+									</content>
+								</case>
+								<label>Enable the Time Interface</label>
+								<path>TimeInterface</path>
+							</with>
+						</content>
+					</section>
+					<node-factory>
+						<property>TimeInterface</property>
+						<case>
+							<section>
+								<content>
+									<property-editor>Name</property-editor>
+									<property-editor>SecondsWidth</property-editor>
+									<property-editor>FractionWidth</property-editor>
+                                    <property-editor>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                        <property>AllowUnavailable</property>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                    </property-editor>
+								</content>
+							</section>
+							<label>TimeInterface</label>
+						</case>
+					</node-factory>
+
+				</node>
+
+
+				<node>
+					<label>Properties</label>
+					<section>
+						<label>Properties</label>
+						<description>OpenCPI Worker Description XML Property Definitions
+						</description>
+						<content>
+							<section>
+								<collapsed-initially>true</collapsed-initially>
+								<collapsible>true</collapsible>
+								<content>
+									<property-editor>
+										<show-label>false</show-label>
+										<property>Includes</property>
+									</property-editor>
+								</content>
+								<label>Include Files</label>
+								<description>
+									Include a property file to inherit it's properties. Note: The order of
+									included files and OWD properties is
+									important as it directly impacts the indexing. This insert tool places
+									an include file as the next element in the file.
+									Review the source XML to ensure it is positioned in the desired
+									location. Reordering of include files with respect
+									to properties must be performed manually in the source."
+								</description>
+							</section>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add a Property.</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<property>Properties</property>
+						<case>
+							<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
+							<section>
+								<label>OWD Property Definition</label>
+								<content>
+									<actuator>
+										<action-id>Sapphire.Add</action-id>
+										<label>Add a Member</label>
+									</actuator>
+									<include>HdlPropertyForm</include>
+								</content>
+							</section>
+
+							<node-factory>
+								<property>Members</property>
+								<case>
+									<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+									<section>
+										<label>Member</label>
+										<description>Modify attributes of this member.</description>
+										<content>
+											<actuator>
+												<action-id>Sapphire.Add</action-id>
+												<label>Add a Member</label>
+											</actuator>
+											<include>DataTypeForm</include>
+										</content>
+									</section>
+									<node-factory>
+										<property>Members</property>
+										<case>
+											<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+											<section>
+												<label>Member</label>
+												<description>Modify attributes of this member.</description>
+												<content>
+													<include>DataTypeForm</include>
+												</content>
+											</section>
+										</case>
+										<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+									</node-factory>
+								</case>
+								<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+							</node-factory>
+							<element-type>Property</element-type>
+
+						</case>
+					</node-factory>
+				</node>
+
+				<node>
+					<label>SpecProperties</label>
+					<section>
+						<label>SpecProperties</label>
+						<description>OpenCPI Worker Description XML Spec Property
+							Definitions</description>
+						<content>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add a SpecProperty.</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<property>SpecProperties</property>
+						<case>
+							<label>${ Name == null ? "&lt;spec property&gt;" : Name }</label>
+							<section>
+								<label>OWD SpecProperty Definition</label>
+								<content>
+									<include>HdlSpecPropertyForm</include>
+								</content>
+							</section>
+						</case>
+					</node-factory>
+				</node>
+
+				<node>
+					<label>Ports</label>
+					<section>
+						<label>Ports</label>
+						<description>OpenCPI Worker Description XML Port Definitions
+						</description>
+						<content>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add a StreamInterface.</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<property>StreamInterfaces</property>
+						<case>
+							<label>${ Name == null ? &quot;&lt;streaminterface&gt;&quot; :
+								Name }</label>
+
+							<section>
+								<label>StreamInterface Characteristics</label>
+								<content>
+									<include>HdlDataPortForm</include>
+								</content>
+							</section>
+
+						</case>
+					</node-factory>
+				</node>
+
+			</node>
+		</root-node>
+	</editor-page>
+
+
+</definition>

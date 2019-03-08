@@ -149,34 +149,33 @@ public interface HdlWorker extends Worker {
 	 * Additional HDL Worker Elements
 	 */
 	
-//	@Type( base = ControlInterface.class )
-//	@CustomXmlValueBinding(impl=CaseInsenitiveElementValueBinding.class )
-//	@Label( standard = "ControlInterface" )
-//
-//	ImpliedElementProperty PROP_CONTROL_INTERFACE = new ImpliedElementProperty( TYPE, "ControlInterface" );
-//    
-//    ElementHandle<ControlInterface> getControlInterface();
-
-    // *** Assistant ***
-
-    @Type( base = ControlInterface.class )
-    @XmlBinding( path = "ControlInterface" )
+	// *** ControlInterface ***
+	@Type( base = ControlInterface.class )
+	@XmlBinding( path = "ControlInterface" )
+	/**
+	 * Experimenting.  The problem is that when using the <with> sdef element a path has to be defined
+	 * and that is the path (element). ElementHandle ends up creating it when the with checkbox is selected.
+	 * When the custom binding is used, then the createUnderlyingObject is call and that adds it again.
+	 * I don't see a good work around for this other than using a button actuator and doing it all manually. 
+	 *
+	@CustomXmlElementBinding(impl=CaseInsensitiveElementBinding.class )
+	@XmlElementBinding.Mapping(element = "ControlInterface", type = ControlInterface.class)
+	 */
 	@Label( standard = "ControlInterface" )
-    
-    ElementProperty PROP_CONTROL_INTERFACE = new ElementProperty( TYPE, "ControlInterface" );
 
+	ElementProperty PROP_CONTROL_INTERFACE = new ElementProperty( TYPE, "ControlInterface" );
+	
     ElementHandle<ControlInterface> getControlInterface();
-
-//	@Type( base = Boolean.class )
-//	@CustomXmlValueBinding(impl=BooleanNodePresentBinding.class)
-//	@Label( standard = "ControlInterface" )
-//
-//	ValueProperty PROP_CONTROL_INTERFACE = new ValueProperty(TYPE, "ControlInterface");
-//	Value<Boolean> getControlInterface();
-//	void setControlInterface(String value);
-//	void setControlInterface(Boolean value);
 	
+	// *** TimeInterface ***
+	@Type( base = TimeInterface.class )
+	@XmlBinding( path = "TimeInterface" )
+	@Label( standard = "TimeInterface" )
 	
+	ElementProperty PROP_TIME_INTERFACE = new ElementProperty( TYPE, "TimeInterface" );
+	
+    ElementHandle<TimeInterface> getTimeInterface();
+    
 	// *** StreamInterfaces ***
 	@Type( base = StreamInterface.class )
 	@CustomXmlListBinding(impl=OWDStreamInterfaceXmlListBinding.class)
@@ -185,4 +184,6 @@ public interface HdlWorker extends Worker {
 	ListProperty PROP_STREAM_INTERFACES = new ListProperty( TYPE, "StreamInterfaces" );
 				
 	ElementList<StreamInterface> getStreamInterfaces();
+	
+	
 }

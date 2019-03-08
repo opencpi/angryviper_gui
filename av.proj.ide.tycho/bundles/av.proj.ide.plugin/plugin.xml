@@ -43,10 +43,12 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.owdrcc" />
 		</editor>
 		<editor id="av.proj.ide.owd.hdl.HdlWorker" name="OWD HDL Editor"
-			extensions="xml">
-			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
+			class="av.proj.ide.owd.hdl.HdlWorkerEditor" extensions="xml">
+			
+			<!--class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
 				<parameter name="sdef" value="av.proj.ide.owd.hdl.HdlWorker" />
-			</class>
+			</class -->
+			
 			<contentTypeBinding contentTypeId="av.proj.ide.OwdHdl" />
 			<contentTypeBinding contentTypeId="av.proj.ide.owdhdl" />
 		</editor>

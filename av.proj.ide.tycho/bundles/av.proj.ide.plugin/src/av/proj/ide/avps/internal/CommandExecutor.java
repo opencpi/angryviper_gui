@@ -27,6 +27,7 @@ import java.io.PrintStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.ui.console.MessageConsole;
 
@@ -87,6 +88,8 @@ public class CommandExecutor {
 	        		File executionLocation = exAsset.getExecutionDir();
 	        		ProcessBuilder pb = new ProcessBuilder(cmd);
 	        		pb.redirectErrorStream(true);
+	        		Map<String, String> env = pb.environment();
+	        		env.put("TERM", "dumb");
 	        		if(executionLocation != null) {
 		        		pb.directory(executionLocation);
 	        		}

@@ -33,7 +33,13 @@
                 <property>Direction</property>
                 <style>Sapphire.PropertyEditor.RadioButtonGroup</style>
             </property-editor>
-            <property-editor>Width</property-editor>
+            <property-editor>
+                <related-content-width>50</related-content-width>
+                <property>Width</property>
+                <related-content>
+                    <label>(default width is 1)</label>
+                </related-content>
+            </property-editor>
 
             <section>
                <content>

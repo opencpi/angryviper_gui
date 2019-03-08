@@ -90,7 +90,7 @@ public interface Output extends Element {
 	
 	// Count (optional)
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class )
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Stop on EOF")
 	
 	ValueProperty PROP_STOPON_EOF = new ValueProperty(TYPE, "StopOnEof");

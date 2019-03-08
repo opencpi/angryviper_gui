@@ -31,7 +31,7 @@ import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
+import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.XmlListBinding;
@@ -41,6 +41,7 @@ import av.proj.ide.custom.bindings.list.OWDPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.list.OWDSpecPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.ops.Include;
+import av.proj.ide.services.WorkerSpecValidationService;
 
 @XmlNamespace( uri = "http://www.w3.org/2001/XInclude", prefix = "xi" )
 
@@ -70,8 +71,8 @@ public interface Worker extends Element {
 	// *** Spec ***
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Spec")
-	@Required
-    //@Enablement(expr = "false")		
+	@Service(impl=WorkerSpecValidationService.class)
+	
 	ValueProperty PROP_SPEC = new ValueProperty(TYPE, "Spec");
 
 	Value<String> getSpec();
