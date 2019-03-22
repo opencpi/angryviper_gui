@@ -20,26 +20,30 @@
 
 package av.proj.ide.hplat;
 
+import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanNodePresentBinding;
 
-public interface SpecProperty extends av.proj.ide.owd.SpecProperty {
-	ElementType TYPE = new ElementType(SpecProperty.class);
+public interface Metadata extends Element {
+	
+    //Cpmaster.class is required in Sapphire PropertyDef class 
+	ElementType TYPE = new ElementType(Metadata.class);
+	// *** Master ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanNodePresentBinding.class )
+	@Label(standard = "Master")
+    
+	//"Master" is assigned as propertyName in PropertyDef class.
+	ValueProperty PROP_MASTER = new ValueProperty(TYPE, "Master");
 
-	// ***Value ***
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "value")
-	@Required
-
-	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
-
-	Value<String> getValue();
-	void setValue(String value);
+	Value<Boolean> getMaster();
+	void setMaster(String value);
+	void setMaster(Boolean value);
 	
 }

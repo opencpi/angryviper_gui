@@ -21,7 +21,7 @@
 
 <definition>
     <import>
-        <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+        <definition>av.proj.ide.ocs.sdef.OcsPropertyForm</definition>
         <definition>av.proj.ide.sdef.shared.MemberDataTypeForm</definition>
         <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
         <definition>av.proj.ide.ocs.sdef.OcsAccessibilityForm</definition>
@@ -189,62 +189,6 @@ to properties must be performed manually in the source."
         </root-node>
     </editor-page>
     
-	<composite>
-		<id>OcsPropertyForm</id>
-		<content>
-		
-            <section>
-                <label>Property Data Type</label>
-				<content>
-					<include>DataTypeForm</include>
-				</content>
-                <collapsible>true</collapsible>
-            </section>
-            <section>
-                <label>Property Accessibility</label>
-				<content>
-					<include>OcsAccessibilityForm</include>
-				</content>
-                <collapsible>true</collapsible>
-                <description>Property Accessibility may be defined for OCS but it is not required.</description>
-            </section>
-            <section>
-                <label>Advanced</label>
-                <collapsible>true</collapsible>
-                <content>
-                    <property-editor>
-                        <property>Parameter</property>
-						<hint>
-							<name>checkbox.layout</name>
-							<value>leading.label</value>
-						</hint>
-						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    </property-editor>
-                    <property-editor>
-                        <visible-when>${Padding != null}</visible-when>
-                        <property>Padding</property>
- 						<hint>
-							<name>checkbox.layout</name>
-							<value>leading.label</value>
-						</hint>
-						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    </property-editor>
-                    <label>
-                        <visible-when>${ Parameter != null }</visible-when>
-                        <text>A parameter property is effectively a build-time constant; see documentation.</text>
-                    </label>
-                    <label>
-                        <visible-when>${ Padding != null }</visible-when>
-                        <text>Padding in the OCS is deprecated. It is intending as special parameter for the worker.</text>
-                    </label>
-                </content>
-                <collapsed-initially>true</collapsed-initially>
-            </section>
-
-		</content>
-
-	</composite>
-
     <composite>
         <id>advanced.port.form</id>
         <content>

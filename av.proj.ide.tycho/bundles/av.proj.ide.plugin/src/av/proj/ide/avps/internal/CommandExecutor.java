@@ -127,7 +127,13 @@ public class CommandExecutor {
 		        		execStatus.lineUpdates = new String[] { String.format(format, "FAILED", runStartTime, runtime) };
 					}
 					else {
-						execStatus.lineUpdates = new String[] {String.format(format, "SUCCESS", runStartTime, runtime) };
+						if(threadStopped[0] == true) {
+							console.println("\n ========   Execution aborted by the user. =======================");
+							execStatus.lineUpdates = new String[] {String.format(format, "ABORTED", runStartTime, runtime) };
+						}
+						else {
+							execStatus.lineUpdates = new String[] {String.format(format, "SUCCESS", runStartTime, runtime) };
+						}
 					}
 					components.statusMonitor.updateBuildStatus(components.executionNumber, execStatus);
 	        	}

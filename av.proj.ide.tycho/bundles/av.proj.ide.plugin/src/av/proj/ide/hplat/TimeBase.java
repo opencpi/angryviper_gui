@@ -18,32 +18,28 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.common;
-
+package av.proj.ide.hplat;
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Type;
+import org.eclipse.sapphire.Value;
+import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-@Label( standard = "Signal Direction" )
+import av.proj.ide.custom.bindings.value.BooleanNodePresentBinding;
 
-public enum SignalDirection
-{
-    @Label( standard = "input" )
-    
-    INPUT,
-    
-    @Label( standard = "output" )
-    
-    OUTPUT,
-    
-    @Label( standard = "inout" )
-    
-    INOUT,
-    
-    @Label( standard = "bidirectional" )
-    
-    BIDIRECTIONAL,
-    
-    @Label( standard = "<not set>" )
-    
-    NOTSET
-    
+public interface TimeBase extends Element {
+	ElementType TYPE = new ElementType(TimeBase.class);
+	//*****Master*****
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanNodePresentBinding.class)
+	@Label(standard = "Master")
+	
+    ValueProperty PROP_MASTER = new ValueProperty(TYPE, "Master");
+	
+	Value<Boolean> getMaster();
+	void setMaster(String value);
+	void setMaster(Boolean value);
+	
 }

@@ -20,105 +20,57 @@
 
 package av.proj.ide.hdl.signal;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.modeling.xml.RootXmlResource;
 import org.eclipse.sapphire.ui.SapphireEditor;
 import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
+
+import av.proj.ide.internal.OcpiXmlDocScanner;
 
 public class SignalsFileEditor extends SapphireEditor {
 	
 	protected StructuredTextEditor xmlSourceEditor;
 	protected String      name;
 	protected ElementType type;
-	protected String      me;
-	protected HashSet<String> modMessages = new HashSet<String>();
-	
-	protected String messageInfo = "has changed the contents of the file to use the 'name' and 'direction' attributes."
-			+ " Any signals modified or added to this file will use this convention. If the file is saved, the new format will remain in it."
-			+ " This message appears one time per Eclipse session.";
-
-	protected String modificationMessage; 
-	protected String messageHeader;
+	private static OcpiXmlDocScanner docScan = null;
 	
 	public SignalsFileEditor() {
 		type = Signals.TYPE;
 		name = "SignalsFileEditorPage";
-		modificationMessage = "WARNING: The Signals File XML editor " + messageInfo;
-		messageHeader = "Signals File XML Modifications";
-		me = this.getClass().toString();
+		if(docScan == null) {
+			docScan = new OcpiXmlDocScanner();
+			docScan.setEditorName("HDL Signals File Editor");
+			docScan.setShowXTimes(2);
+		}
 	}
 	
-	protected void presentModWarning() {
-		Display.getDefault().asyncExec(new Runnable(){
-			public void run() {
-				MessageDialog.openInformation(Display.getDefault().getActiveShell(), messageHeader, modificationMessage);
-			}
-		});
-	}
     
 	@Override
     protected void createEditorPages() throws PartInitException 
     {
         addDeferredPage( "Design", name );
-        
         this.xmlSourceEditor = new StructuredTextEditor();
         this.xmlSourceEditor.setEditorPart(this);
-        
         int index = addPage( this.xmlSourceEditor, getEditorInput() );
         setPageText( index, "Source" );
     }
 	
-	private void modifyOldAttributes(ElementList<DeviceSignal> signals) {
-    	/**
-    	 * For simplicity the UI currently present signal definitions using
-    	 * the current attribute set defining a name and a direction.
-    	 */
-		boolean changed = false;
-    	for(DeviceSignal signal : signals) {
-    		String name = signal.getName().content();
-    		if( name != null )
-    			continue;
-    		
-    		changed = true;
-    		if(signal.getInput().content() != null) {
-    			signal.setDirection(SignalDirection.in);
-    			signal.setName(signal.getInput().content());
-    			signal.setInput(null);
-    		}
-    		else if(signal.getOutput().content() != null) {
-    			signal.setDirection(SignalDirection.out);
-    			signal.setName(signal.getOutput().content());
-    			signal.setOutput(null);
-	   		}
-    	}
-    	if(changed) {
-    		if(modMessages.contains(me)) {
-    			return;
-    		}
-    		presentModWarning();
-    		modMessages.add(me);
-    	}
-	}
-	
-	protected void updateSignalDefinitions(Element element) {
-    	Signals fileElement = (Signals)element;
-    	ElementList<DeviceSignal> signals = fileElement.getSignals();
-    	modifyOldAttributes(signals);
-	}
     
     @Override
     protected Element createModel() 
     {
     	Element element = type.instantiate(new RootXmlResource(new XmlEditorResourceStore(this, this.xmlSourceEditor)));
-    	updateSignalDefinitions(element);
+    	Signals fileElement = (Signals)element;
+    	ElementList<DeviceSignal> signals = fileElement.getSignals();
+       	ArrayList<String> repairs = new ArrayList<String>();
+    	docScan.scanDeviceSignalElements(signals, repairs);
+    	docScan.processModifications(repairs);
     	return element;
     }
 }

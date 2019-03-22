@@ -20,28 +20,32 @@
 -->
 
 <definition>
+	<import>
+		<package>av.proj.ide</package>
+		<package>av.proj.ide.owd</package>
+		<package>av.proj.ide.owd.hdl</package>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlDataPortForm</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlWorkerAttributesForm
+		</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlPropertyForm</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlSpecPropertyForm</definition>
+		<definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+		<definition>av.proj.ide.sdef.shared.SignalCharacteristicsForm</definition>
+	</import>
 	<editor-page>
-		<id>HdlPlatformEditorPage</id>
-		<element-type>av.proj.ide.hplat.HdlPlatform</element-type>
-		<page-header-text>HDL Platform Worker OWD Editor</page-header-text>
-		<initial-selection>HdlPlatform</initial-selection>
+		<id>HdlDeviceWorkerEditorPage</id>
+		<element-type>av.proj.ide.hdl.device.HdlDevice</element-type>
+		<initial-selection>HdlDevice</initial-selection>
+		<page-header-text>HDL Device Worker OWD Editor</page-header-text>
 		<root-node>
 			<node>
-				<label>HdlPlatform</label>
+				<label>${ Name == null ? &quot;HdlDevice&quot; : Name }</label>
 				<section>
-					<label>HDL Platform Worker</label>
+					<label>HDL Device Worker</label>
 					<description>Top-level attributes of the OpenCPI HDL Worker XML
 					</description>
 					<content>
 						<include>HdlWorkerAttributesForm</include>
-                        <section>
-                            <label>About</label>
-                            <collapsible>true</collapsible>
-                            <collapsed-initially>true</collapsed-initially>
-                            <content>
-                                <label>The Platform worker does the following: - It is a singleton worker that bootstraps the platform and container. - It is specific type of HDL worker providing infrastructure for implementing control/data interfaces to devices and interconnects external to the FPGA or simulator (e.g. PCI Express, Clocks).</label>
-                            </content>
-                        </section>
 					</content>
 				</section>
                 <node>
@@ -69,7 +73,7 @@
                         <label>SpecProperties</label>
                     </section>
                 </node>
-
+				
 				<node>
 					<label>Properties</label>
 					<section>
@@ -155,21 +159,36 @@
 						</case>
 					</node-factory>
 				</node>
-<!--
+
 				<node>
-					<label>Augment SDP</label>
-					<property>sdp</property>
+					<label>Ports</label>
 					<section>
-						<label>SDP Element</label>
-						<description>Modify the existing SDP entry.</description>
+						<label>Ports</label>
+						<description>OpenCPI Worker Description XML Port Definitions
+						</description>
 						<content>
-							<property-editor>Master</property-editor>
-							<property-editor>Count</property-editor>
-							<property-editor>Name</property-editor>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add a StreamInterface.</label>
+							</actuator>
 						</content>
 					</section>
+					<node-factory>
+						<property>StreamInterfaces</property>
+						<case>
+							<label>${ Name == null ? &quot;&lt;streaminterface&gt;&quot; :
+								Name }</label>
+
+							<section>
+								<label>StreamInterface Characteristics</label>
+								<content>
+									<include>HdlDataPortForm</include>
+								</content>
+							</section>
+
+						</case>
+					</node-factory>
 				</node>
--->
                 <node>
                     <node-factory>
                         <case>
@@ -218,39 +237,7 @@
                         <label>Enable Service Interfaces</label>
                     </section>
                 </node>
-<!--
-    Ports are currently not defined in the HDL PLatform, but they may be coming.
-    Keep it for now.
-				<node>
-					<label>Ports</label>
-					<section>
-						<label>Ports</label>
-						<description>OpenCPI Worker Description XML Port Definitions
-						</description>
-						<content>
-							<actuator>
-								<action-id>Sapphire.Add</action-id>
-								<label>Add a StreamInterface.</label>
-							</actuator>
-						</content>
-					</section>
-					<node-factory>
-						<property>StreamInterfaces</property>
-						<case>
-							<label>${ Name == null ? &quot;&lt;streaminterface&gt;&quot; :
-								Name }</label>
 
-							<section>
-								<label>StreamInterface Characteristics</label>
-								<content>
-									<include>HdlDataPortForm</include>
-								</content>
-							</section>
-
-						</case>
-					</node-factory>
-				</node>
--->
 
 				<node>
 					<label>DevSignal Ports</label>
@@ -289,7 +276,7 @@
                                     <property-editor>Count</property-editor>
 								</content>
 							</section>
-							<label>${ name != null ?  name  : &quot;&lt;dev signal&gt;&quot; }</label>
+							<label>${ name != null ?  name  : &quot;&lt;signal&gt;&quot; }</label>
 							<element-type>av.proj.ide.hdl.device.DevSignal</element-type>
 						</case>
 						<property>DevSignals</property>
@@ -382,185 +369,43 @@
                         <label>Signals</label>
                     </section>
                 </node>
-                <node>
-                    <node-factory>
-                        <case>
-                            <label>${ worker == null ? &quot;&lt;Device&gt;&quot; : worker }</label>
-                            <section>
-                                <content>
+
+				<node>
+					<label>Supports Worker</label>
+					<section>
+						<label>Supports Worker</label>
+						<content>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add Supports Worker</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<case>
+							<section>
+								<label>OpenCPI Supports Definition</label>
+								<content>
                                     <property-editor>Worker</property-editor>
+                                    <property-editor>Index</property-editor>
                                     <property-editor>
-                                        <visible-when>${Worker != 'time_server'}</visible-when>
-                                        <property>Card</property>
+                                        <child-property>Port</child-property>
+                                        <property>Connects</property>
+                                        <child-property>To</child-property>
+                                        <child-property>Index</child-property>
                                     </property-editor>
-                                    <section>
-                                        <content>
-                                            <property-editor>
-                                                <child-property>Name</child-property>
-                                                <child-property>Value</child-property>
-                                                <property>Properties</property>
-                                            </property-editor>
-                                        </content>
-                                        <label>Device Properties</label>
-                                    </section>
-                                    <section>
-                                        <content>
-                                            <property-editor>
-                                                <child-property>Name</child-property>
-                                                <child-property>Platform</child-property>
-                                                <property>Signals</property>
-                                            </property-editor>
-                                        </content>
-                                        <label>Device to Platform Signal Mapping</label>
-                                        <visible-when>${Worker != 'time_server'}</visible-when>
-                                    </section>
-                                </content>
-                                <description>Add a device entry.</description>
-                                <label>Device</label>
-                            </section>
-                        </case>
-                        <property>Devices</property>
-                    </node-factory>
-                    <label>Devices</label>
-                    <section>
-                        <content>
-                            <actuator>
-                                <action-id>Sapphire.Add</action-id>
-                                <label>Add a Device</label>
-                            </actuator>
-                        </content>
-                        <description>Add a Device to the platform</description>
-                        <label>Devices</label>
-                    </section>
-                </node>
-                <node>
-                    <node-factory>
-                        <case>
-                            <label>${ name == null ? &quot;&lt;Slot&gt;&quot; : name }</label>
-                            <section>
-                                <content>
-                                    <property-editor>Name</property-editor>
-                                    <property-editor>Type</property-editor>
-                                    <property-editor>
-                                        <child-property>Slot</child-property>
-                                        <child-property>Platform</child-property>
-                                        <property>Signals</property>
-                                    </property-editor>
-                                </content>
-                                <description>Add a slot entry.</description>
-                                <label>Slot</label>
-                            </section>
-                        </case>
-                        <property>Slots</property>
-                    </node-factory>
-                    <label>Slots</label>
-                    <section>
-                        <content>
-                            <actuator>
-                                <action-id>Sapphire.Add</action-id>
-                                <label>Add a Slot</label>
-                            </actuator>
-                        </content>
-                        <description>Add a Slot to the platform</description>
-                        <label>Slots</label>
-                    </section>
-                </node>
-                <node>
-                    <label>Infrastructure Interfaces</label>
-                    <section>
-                        <content>
-                            <split-form>
-                                <scale-vertically>true</scale-vertically>
-                                <block>
-                                    <content>
-                                        <section>
-                                            <collapsible>false</collapsible>
-                                            <content>
-                                                <property-editor>Metadata</property-editor>
-                                                <property-editor>Timebase</property-editor>
-                                                <property-editor>TimeServerRead</property-editor>
-                                            </content>
-                                            <label>Required Ports and Devices</label>
-                                            <description>The MetaData and TimeBase ports must be enabled. Verify the TimeServer device has a frequency assigned.</description>
-                                        </section>
-                                    </content>
-                                </block>
-                                <block>
-                                    <content>
-                                        <section>
-                                            <content>
-                                                <section>
-                                                    <label>Data Plane Selection</label>
-                                                    <content>
-                                                        <composite>
-                                                               <content>
-                                                                    <with>
-                                                                        <case>
-                                                                            <content>
-                                                                                <property-editor>Name</property-editor>
-                                                                                <property-editor>Master</property-editor>
-                                                                                <property-editor>Count</property-editor>
-                                                                            </content>
-                                                                            <element-type>SDP</element-type>
-                                                                        </case>
-                                                                        <label>Enable SDP</label>
-                                                                        <path>SDP</path>
-                                                                    </with>
-                                                                <label>======================================== ========================================</label>
-                                                                </content>
-                                                        </composite>
-                                                        <composite>
-                                                                 <content>
-                                                                    <with>
-                                                                        <case>
-                                                                            <content>
-                                                                                <property-editor>Name</property-editor>
-                                                                                <property-editor>Master</property-editor>
-                                                                            </content>
-                                                                            <element-type>UNOC</element-type>
-                                                                        </case>
-                                                                        <label>Enable UNOC</label>
-                                                                        <path>UNOC</path>
-                                                                    </with>
-                                                                </content>
-                                                        </composite>
-                                                        <section>
-                                                            <label>Control Plane</label>
-                                                            <content>
-                                                                <property-editor>
-                                                                    <label>Enable</label>
-                                                                    <property>Cpmaster</property>
-                                                                </property-editor>
-                                                            </content>
-                                                            <description>DIrectly support the control plane.</description>
-                                                        </section>
-                                                    </content>
-                                                    <description>The platform worker must have an interconnect, either the SDP or the UNOC.</description>
-                                                </section>
-                                             </content>
-                                            <label>Additional Ports</label>
-                                        </section>
-                                    </content>
-                                </block>
-                            </split-form>
-                        </content>
-                        <label>Enable Infrastructure Interfaces</label>
-                    </section>
-                </node>
+								</content>
+							</section>
+							<label>${ worker != null ?  worker  : &quot;&lt;worker&gt;&quot; }</label>
+							<element-type>av.proj.ide.hdl.device.Supports</element-type>
+						</case>
+						<property>Supportss</property>
+					</node-factory>
+				</node>
 
 			</node>
-
 		</root-node>
 	</editor-page>
-	<import>
-		<package>av.proj.ide.owd</package>
-		<package>av.proj.ide.hplat</package>
-		<definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
-		<definition>av.proj.ide.sdef.shared.SignalCharacteristicsForm</definition>
-		<definition>av.proj.ide.owd.hdl.sdef.HdlPropertyForm</definition>
-		<definition>av.proj.ide.owd.hdl.sdef.HdlSpecPropertyForm</definition>
-		<definition>av.proj.ide.owd.hdl.sdef.HdlDataPortForm</definition>
-		<definition>av.proj.ide.owd.hdl.sdef.HdlWorkerAttributesForm
-		</definition>
-	</import>
+
+
 </definition>

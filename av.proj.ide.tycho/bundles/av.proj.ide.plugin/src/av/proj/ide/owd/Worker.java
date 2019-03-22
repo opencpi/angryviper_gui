@@ -192,12 +192,12 @@ public interface Worker extends Element {
 	ElementList<Property> getProperties();
 	
 	// *** SpecProperties ***
-	@Type( base = SpecProperty.class )
+	@Type( base = av.proj.ide.hplat.SpecProperty.class )
 	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "SpecProperty", type = SpecProperty.class ), @XmlListBinding.Mapping( element = "specproperty", type = SpecPropertyLower.class ) } )
 	@CustomXmlListBinding(impl = OWDSpecPropertyXmlListBinding.class)
 	@Label( standard = "SpecProperties" )
 			
 	ListProperty PROP_SPEC_PROPERTIES = new ListProperty( TYPE, "SpecProperties" );
 			
-	ElementList<SpecProperty> getSpecProperties();
+	ElementList<av.proj.ide.hplat.SpecProperty> getSpecProperties();
 }

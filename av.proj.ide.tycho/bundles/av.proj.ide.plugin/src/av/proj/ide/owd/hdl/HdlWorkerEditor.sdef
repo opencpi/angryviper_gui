@@ -35,70 +35,43 @@
 		<id>HdlWorkerEditorPage</id>
 		<element-type>av.proj.ide.owd.hdl.HdlWorker</element-type>
 		<initial-selection>HdlWorker</initial-selection>
-		<page-header-text>HDL OWD Editor</page-header-text>
+		<page-header-text>HDL App Worker OWD Editor</page-header-text>
 		<root-node>
 			<node>
 				<label>${ Name == null ? &quot;HdlWorker&quot; : Name }</label>
 				<section>
-					<label>HdlWorker</label>
+					<label>HDL App Worker</label>
 					<description>Top-level attributes of the OpenCPI HDL Worker XML
 					</description>
 					<content>
 						<include>HdlWorkerAttributesForm</include>
 					</content>
 				</section>
-
-				<node>
-					<label>Service Interfaces</label>
-					<!-- -->
-
-					<section>
-						<label>Time Interface</label>
-						<content>
-							<with>
-								<case>
-									<content>
-										<property-editor>Name</property-editor>
-										<property-editor>SecondsWidth</property-editor>
-										<property-editor>FractionWidth</property-editor>
-                                        <property-editor>
-                                            <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
-                                            <property>AllowUnavailable</property>
-                                            <hint>
-                                                <name>checkbox.layout</name>
-                                                <value>leading.label</value>
-                                            </hint>
-                                        </property-editor>
-									</content>
-								</case>
-								<label>Enable the Time Interface</label>
-								<path>TimeInterface</path>
-							</with>
-						</content>
-					</section>
-					<node-factory>
-						<property>TimeInterface</property>
-						<case>
-							<section>
-								<content>
-									<property-editor>Name</property-editor>
-									<property-editor>SecondsWidth</property-editor>
-									<property-editor>FractionWidth</property-editor>
-                                    <property-editor>
-                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
-                                        <property>AllowUnavailable</property>
-                                        <hint>
-                                            <name>checkbox.layout</name>
-                                            <value>leading.label</value>
-                                        </hint>
-                                    </property-editor>
-								</content>
-							</section>
-							<label>TimeInterface</label>
-						</case>
-					</node-factory>
-
-				</node>
+                <node>
+                    <node-factory>
+                        <case>
+                            <label>${ Name == null ? &quot;&lt;spec property&gt;&quot; : Name }</label>
+                            <section>
+                                <content>
+                                    <include>HdlSpecPropertyForm</include>
+                                </content>
+                                <label>OWD SpecProperty Definition</label>
+                            </section>
+                        </case>
+                        <property>SpecProperties</property>
+                    </node-factory>
+                    <label>SpecProperties</label>
+                    <section>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add a SpecProperty.</label>
+                            </actuator>
+                        </content>
+                        <description>OpenCPI Worker Description XML Spec Property Definitions</description>
+                        <label>SpecProperties</label>
+                    </section>
+                </node>
 
 
 				<node>
@@ -188,33 +161,6 @@
 				</node>
 
 				<node>
-					<label>SpecProperties</label>
-					<section>
-						<label>SpecProperties</label>
-						<description>OpenCPI Worker Description XML Spec Property
-							Definitions</description>
-						<content>
-							<actuator>
-								<action-id>Sapphire.Add</action-id>
-								<label>Add a SpecProperty.</label>
-							</actuator>
-						</content>
-					</section>
-					<node-factory>
-						<property>SpecProperties</property>
-						<case>
-							<label>${ Name == null ? "&lt;spec property&gt;" : Name }</label>
-							<section>
-								<label>OWD SpecProperty Definition</label>
-								<content>
-									<include>HdlSpecPropertyForm</include>
-								</content>
-							</section>
-						</case>
-					</node-factory>
-				</node>
-
-				<node>
 					<label>Ports</label>
 					<section>
 						<label>Ports</label>
@@ -243,6 +189,54 @@
 						</case>
 					</node-factory>
 				</node>
+                <node>
+                    <node-factory>
+                        <case>
+                            <label>TimeInterface</label>
+                            <section>
+                                <content>
+                                    <property-editor>Name</property-editor>
+                                    <property-editor>SecondsWidth</property-editor>
+                                    <property-editor>FractionWidth</property-editor>
+                                    <property-editor>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                        <property>AllowUnavailable</property>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                    </property-editor>
+                                </content>
+                            </section>
+                        </case>
+                        <property>TimeInterface</property>
+                    </node-factory>
+                    <label>Service Interfaces</label>
+                    <section>
+                        <content>
+                            <with>
+                                <case>
+                                    <content>
+                                        <property-editor>Name</property-editor>
+                                        <property-editor>SecondsWidth</property-editor>
+                                        <property-editor>FractionWidth</property-editor>
+                                        <property-editor>
+                                            <hint>
+                                                <name>checkbox.layout</name>
+                                                <value>leading.label</value>
+                                            </hint>
+                                            <property>AllowUnavailable</property>
+                                            <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                        </property-editor>
+                                    </content>
+                                </case>
+                                <label>Enable the Time Interface</label>
+                                <path>TimeInterface</path>
+                            </with>
+                        </content>
+                        <label>Time Interface</label>
+                    </section>
+                </node>
 
 			</node>
 		</root-node>

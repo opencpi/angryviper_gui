@@ -62,7 +62,7 @@ public interface DeviceSignal extends Element {
     
     Value<SignalDirection> getDirection();
     void setDirection( String value );
-    void setDirection( SignalDirection value );
+    void setDirection( DeviceSignalDirection value );
 	
 	// ***  signal width ***
 	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 

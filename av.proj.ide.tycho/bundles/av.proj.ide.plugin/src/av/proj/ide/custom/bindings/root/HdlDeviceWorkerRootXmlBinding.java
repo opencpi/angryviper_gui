@@ -18,26 +18,12 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.hplat;
+package av.proj.ide.custom.bindings.root;
 
-import av.proj.ide.custom.bindings.value.CaseInsenitiveElementValueBinding;
+public class HdlDeviceWorkerRootXmlBinding extends GenericMultiCaseRootBinding {
 
-/**
- * Don't know why, but this class is never initialized or used. It's kept
- * just in case, or we learn more later.  It appears that the count property
- * editor goes directly to the attribute. This must get put in place when
- * the doc is read in.  I'm guessing this would be used if another SDP
- * node could be created but that doesn't happen.
- */
-public class SDPElementValueBinding extends CaseInsenitiveElementValueBinding {
-	
-	// The property name was something else entirely, so go specifically
-	// for the SDP.
-	@Override
-	protected void initNames() {
-        this.name = "SDP";
-        this.lowerName = "sdp";
-        this.camelName = "Sdp";
-	}
-	
+	public HdlDeviceWorkerRootXmlBinding()
+    {
+        super("HdlDevice");
+    }
 }

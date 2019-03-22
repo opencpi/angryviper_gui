@@ -55,6 +55,16 @@ public interface SpecProperty extends Element {
 	Value<String> getDefault();
 	void setDefault(String value);
 	
+	// ***Value ***
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+	@Label(standard = "value")
+	//@Required
+
+	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
+
+	Value<String> getValue();
+	void setValue(String value);
+	
 	/*%%%%%%%%%%%%%%%  Special Access property attributes %%%%%%%%%%%%%%%%%%%*/
 	// *** Padding ***
 	@Type(base = Boolean.class)

@@ -32,8 +32,8 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface Sdp extends Element {
-	ElementType TYPE = new ElementType(Sdp.class);
+public interface SDP extends Element {
+	ElementType TYPE = new ElementType(SDP.class);
 
 	// *** Master ***
 	@Type(base = Boolean.class)
@@ -45,10 +45,10 @@ public interface Sdp extends Element {
 	ValueProperty PROP_MASTER = new ValueProperty(TYPE, "Master");
 	Value<Boolean> getMaster();
 	
-	// Name (optional)
+	// Name
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "name")
-	@Enablement( expr="false")
+	//@Enablement( expr="false")
 
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
 	

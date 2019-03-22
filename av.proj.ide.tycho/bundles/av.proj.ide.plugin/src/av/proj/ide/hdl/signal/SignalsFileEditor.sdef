@@ -37,6 +37,7 @@
                         </actuator>
                     </content>
                     <description>The signals file bundles signal(s) related to a common interface. Typically these are wires within an FPGA design that are connected between device workers (via a devsignal port).</description>
+                    <label>HDL Signals</label>
                 </section>
                 
                 <node-factory>

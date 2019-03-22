@@ -33,12 +33,12 @@
         <id>RccWorkerEditorPage</id>
         <element-type>av.proj.ide.owd.rcc.RccWorker</element-type>
         <initial-selection>RccWorker</initial-selection>
-        <page-header-text>RCC OWD Editor</page-header-text>
+        <page-header-text>RCC App Worker OWD Editor</page-header-text>
         <root-node>
             <node>
             	<label>${ Name == null ? &quot;RccWorker&quot; : Name }</label>
             	<section>
-            		<label>RccWorker</label>
+            		<label>RCC App Worker</label>
             		<description>Top-level attributes of the OpenCPI RCC Worker XML</description>
             		<content>
             			<property-editor>Spec</property-editor>
@@ -87,6 +87,31 @@
             	</section>
             	
             	<!-- This 'Properties' interface is defined in 'Worker.java' class -->
+                <node>
+                    <node-factory>
+                        <case>
+                            <label>${ Name == null ? &quot;&lt;spec property&gt;&quot; : Name }</label>
+                            <section>
+                                <content>
+                                    <include>OwdSpecPropertyForm</include>
+                                </content>
+                                <label>OWD SpecProperty Definition</label>
+                            </section>
+                        </case>
+                        <property>SpecProperties</property>
+                    </node-factory>
+                    <label>SpecProperties</label>
+                    <section>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add a SpecProperty.</label>
+                            </actuator>
+                        </content>
+                        <description>OpenCPI Worker Description XML Spec Property Definitions</description>
+                        <label>SpecProperties</label>
+                    </section>
+                </node>
             	<node>
             		<label>Properties</label>
             		<section>
@@ -165,32 +190,6 @@ to properties must be performed manually in the source."
             				</node-factory>
                             <element-type>Property</element-type>
             				
-            			</case>
-            		</node-factory>
-            	</node>
-            	
-            	<node>
-            		<label>SpecProperties</label>
-            		<section>
-            			<label>SpecProperties</label>
-            			<description>OpenCPI Worker Description XML Spec Property Definitions</description>
-            			<content>
-            				<actuator>
-            					<action-id>Sapphire.Add</action-id>
-            					<label>Add a SpecProperty.</label>
-            				</actuator>
-            			</content>
-            		</section>
-            		<node-factory>
-            			<property>SpecProperties</property>
-            			<case>
-            				<label>${ Name == null ? "&lt;spec property&gt;" : Name }</label>
-            				<section>
-            					<label>OWD SpecProperty Definition</label>
-            					<content>
-            						<include>OwdSpecPropertyForm</include>
-             					</content>
-            				</section>
             			</case>
             		</node-factory>
             	</node>

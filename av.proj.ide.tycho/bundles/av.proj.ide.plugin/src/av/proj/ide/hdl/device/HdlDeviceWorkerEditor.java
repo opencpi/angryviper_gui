@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.hplat;
+package av.proj.ide.hdl.device;
 
 import java.util.ArrayList;
 
@@ -28,22 +28,24 @@ import org.eclipse.sapphire.modeling.xml.RootXmlResource;
 import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.w3c.dom.Document;
 
 import av.proj.ide.hdl.signal.Signal;
 import av.proj.ide.internal.OcpiXmlDocScanner;
 import av.proj.ide.owd.hdl.HdlWorkerEditor;
 
-public class HdlPlatformEditor extends HdlWorkerEditor {
-
+public class HdlDeviceWorkerEditor extends HdlWorkerEditor {
+	
 	private static OcpiXmlDocScanner docScan = null;
 	
-	public HdlPlatformEditor () {
-		type = HdlPlatform.TYPE;
-		name = "SlotFileEditorPage";
+	public HdlDeviceWorkerEditor () {
+		type = HdlDevice.TYPE;
 		if(docScan == null) {
 			docScan = new OcpiXmlDocScanner();
-			docScan.setEditorName("HDL PLatform OWD Editor");
-			//docScan.addScanElements("controlinterface", "ControlInterface");
+			docScan.setEditorName("HDL Device Worker OWD Editor");
+//			docScan.addScanElements("controlinterface", "ControlInterface");
+//			docScan.addScanElements("timeinterface", "TimeInterface");
+//			docScan.addScanElements("rawprop", "RawProp");
 			docScan.setShowXTimes(2);
 		}
 	}
@@ -51,7 +53,7 @@ public class HdlPlatformEditor extends HdlWorkerEditor {
 	@Override
     protected void createEditorPages() throws PartInitException 
     {
-        addDeferredPage( "Design", "HdlPlatformEditorPage" );
+        addDeferredPage( "Design", "HdlDeviceWorkerEditorPage" );
         this.xmlSourceEditor = new StructuredTextEditor();
         this.xmlSourceEditor.setEditorPart(this);
         int index = addPage( this.xmlSourceEditor, getEditorInput() );
@@ -61,13 +63,20 @@ public class HdlPlatformEditor extends HdlWorkerEditor {
     @Override
     protected Element createModel() 
     {
-    	Element element = type.instantiate(new RootXmlResource(new XmlEditorResourceStore(this, this.xmlSourceEditor)));
+    	XmlEditorResourceStore xe = new XmlEditorResourceStore(this, this.xmlSourceEditor);
     	ArrayList<String> repairs = new ArrayList<String>();
-    	HdlPlatform fileElement = (HdlPlatform)element;
+    	Document doc = xe.getDomDocument();
+    	//docScan.scanEditorsList(doc, repairs);
+    	docScan.checkXiInclude(doc, repairs);
+    	xe.validateEdit();
+    	
+    	RootXmlResource r = new RootXmlResource(xe);
+    	Element element = type.instantiate(r);
+		HdlDevice fileElement = (HdlDevice)element;
     	ElementList<Signal> signals = fileElement.getSignals();
     	docScan.scanSignalElements(signals, repairs);
     	docScan.processModifications(repairs);
-    	return element;
+     	return element;
     }
    
 }

@@ -45,10 +45,16 @@ public interface Device extends Element
 	
 	// *** worker attribute***
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "worker")
+	@Label(standard = "Worker")
 	@Required
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_WORKER = new ValueProperty(TYPE, "Worker");
+	
+	// *** card attribute***
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+	@Label(standard = "Card")
+	//@Service(impl=NameValidationService.class)
+	ValueProperty PROP_CARD = new ValueProperty(TYPE, "Card");
 	
 	// *** Device property element ***
 	public interface Property extends Element

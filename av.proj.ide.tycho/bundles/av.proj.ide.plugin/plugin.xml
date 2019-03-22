@@ -70,6 +70,7 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.Unittests.upper" />
 			<contentTypeBinding contentTypeId="av.proj.ide.unittests.lower" />
 		</editor>
+
 		<editor id="av.proj.ide.hplat.HdlPlatform" name="HDL Platform Editor"
 			class="av.proj.ide.hplat.HdlPlatformEditor" extensions="xml">
 			<!-- Above w/ class=".. launches the editor. below the the sdef file is 
@@ -79,6 +80,12 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.Hplat" />
 			<contentTypeBinding contentTypeId="av.proj.ide.hplat" />
 		</editor>
+		<editor id="av.proj.ide.hdl.device.HdlDeviceWorkerEditor"  name="HDL Device Worker Editor"
+			 class="av.proj.ide.hdl.device.HdlDeviceWorkerEditor"  extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.device.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.device.lower" />
+		</editor>
+
 		<editor id="av.proj.ide.hdl.signal.SignalsFileEditor"  name="Signals File Editor"
 			 class="av.proj.ide.hdl.signal.SignalsFileEditor"  extensions="xml">
 			<contentTypeBinding contentTypeId="av.proj.ide.hdl.signals.upper" />
@@ -230,6 +237,25 @@
 			<describer
 				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
 				<parameter name="element" value="hdlplatform" />
+			</describer>
+		</content-type>
+		
+		<!-- HdlDevice Content Type -->
+		<content-type id="av.proj.ide.hdl.device.lower" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="hdldevice" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.hdl.device.upper" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="HdlDevice" />
 			</describer>
 		</content-type>
 		

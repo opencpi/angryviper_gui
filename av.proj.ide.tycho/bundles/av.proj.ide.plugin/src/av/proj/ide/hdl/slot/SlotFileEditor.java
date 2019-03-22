@@ -20,79 +20,57 @@
 
 package av.proj.ide.hdl.slot;
 
+import java.util.ArrayList;
+
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.modeling.xml.RootXmlResource;
+import org.eclipse.sapphire.ui.SapphireEditor;
 import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
 import av.proj.ide.hdl.signal.Signal;
-import av.proj.ide.hdl.signal.SignalDirection;
-import av.proj.ide.hdl.signal.SignalsFileEditor;
+import av.proj.ide.internal.OcpiXmlDocScanner;
 
-public class SlotFileEditor extends SignalsFileEditor {
+public class SlotFileEditor extends SapphireEditor {
 	
+	protected StructuredTextEditor xmlSourceEditor;
+	protected String      name;
+	protected ElementType type;
+	private static OcpiXmlDocScanner docScan = null;
+
 	public SlotFileEditor () {
 		type = SlotType.TYPE;
 		name = "SlotFileEditorPage";
-		modificationMessage = "The Slot File XML editor " + messageInfo;
-		messageHeader = "Signal Definition XML Modifications";
-		me = this.getClass().toString();
-	}
-	
-	protected void modifyOldAttributes(ElementList<Signal> signals) {
-    	/**
-    	 * For simplicity the UI currently present signal definitions using
-    	 * the current attribute set defining a name and a direction.
-    	 */
-		boolean changed = false;
-    	for(Signal signal : signals) {
-    		String name = signal.getName().content();
-    		if( name != null )
-    			continue;
-    		
-    		changed = true;
-    		if(signal.getInput().content() != null) {
-    			signal.setDirection(SignalDirection.in);
-    			signal.setName(signal.getInput().content());
-    			signal.setInput(null);
-    		}
-    		else if(signal.getOutput().content() != null) {
-    			signal.setDirection(SignalDirection.out);
-    			signal.setName(signal.getOutput().content());
-    			signal.setOutput(null);
-	   		}
-	    		else if(signal.getInout().content() != null) {
-	    			signal.setDirection(SignalDirection.inout);
-	    			signal.setName(signal.getInout().content());
-	    			signal.setInout(null);
-	   		}
-    		else if(signal.getBidirectional().content() != null) {
-    			signal.setDirection(SignalDirection.bidirectional);
-    			signal.setName(signal.getBidirectional().content());
-    			signal.setBidirectional(null);
-    		}
-    	}
-    	if(changed) {
-    		if(modMessages.contains(me)) {
-    			return;
-    		}
-    		presentModWarning();
-    		modMessages.add(me);
-    	}
+		if(docScan == null) {
+			docScan = new OcpiXmlDocScanner();
+			docScan.setEditorName("HDL Slot File Editor");
+			docScan.setShowXTimes(2);
+		}
 	}
 	
 	@Override
-	protected void updateSignalDefinitions(Element element) {
-    	SlotType fileElement = (SlotType)element;
-    	ElementList<Signal> signals = fileElement.getSignals();
-    	modifyOldAttributes(signals);
-	}
+    protected void createEditorPages() throws PartInitException 
+    {
+        addDeferredPage( "Design", name );
+        this.xmlSourceEditor = new StructuredTextEditor();
+        this.xmlSourceEditor.setEditorPart(this);
+        int index = addPage( this.xmlSourceEditor, getEditorInput() );
+        setPageText( index, "Source" );
+    }
+	
     
     @Override
     protected Element createModel() 
     {
     	Element element = type.instantiate(new RootXmlResource(new XmlEditorResourceStore(this, this.xmlSourceEditor)));
-    	updateSignalDefinitions(element);
+    	ArrayList<String> repairs = new ArrayList<String>();
+    	SlotType fileElement = (SlotType)element;
+    	ElementList<Signal> signals = fileElement.getSignals();
+    	docScan.scanSignalElements(signals, repairs);
+    	docScan.processModifications(repairs);
     	return element;
     }
 }

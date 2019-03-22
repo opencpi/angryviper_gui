@@ -20,42 +20,30 @@
 
 package av.proj.ide.owd.hdl;
 
+import java.util.ArrayList;
+
 import org.eclipse.sapphire.Element;
-import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.modeling.xml.RootXmlResource;
-import org.eclipse.sapphire.ui.SapphireEditor;
 import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
+import org.w3c.dom.Document;
 
+import av.proj.ide.hdl.slot.SlotFileEditor;
 import av.proj.ide.internal.OcpiXmlDocScanner;
 
-public class HdlWorkerEditor extends SapphireEditor {
+public class HdlWorkerEditor extends SlotFileEditor {
 	
-	protected StructuredTextEditor xmlSourceEditor;
-	protected String      name;
-	protected ElementType type;
-	protected static OcpiXmlDocScanner docScan = null;
-	
-	protected static String messageInfo;
-	protected static String modificationMessage; 
-	protected static String messageHeader;
+	private static OcpiXmlDocScanner docScan = null;
 	
 	public HdlWorkerEditor() {
 		type = HdlWorker.TYPE;
 		name = "HdlWorkerEditorPage";
-		//me = this.getClass().toString();
-		
 		if(docScan == null) {
-			messageInfo = "has updated interface elements so they are the proper case for XML presentation."
-					+ " If the file is saved, the new format will remain in it."
-					+ " This message appears one time per Eclipse session.";
-			modificationMessage = "WARNING: The HDL OWD File XML editor " + messageInfo;
-			messageHeader = "HDL OWD File XML Modifications";
 			docScan = new OcpiXmlDocScanner();
-			docScan.setModMessage(name, messageHeader, modificationMessage);
-			docScan.addScanElements("controlinterface", "ControlInterface");
-			docScan.addScanElements("timeinterface", "TimeInterface");
+			docScan.setEditorName("HDL App Worker OWD Editor");
+//			docScan.addScanElements("controlinterface", "ControlInterface");
+//			docScan.addScanElements("timeinterface", "TimeInterface");
 			docScan.setShowXTimes(2);
 		}
 	}
@@ -64,10 +52,8 @@ public class HdlWorkerEditor extends SapphireEditor {
     protected void createEditorPages() throws PartInitException 
     {
         addDeferredPage( "Design", name );
-        
         this.xmlSourceEditor = new StructuredTextEditor();
         this.xmlSourceEditor.setEditorPart(this);
-        
         int index = addPage( this.xmlSourceEditor, getEditorInput() );
         setPageText( index, "Source" );
     }
@@ -75,11 +61,16 @@ public class HdlWorkerEditor extends SapphireEditor {
     @Override
     protected Element createModel() 
     {
-    	
     	XmlEditorResourceStore xe = new XmlEditorResourceStore(this, this.xmlSourceEditor);
+    	ArrayList<String> repairs = new ArrayList<String>();
+    	Document doc = xe.getDomDocument();
+    	//docScan.scanEditorsList(doc, repairs);
+    	docScan.checkXiInclude(doc, repairs);
+    	xe.validateEdit();
+    	
     	RootXmlResource r = new RootXmlResource(xe);
-    	docScan.scanAndUpdateXmlIssues(xe);
-     	Element element = type.instantiate(r);
+    	Element element = type.instantiate(r);
+    	docScan.processModifications(repairs);
     	return element;
     }
 

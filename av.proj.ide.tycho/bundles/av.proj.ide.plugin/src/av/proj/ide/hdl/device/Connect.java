@@ -18,28 +18,46 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.hplat;
+package av.proj.ide.hdl.device;
 
+import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface SpecProperty extends av.proj.ide.owd.SpecProperty {
-	ElementType TYPE = new ElementType(SpecProperty.class);
 
-	// ***Value ***
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "value")
-	@Required
-
-	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
-
-	Value<String> getValue();
-	void setValue(String value);
+public interface Connect extends Element {
+	ElementType TYPE = new ElementType(Connect.class);
 	
+	// *** Port ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Port")
+	
+	ValueProperty PROP_PORT = new ValueProperty(TYPE, "Port");
+
+	Value<String> getPort();
+	void setPort(String value);
+	
+	// *** Port ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "To")
+	
+	ValueProperty PROP_TO = new ValueProperty(TYPE, "To");
+
+	Value<String> getTo();
+	void setTo(String value);
+	
+	// *** Index ***
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Index")
+	
+	ValueProperty PROP_INDEX = new ValueProperty(TYPE, "Index");
+
+	Value<String> getIndex();
+	void setIndex(String value);
+
 }

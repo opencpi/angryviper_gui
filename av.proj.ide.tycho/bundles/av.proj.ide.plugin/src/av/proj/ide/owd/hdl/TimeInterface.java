@@ -38,7 +38,7 @@ import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 public interface TimeInterface extends Element {
 	ElementType TYPE = new ElementType( TimeInterface.class );
 	
-	// *** Timeout *** 
+	// *** Name *** 
 	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Name")
 		
@@ -64,7 +64,7 @@ public interface TimeInterface extends Element {
 	Value<String> getSecondsWidth();
 	void setSecondsWidth(String value);
 
-	// *** FactionWidth ***
+	// *** FractionWidth ***
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "FractionWidth")
     @NumericRange( min = "0", max = "32" )

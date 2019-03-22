@@ -27,7 +27,7 @@
         <element-type>av.proj.ide.hdl.slot.SlotType</element-type>
         <root-node>
             <node>
-                <label>Slot</label>
+                <label>SlotType</label>
                 
                 <section>
                     <content>
@@ -36,6 +36,7 @@
                             <label>New Signal</label>
                         </actuator>
                     </content>
+                    <label>HDL Slot</label>
                 </section>
                 
                 <node-factory>

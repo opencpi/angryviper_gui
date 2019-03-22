@@ -271,7 +271,7 @@
                                             <child-property>ValueFile</child-property>
 					</property-editor>
                                     </content>
-                                    <description>Properties with a initial value that can be configured to change in time. Note: duplicated delay entries are not allowed.</description>
+                                    <description>Properties with an initial value that can be configured to change in time.</description>
                                 </section>
                             </content>
                         </block>

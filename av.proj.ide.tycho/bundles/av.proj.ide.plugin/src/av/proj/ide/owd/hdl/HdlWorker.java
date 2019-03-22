@@ -31,16 +31,17 @@ import org.eclipse.sapphire.ValueProperty;
 import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Service;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlElementBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
-import org.eclipse.sapphire.modeling.xml.annotations.XmlBinding;
 
 import av.proj.ide.custom.bindings.list.ControlOperationsListBinding;
 import av.proj.ide.custom.bindings.list.OWDStreamInterfaceXmlListBinding;
 import av.proj.ide.custom.bindings.root.HdlWorkerRootXmlBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsensitiveSingleElementBinding;
 import av.proj.ide.owd.ControlOperation;
 import av.proj.ide.owd.Worker;
 import av.proj.ide.services.HdlControlOperationsPossibleValueService;
@@ -150,17 +151,10 @@ public interface HdlWorker extends Worker {
 	 */
 	
 	// *** ControlInterface ***
-	@Type( base = ControlInterface.class )
-	@XmlBinding( path = "ControlInterface" )
-	/**
-	 * Experimenting.  The problem is that when using the <with> sdef element a path has to be defined
-	 * and that is the path (element). ElementHandle ends up creating it when the with checkbox is selected.
-	 * When the custom binding is used, then the createUnderlyingObject is call and that adds it again.
-	 * I don't see a good work around for this other than using a button actuator and doing it all manually. 
-	 *
-	@CustomXmlElementBinding(impl=CaseInsensitiveElementBinding.class )
-	@XmlElementBinding.Mapping(element = "ControlInterface", type = ControlInterface.class)
-	 */
+	// Experimenting - using ElementHandle - believe just declaring the element type
+	// return uses ElementHandle by default (seen below with TimeInterface.
+ 	@Type( base = ControlInterface.class )
+	@CustomXmlElementBinding(impl = CaseInsensitiveSingleElementBinding.class)
 	@Label( standard = "ControlInterface" )
 
 	ElementProperty PROP_CONTROL_INTERFACE = new ElementProperty( TYPE, "ControlInterface" );
@@ -169,12 +163,12 @@ public interface HdlWorker extends Worker {
 	
 	// *** TimeInterface ***
 	@Type( base = TimeInterface.class )
-	@XmlBinding( path = "TimeInterface" )
+	@CustomXmlElementBinding(impl = CaseInsensitiveSingleElementBinding.class)
 	@Label( standard = "TimeInterface" )
 	
 	ElementProperty PROP_TIME_INTERFACE = new ElementProperty( TYPE, "TimeInterface" );
 	
-    ElementHandle<TimeInterface> getTimeInterface();
+    TimeInterface getTimeInterface();
     
 	// *** StreamInterfaces ***
 	@Type( base = StreamInterface.class )
