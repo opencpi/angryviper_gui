@@ -18,31 +18,38 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.hplat;
+package av.proj.ide.hplat.specialBinds;
 
-import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.Validation;
 import org.eclipse.sapphire.Value;
-import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.Status;
-import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.hplat.Slot.Signal;
 
-public interface SpecProperty extends av.proj.ide.owd.SpecProperty {
-	ElementType TYPE = new ElementType(SpecProperty.class);
-
-	// ***Value ***
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "value")
-	@Validation(rule     = "${Name == 'platform' && Value != null }",
-    message  = "Must specify a value for the platform SpecProperty",
-    severity = Status.Severity.ERROR)
-
-	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
-
-	Value<String> getValue();
-	void setValue(String value);
+/***
+ * This special binding was implemented to ensure when a new slot signal is
+ * added and the slot attribute is entered, the platform="" attribute is assigned.
+ * 
+ * Also note: as understanding is gained on custom bindings, things are getting
+ * simpler.  Here the parentElement is used to put down the need attribute.
+ */
+public class SlotSignalSlotBinding extends CaseInsenitiveAttributeValueBinding {
 	
+
+    @Override
+    public void write( final String value )
+    {
+    	super.write(value);
+    	Signal slotSig = (Signal)property().element();
+    	Value<String> plat = slotSig.getPlatform();
+    	if(plat.content() == null) {
+    		String platformAttr = null;
+    		if(parentStartsUpperCase) {
+    			platformAttr = "@Platform";
+    		}
+    		else {
+    			platformAttr = "@platform";
+     		}
+    		parentElement.setChildNodeText(platformAttr, "", false);
+    	}
+     }
 }

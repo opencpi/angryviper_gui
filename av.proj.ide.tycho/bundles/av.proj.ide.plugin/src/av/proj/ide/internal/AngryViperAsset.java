@@ -119,7 +119,7 @@ public class AngryViperAsset {
 			AngryViperAsset other = (AngryViperAsset)asset;
 			return this.category == other.category &&
 					this.assetName.equals(other.assetName) &&
-					this.projectLocation.projectName.equals(other.projectLocation.projectName) &&
+					//this.projectLocation.projectName.equals(other.projectLocation.projectName) &&
 					this.projectLocation.projectPath.equals(other.projectLocation.projectPath) &&
 					(this.libraryName == null ? true : this.libraryName.equals(other.libraryName));
 		}

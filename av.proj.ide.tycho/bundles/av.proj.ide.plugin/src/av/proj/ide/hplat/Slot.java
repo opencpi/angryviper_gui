@@ -37,6 +37,8 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.hplat.specialBinds.SlotSignalPlatformBinding;
+import av.proj.ide.hplat.specialBinds.SlotSignalSlotBinding;
 import av.proj.ide.services.NameValidationService;
 
 public interface Slot extends Element
@@ -50,7 +52,7 @@ public interface Slot extends Element
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
 
-	// *** name attribute***
+	// *** type attribute***
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "type")
 	@Required
@@ -63,7 +65,7 @@ public interface Slot extends Element
 		ElementType TYPE = new ElementType(Signal.class);
 		
 		// *** name attribute***
-		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+		@CustomXmlValueBinding(impl = SlotSignalSlotBinding.class)
 		@Label(standard = "slot")
 		@Required
 		ValueProperty PROP_SLOT = new ValueProperty(TYPE, "Slot");
@@ -72,7 +74,7 @@ public interface Slot extends Element
 		void setSlot(String value);
 		
 		// *** name attribute***
-		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+		@CustomXmlValueBinding(impl = SlotSignalPlatformBinding.class)
 		@Label(standard = "platform")
 		@DefaultValue(text="")
 		@MustExist
@@ -84,6 +86,7 @@ public interface Slot extends Element
 
 	// *** Slot signal elements ***
 	@Type( base = Signal.class )
+	//@CustomXmlListBinding(impl = SlotSignalElementBinding.class)
 	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class)
 	@Label( standard = "signal" )
 

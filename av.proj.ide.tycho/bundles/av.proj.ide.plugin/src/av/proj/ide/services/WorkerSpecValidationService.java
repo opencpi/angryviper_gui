@@ -54,7 +54,7 @@ public class WorkerSpecValidationService extends ValidationService {
 			final String name = obj.toString();
 			if (name != null) {
 				
-				if (! name.toLowerCase().endsWith("spec.xml")) {
+				if (! name.toLowerCase().endsWith("spec")) {
 					stat = Status.createErrorStatus("This spec reference does not appear valid.");
 				}
 				else {

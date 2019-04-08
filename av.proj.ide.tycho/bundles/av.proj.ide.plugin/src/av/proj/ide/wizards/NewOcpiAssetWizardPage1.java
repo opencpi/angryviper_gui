@@ -336,6 +336,9 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 	}
 	
 	private static String stdHelpMessage = "Create the framework asset and associated framework directory and files. If applicable the asset XML file is created and opened in the respective asset editor.";
+
+	// Easier to track the selection by the enum.
+	private OpenCPICategory currentAsset = null;
 	
 	private MyPoint layoutPanel(OpenCPICategory assetCatgory) {
 		currentAsset = assetCatgory;
@@ -344,7 +347,7 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		MyPoint dimension = new MyPoint();
 		// Basic asset dimensions
 		dimension.width = 550;
-		dimension.height = 400;
+		dimension.height = 500;
 		
 		boolean needsBasePanel = (projectCombo == null || assetName == null || assetName.isDisposed() );
 		boolean initialFormComplete = false;
@@ -506,6 +509,17 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 				updateStatus(status);
 				initialFormComplete = false;
 			}
+			else {
+				// Check project registration.  
+				String projectName = getProjectSelection();
+				AngryViperProjectInfo proj = AngryViperAssetService.getInstance().getEnvironment().getProjectInfo(projectName);
+				if(proj != null) {
+					if( ! proj.isRegistered()) {
+						setMessage("Warning - this project is not registered.");
+					}
+				}
+				
+			}
 			dimension.height = 600;
 			dimension.width  = 750;
 			dimension.resize = true;
@@ -561,8 +575,6 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		}
 	}
 	
-	private OpenCPICategory currentAsset = null;
-
 	void reloadLibOptions() {
 		boolean libraryAsset = false;
 		switch(currentAsset) {
@@ -570,14 +582,10 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			break;
 		case component:
 		case protocol:
-			
-			if(libraryOptions.size() > 1) {
-				if(libraryCombo == null || libraryCombo.isDisposed()) {
-					libButton.setText("Library");
-					libButton.setSelection(true);
-					addLibraryDropdown(350);
-				}
-			}
+			// it didn't work well to try and update the 
+			// destination radio group when the project selection
+			// changes.  Just go ahead and reconstruct the wizard.
+			commandChanged(container);
 			break;
 			
 		case worker:
@@ -586,9 +594,8 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			break;
 		}
 		
-		libraryCombo.removeAll();
-		
 		if(libraryAsset) {
+			libraryCombo.removeAll();
 			if(libraryOptions.size() == 0) {
 				updateStatus("A components library must be created before creating this asset.");
 			}
@@ -597,6 +604,33 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			}
 		}
 	}
+	
+	// The spec combo box needs to reflect the correct specs list for
+	// workers and unit tests. This is a consideration when the project
+	// or library selection changes.
+	String updateSpecCombo(String project) {
+		if(specCombo == null || specCombo.isDisposed())
+			return null;
+		
+		specCombo.removeAll();
+		
+		switch(currentAsset) {
+		default:
+			break;
+		case worker:
+			OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+			Collection<String> specs = srv.getComponentsAvailableToProject(project);
+			return loadSpecCombo(specs);
+		case test:
+			 String selectedLibrary = libraryCombo.getText();
+			String projectName = getProjectSelection();
+			Set<String> comps = AngryViperAssetService.getInstance().getComponentsInLibrary(projectName, selectedLibrary);
+			return loadSpecCombo(comps);
+		}
+		
+		return null;
+	}
+	
 	
 	String loadComponentInputSelections(int inputWidth) {
 		if(libraryOptions.size() == 0) {
@@ -608,14 +642,6 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			addRadioGroupForLibs(inputWidth);
 			addLibraryDropdown(inputWidth);
 			loadLibraryOptions();
-//			libraryCombo.addSelectionListener(new SelectionListener() {
-//				@Override
-//				public void widgetSelected(SelectionEvent arg0) {
-//				}
-//				@Override
-//				public void widgetDefaultSelected(SelectionEvent arg0) {/* DO NOTHING*/}
-//			});	
-
 		}
 		else {
 			// Single lib project
@@ -635,24 +661,6 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 			return "A components library must be created before creating this asset.";
 		}
 		loadLibraryOptions();
-		if(libraryOptions.size() > 1) {
-			libraryCombo.addSelectionListener(new SelectionListener() {
-				@Override
-				public void widgetSelected(SelectionEvent arg0) {
-					int idx = libraryCombo.getSelectionIndex();
-					if(idx > -1) {
-						String selectedLibrary = libraryCombo.getItem(idx);
-						Set<String> comps = AngryViperAssetService.getInstance().getComponentsInLibrary(projectName, selectedLibrary);
-						String statusMsg = loadSpecCombo(comps);
-						if(statusMsg != null) {
-							updateStatus("There are no available components in this library.");
-						}
-					}
-				}
-				@Override
-				public void widgetDefaultSelected(SelectionEvent arg0) {/* DO NOTHING*/}
-			});	
-		}
 		int idx = libraryCombo.getSelectionIndex();
 		if(idx > -1) {
 			String selectedLibrary = libraryCombo.getItem(idx);
@@ -808,14 +816,16 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		projectCombo.addSelectionListener(new SelectionListener() {
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
-				clearStatus();
-				List<String> currentOptions = libraryOptions;
+				
+				// The destination project changed.
+				setErrorMessage(null);
+				String[] priorOptions = libraryOptions.toArray(new String[libraryOptions.size()]);
 				getLibraryOptions();
-				int delta = currentOptions.size() - libraryOptions.size();
+				int delta = priorOptions.length - libraryOptions.size();
 				boolean notEqual = false;
 				// Make sure they are the same
 				if(delta == 0) {
-					for(String lib : currentOptions) {
+					for(String lib : priorOptions) {
 						if( ! libraryOptions.contains(lib) ) {
 							notEqual = true;
 							break;
@@ -829,6 +839,13 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 					reloadLibOptions();
 				}
 				initialProjectSelected = getProjectSelection();
+				
+				// If a worker or a unit test is selected, must update
+				// the spec list.
+				String status = updateSpecCombo(initialProjectSelected);
+				if(status != null) {
+					updateStatus(status);
+				}
 			}
 			@Override
 			public void widgetDefaultSelected(SelectionEvent arg0) {/* DO NOTHING*/}
@@ -971,6 +988,22 @@ public class NewOcpiAssetWizardPage1 extends WizardPage {
 		gd = new GridData(SWT.BEGINNING, SWT.CENTER, true, false);
 		gd.widthHint = inputWidth;
 		libraryCombo.setLayoutData(gd);
+		libraryCombo.addSelectionListener(new SelectionListener() {
+		@Override
+		public void widgetSelected(SelectionEvent arg0) {
+			// Unit tests specs must be be updated if the library
+			// changes. 
+			if(currentAsset != OpenCPICategory.test) return;
+			String project = getProjectSelection();
+			String status = updateSpecCombo(project);
+			if(status != null) {
+				updateStatus(status);
+			}
+		}
+		@Override
+		public void widgetDefaultSelected(SelectionEvent arg0) {/* DO NOTHING*/}
+		});	
+		
 	}
 	
 	void addWorkerInputs(int inputWidth) {

@@ -24,7 +24,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -192,18 +191,6 @@ public class EnvBuildTargets {
 		
 	}
 
-	public EnvBuildTargets () {
-		buildEnvironment = new TreeMap<String, HdlVendor> ();
-		getHdlVendors(buildEnvironment);
-		rccPlatformList = new TreeMap<String, RccPlatformInfo>();
-		getRccPlatforms(rccPlatformList);
-		hdlPlatformList = new TreeMap<String, HdlPlatformInfo>();
-		getHdPlatforms(hdlPlatformList);
-		for(HdlVendor vendor : buildEnvironment.values()) {
-			vendor.loadPlatforms(hdlPlatformList.values());
-		}
-	}
-	
 	public Collection<HdlVendor> getVendors () {
 		return buildEnvironment.values();
 	}
@@ -214,7 +201,14 @@ public class EnvBuildTargets {
 		return rccPlatformList.values();
 	}
 	
-	protected void getHdlVendors(Map<String, HdlVendor> vendors) {
+	public void loadVendorPlatforms () {
+		for(HdlVendor vendor : buildEnvironment.values()) {
+			vendor.loadPlatforms(hdlPlatformList.values());
+		}
+	}
+	
+	void buildHdlVendors() {
+		buildEnvironment = new TreeMap<String, HdlVendor> ();
 		
 		JSONObject jsonObject = getEnvInfo(hdlTargetsCmd);		
  		if(jsonObject == null) {
@@ -229,11 +223,12 @@ public class EnvBuildTargets {
         for(String key : keys) {
         	 JSONObject vendorObj = (JSONObject) jsonObject.get(key);
         	 HdlVendor vendor = new HdlVendor(key, vendorObj);
-        	 vendors.put(key, vendor);
+        	 buildEnvironment.put(key, vendor);
         }
 	}
 	
-	protected void getHdPlatforms(Map<String, HdlPlatformInfo> platforms) {
+	void buildHdPlatforms() {
+		hdlPlatformList = new TreeMap<String, HdlPlatformInfo>();
 		JSONObject jsonObject = getEnvInfo(hdlPlatformsCmd);		
  
         if(jsonObject == null) {
@@ -246,11 +241,12 @@ public class EnvBuildTargets {
         for(String key : keys) {
         	 JSONObject platformObj = (JSONObject) jsonObject.get(key);
         	 HdlPlatformInfo platform = new HdlPlatformInfo(key, platformObj);
-        	 platforms.put(key,platform);
+        	 hdlPlatformList.put(key,platform);
         }
 	}
 	
-	protected void getRccPlatforms(Map<String, RccPlatformInfo> rccPlatforms) {
+	void buildRccPlatforms() {
+		rccPlatformList = new TreeMap<String, RccPlatformInfo>();
 		JSONObject jsonObject = getEnvInfo(rccPlatformsCmd);		
 		if(jsonObject == null) {
 			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show rcc platforms.");
@@ -265,7 +261,7 @@ public class EnvBuildTargets {
         for(String key : keys) {
         	 JSONObject platformObj = (JSONObject) jsonObject.get(key);
         	 RccPlatformInfo platform = new RccPlatformInfo(key, platformObj);
-        	 rccPlatforms.put(key, platform);
+        	 rccPlatformList.put(key, platform);
         }
 	}
 	

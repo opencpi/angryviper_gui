@@ -26,7 +26,7 @@ public class AngryViperProjectInfo {
 	// Opencpi name - it also is the name of the folder
 	// in which it resides. See the top-level Project.mk
 	// file for more details.  This name will be null if
-	// the project is not registered but is open in eclipse.
+	// is not an OpenCPI project.
 	public String name = null;
 	
 	// The project can have a different name in eclipse.
@@ -34,7 +34,7 @@ public class AngryViperProjectInfo {
 	// remains null.
 	public String eclipseName = null;
 	
-	public String packageId;
+	public String packageId = null;
 	public String fullPath;
 	public String projectDirectory;
 	boolean isRegistered = false;
@@ -57,6 +57,10 @@ public class AngryViperProjectInfo {
 	public boolean isRegistered() {
 		return isRegistered;
 	}
+	public boolean isOpenCpiProject() {
+		return packageId != null;
+	}
+	
 	
 	public boolean isOpenInEclipse() {
 		return isOpenInEclipse;

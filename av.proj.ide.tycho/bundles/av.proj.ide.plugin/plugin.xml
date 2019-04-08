@@ -96,6 +96,25 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.hdl.slot.upper" />
 			<contentTypeBinding contentTypeId="av.proj.ide.hdl.slot.lower" />
 		</editor>
+		
+		<!--editor id should match <id>name</id> in 'sdef' file. 
+		    editor name should mach docScan.setEditorName(name).
+		 -->
+		 <!--
+		 <editor id="av.proj.ide.ocs.OCSEditor" name="OCS Editor"
+			class="av.proj.ide.ocs.OCSEditor" filenames="*-spec.xml" extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.Ocs" />
+			<contentTypeBinding contentTypeId="av.proj.ide.ocs" />
+		</editor>
+		-->
+		<editor id="av.proj.ide.properties.PropertiesFileEditor" name="Properties File Editor"
+		        extensions="xml">
+ 			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
+				<parameter name="sdef" value="av.proj.ide.properties.PropertiesFileEditor" />
+			</class>
+		     <contentTypeBinding contentTypeId="av.proj.ide.properties.upper"/>
+		     <contentTypeBinding contentTypeId="av.proj.ide.properties.lower"/>
+		</editor>
 	</extension>
 
 	<!-- ### Content Types ### -->
@@ -294,6 +313,25 @@
 			<describer
 				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
 				<parameter name="element" value="SlotType" />
+			</describer>
+		</content-type>
+
+		<!-- Property File Content Type -->
+		<content-type id="av.proj.ide.properties.lower" priority="high"
+			name="Properties File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="properties" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.properties.upper" priority="high"
+			name="Properties File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Properties" />
 			</describer>
 		</content-type>
 

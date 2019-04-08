@@ -1,3 +1,4 @@
+
 /*
  * This file is protected by Copyright. Please refer to the COPYRIGHT file
  * distributed with this source distribution.
@@ -17,32 +18,33 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+package av.proj.ide.properties;
 
-package av.proj.ide.hplat;
-
+import org.eclipse.sapphire.Element;
+import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.Validation;
-import org.eclipse.sapphire.Value;
-import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.Status;
+import org.eclipse.sapphire.ListProperty;
+import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 
-import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
+import av.proj.ide.owd.Property;
 
-public interface SpecProperty extends av.proj.ide.owd.SpecProperty {
-	ElementType TYPE = new ElementType(SpecProperty.class);
+@CustomXmlRootBinding (value = PropertiesRootXmlBinding.class)
+public interface Properties extends Element {
 
-	// ***Value ***
-	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
-	@Label(standard = "value")
-	@Validation(rule     = "${Name == 'platform' && Value != null }",
-    message  = "Must specify a value for the platform SpecProperty",
-    severity = Status.Severity.ERROR)
-
-	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
-
-	Value<String> getValue();
-	void setValue(String value);
+	ElementType TYPE = new ElementType(Properties.class);
+	
+	
+	//*** Property List ***	
+	@Type( base = Property.class )
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
+	@Label(standard = "Properties")
+	
+	ListProperty PROP_PROPERTIES = new ListProperty(TYPE, "Properties");
+	
+	ElementList<Property> getProperties();
 	
 }

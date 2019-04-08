@@ -37,8 +37,8 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.XmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.XmlNamespace;
 
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
 import av.proj.ide.custom.bindings.list.OWDPropertyXmlListBinding;
-import av.proj.ide.custom.bindings.list.OWDSpecPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.ops.Include;
 import av.proj.ide.services.WorkerSpecValidationService;
@@ -192,9 +192,9 @@ public interface Worker extends Element {
 	ElementList<Property> getProperties();
 	
 	// *** SpecProperties ***
-	@Type( base = av.proj.ide.hplat.SpecProperty.class )
+	@Type( base = SpecProperty.class )
 	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "SpecProperty", type = SpecProperty.class ), @XmlListBinding.Mapping( element = "specproperty", type = SpecPropertyLower.class ) } )
-	@CustomXmlListBinding(impl = OWDSpecPropertyXmlListBinding.class)
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
 	@Label( standard = "SpecProperties" )
 			
 	ListProperty PROP_SPEC_PROPERTIES = new ListProperty( TYPE, "SpecProperties" );

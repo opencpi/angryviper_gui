@@ -36,10 +36,15 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.list.OWDSpecPropertyXmlListBinding;
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
 import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
 import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.hdl.device.HdlDevice;
+import av.proj.ide.hplat.specialBinds.CpMasterNodeElementBinding;
+import av.proj.ide.hplat.specialBinds.MasterElementAndNameBinding;
+import av.proj.ide.hplat.specialBinds.MetadataNodeElementBinding;
+import av.proj.ide.hplat.specialBinds.ReadTimeserverBinding;
+import av.proj.ide.hplat.specialBinds.TimeBaseNodeElementBinding;
 import av.proj.ide.services.NameValidationService;
 
 /***
@@ -146,7 +151,7 @@ public interface HdlPlatform extends HdlDevice
 	// *** SpecProperties ***
 
 	@Type( base = SpecProperty.class )
-	@CustomXmlListBinding(impl = OWDSpecPropertyXmlListBinding.class)
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class)
 	@Label( standard = "SpecProperties" )
 			
 	ListProperty PROP_SPEC_PROPERTIES = new ListProperty( TYPE, "SpecProperties" );

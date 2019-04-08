@@ -20,11 +20,6 @@
 
 package av.proj.ide.internal;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -33,21 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.sapphire.modeling.ResourceStoreException;
-import org.eclipse.sapphire.modeling.xml.RootXmlResource;
-import org.eclipse.sapphire.modeling.xml.XmlResourceStore;
 import org.eclipse.swt.widgets.Display;
 
-import av.proj.ide.avps.internal.AvpsResourceManager;
-import av.proj.ide.avps.xml.Project;
 import av.proj.ide.internal.EnvBuildTargets.HdlPlatformInfo;
 import av.proj.ide.internal.EnvBuildTargets.HdlVendor;
 import av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo;
@@ -86,15 +68,25 @@ import av.proj.ide.internal.OpenCpiAssets.OcpiAssetDifferences;
 
 
 /**
- * This class is responsible for assembling AngryViper project information and environment
- * information for presentation.  It is implemented as a singleton. When it is instantiated
- * if looks for open projects in the workspace. Each open project has the project.xml file 
- * regenerated, then read, and the data model for the project is produced. It also obtains
- * the OCPI build targets and platforms from the development environment.  This information
- * is provided to the respective project tool view upon request.
+ * This and surrounding classes have evolved over time and much of the evolution was an effort
+ * to reduce class size.  This class now primarily serves as the central point for the plugin 
+ * application to obtain information. It primarily supports the OpenCPI Projects view and the
+ * OpenCPI XML editors.
  * 
- * The service is also responsible for assembling workspace change information. Refresh is
- * currently initiated by the user.  In the future this will be automated.
+ *  The class now relies on several colleague classes that have more focused responsibility.
+ *  The most recent addition to the support group is the LoadOpenCPIEnvironment class, 
+ *  developed to optimize gathering and assembling environment data.  Others in the group:
+ *  
+ *  - OpenCpiAssets has become the repository for project assets.  It also holds the logic
+ *    to construct the asset objects used by the UI for presentation and it holds the built
+ *    target information. It also supports the asset operations provided by the Angryviper
+ *    wizard.
+ *    
+ *  - OpencpiEnvService functions as a bridge to the ocpidev show interface used to obtain
+ *    project registration and component information as well as ocpidev create and delete
+ *    commands. Currently there is a mix of data gathering resources used in this class.
+ *    In the future this  as we move to solely using ocpidev show work with the framework,
+ *    these tools will move back to OpenCpiAssets.
  */
 public class AngryViperAssetService {
 
@@ -104,8 +96,8 @@ public class AngryViperAssetService {
 	
 	private static AngryViperAssetService instance = null;
 
-	private File   scriptsDir;
-	private String cdkPath;
+//	private File   scriptsDir;
+//	private String cdkPath;
 	protected boolean assetsBuilt = false;
 	
 	private AngryViperAssetService() {
@@ -125,17 +117,21 @@ public class AngryViperAssetService {
 
 
 	public static AngryViperAssetService getInstance() {
-		if(instance == null) {
-			instance = new AngryViperAssetService();
-		}
-
 		// Ran into a conflict where assets were constructed twice
 		// and flow of control was the main thread?  Somewhere things
 		// were handed off to another thread and constructAssets was 
 		// entered twice.  Created a lock to solve the problem.
-		
-		if(instance.assetsBuilt == false)
-			instance.constructAssets();
+		TLock.acquire();
+		if(instance == null) {
+			instance = new AngryViperAssetService();
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadDataStores();
+			instance.assetsRepo = load.assetsRepo;
+			instance.environmentService = load.environmentService;
+			System.out.println(instance.assetsRepo.getProjectsMap().size() + " projects collected.");
+		}
+		TLock.release();
+
 		return instance;
 	}
 	
@@ -158,6 +154,7 @@ public class AngryViperAssetService {
 	 * open projects in the eclipse workspace.
 	 */
 	public Map<String, AssetModelData> getWorkspaceProjects() {
+		//System.out.println("Projects Map requested.");
 		return assetsRepo.getProjectsMap();
 	}
 
@@ -238,7 +235,9 @@ public class AngryViperAssetService {
 		else if(type == OpenCPICategory.project) {
 			// Since this service maintains the environment service, it is responsible for adding
 			// a new project to the projects repo using env information.
-			environmentService = new OpencpiEnvService();
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
 			AngryViperProjectInfo info = environmentService.getProjectInfo(newAsset.assetName);
 			if(info != null) {
 				newAsset.projectLocation.packageId = info.packageId;
@@ -271,7 +270,9 @@ public class AngryViperAssetService {
 			environmentService.removeComponent(asset);
 		}
 		else if(asset.category == OpenCPICategory.project) {
-			environmentService = new OpencpiEnvService();
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
 		}
 		if(projectsViewUpdate != null) { 
 			Display.getDefault().asyncExec(new Runnable(){
@@ -317,12 +318,18 @@ public class AngryViperAssetService {
 	public boolean registerProject(AngryViperAsset asset, StringBuilder s) {
 		boolean result = environmentService.registerProject(asset, s);
         if(result == true) {
-        	environmentService = new OpencpiEnvService();
-			AngryViperProjectInfo info = environmentService.getProjectByPath(asset.projectLocation.projectPath);
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
+			
+			AngryViperProjectInfo info = environmentService.lookupProjectByPath(asset.projectLocation.projectPath);
 			asset.projectLocation.packageId = info.packageId;
 			asset.qualifiedName = info.packageId;
 			asset.assetDetails = info;
+			
 			OpenCpiAssets otherOcpiAssets = new OpenCpiAssets();
+			otherOcpiAssets.setEnvTargets(load.getEnvBuildInfo());
+			
 			OcpiAssetDifferences platformDiff = assetsRepo.getPlatformDifferences (otherOcpiAssets);
 			if(platformDiff.areBuildPlatformsDifferent()) {
 				assetsRepo.hdlPlatforms = otherOcpiAssets.hdlPlatforms;
@@ -336,12 +343,17 @@ public class AngryViperAssetService {
 	public boolean unregisterProject(AngryViperAsset asset, StringBuilder s) {
 		boolean result = environmentService.unregisterProject(asset, s);
         if(result == true) {
-        	environmentService = new OpencpiEnvService();
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
+			
 			AngryViperProjectInfo info = (AngryViperProjectInfo)asset.assetDetails;
 			if(info != null) {
 				info.isRegistered = false;
 			}
 			OpenCpiAssets otherOcpiAssets = new OpenCpiAssets();
+			otherOcpiAssets.setEnvTargets(load.getEnvBuildInfo());
+			
 			OcpiAssetDifferences platformDiff = assetsRepo.getPlatformDifferences (otherOcpiAssets);
 			if(platformDiff.areBuildPlatformsDifferent()) {
 				assetsRepo.hdlPlatforms = otherOcpiAssets.hdlPlatforms;
@@ -372,103 +384,14 @@ public class AngryViperAssetService {
 		this.platformUpdater = platformUpdater;
 	}
 	
-	protected void runGenProject(String projectPath) throws IOException, InterruptedException {
-		String [] cmdp = {"./genProjMetaData.py",  projectPath};
-		Process p=Runtime.getRuntime().exec(cmdp, null, scriptsDir);
-		p.waitFor();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(p.getInputStream()) );
-		String line = rd.readLine();
-		while (line != null) {
-			//System.out.println(line);
-			line = rd.readLine();
-		}
-		rd = new BufferedReader(new InputStreamReader(p.getErrorStream()) );
-		line = rd.readLine();
-		while (line != null) {
-			//System.out.println(line);
-			line = rd.readLine();
-		}
-	}
-	
-	protected void constructAssets() {
-		// To solve the conflict the current thread
-		// is locked out and loading is run in another thread.
-		TLock.acquire();
-		if(! this.assetsBuilt) {
-			cdkPath = System.getenv("OCPI_CDK_DIR");
-			String scripts = cdkPath + "/scripts";
-			scriptsDir = new File(scripts);
-			
-			new Thread(new Runnable() {
-		        public void run() {
-					OpenCpiAssets assets = new OpenCpiAssets();
-					loadWorkspaceProjects(assets);
-					assetsRepo = assets;
-					assetsBuilt = true;
-					TLock.release();
-		        };
-			}).start();
-		}
-		else {
-			TLock.release();
-		}
-	}
-	
-	protected void loadWorkspaceProjects(OpenCpiAssets ocpiAssets) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IProject [] projects = workspace.getRoot().getProjects();
-		IProject project;
-		for(int i= 0; i<projects.length; i++) {
-			project = projects[i];
-			
-			if(! project.isOpen()) continue;
-			if("RemoteSystemsTempFiles".equals(project.getName())) continue;
-			
-			String projectName = project.getName();
-			IPath path = project.getLocation();
-			IFile projectFile = null;
-			InputStream is = null;
-			try {
-				String projpath = path.toOSString();
-				runGenProject(projpath);
-				projectFile = project.getFile("project.xml");
-				
-				if(! projectFile.exists()) {
-					project.refreshLocal(IResource.DEPTH_ONE, new NullProgressMonitor());
-					projectFile = project.getFile("project.xml");
-				}
-				
-				is = projectFile.getContents(true);
-				XmlResourceStore store = new XmlResourceStore(is);
-				RootXmlResource xmlResource = new RootXmlResource(store);
-				Project proj = Project.TYPE.instantiate(xmlResource);
-
-				ProjectLocation location = new ProjectLocation(projectName, projpath);
-				//System.out.println("Loading asset for " + projectName);
-				ocpiAssets.loadProject(location, proj, environmentService);
-				
-			} catch (CoreException | ResourceStoreException | IOException | InterruptedException e) {
-				AvpsResourceManager.getInstance().writeToNoticeConsole("Error obtaining project metadata. This happens when a project is not an ANGRYVIPER project.\n --> " + e.toString() );
-				//e.printStackTrace();
-			}
-			finally{
-				if(is != null) {
-					try {
-						is.close();
-					} catch (IOException e) {
-					}
-				}
-			}
-		}
-	}
-
 	public void synchronizeWithFileSystem() {
 		// Get a fresh snapshot of the OpenCPI Env.
-		OpencpiEnvService projEnv = new OpencpiEnvService();
-		environmentService = projEnv;
+		LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+		load.loadDataStores();
+		environmentService = load.environmentService;
 		
-		OpenCpiAssets ocpiAssets = new OpenCpiAssets();
-		loadWorkspaceProjects(ocpiAssets);
+		OpenCpiAssets ocpiAssets = load.assetsRepo;
+		
 		if(projectsViewUpdate == null) {
 			// The OpenCPI Projects view is not open.  No further
 			// processing needed.

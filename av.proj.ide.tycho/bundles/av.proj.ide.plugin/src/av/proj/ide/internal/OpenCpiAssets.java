@@ -31,6 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.ui.console.MessageConsole;
@@ -71,6 +72,7 @@ public class OpenCpiAssets {
 	 * a lookup by the name.
 	 */
 	private Map<String, String> projectNameLookup;
+	
 	Map<String, AssetModelData> getProjectsMap() {
 		return projects;
 	}
@@ -114,15 +116,17 @@ public class OpenCpiAssets {
 	Collection<RccPlatformInfo> rccPlatforms;
 	
 	OpenCpiAssets() {
-		projects = new HashMap <String, AssetModelData> ();
+		projects = new TreeMap <String, AssetModelData> ();
 		assetLookup = new LinkedHashMap<AngryViperAsset, AssetModelData> ();
 		projectNameLookup = new HashMap <String, String>();
 		
-		EnvBuildTargets envBuildInfo = new EnvBuildTargets();
+	};
+	
+	public void setEnvTargets(EnvBuildTargets envBuildInfo) {
 		hdlVendors = envBuildInfo.getVendors();
 		hdlPlatforms = envBuildInfo.getHdlPlatforms();
 		rccPlatforms = envBuildInfo.getRccPlatforms();
-	};
+	}
 
 	private static ArrayList<String> baseCmd = null;
 	private static ArrayList<String> getBaseCmd() {
@@ -216,8 +220,8 @@ public class OpenCpiAssets {
 				assetElem.name.replace(".xml", "");
 			}
 			OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
-			AngryViperProjectInfo info = srv.getProjectByPath(assetElem.fullProjectPath);
-			projectLocation = new ProjectLocation(info.projectDirectory, assetElem.fullProjectPath);
+			AngryViperProjectInfo info = srv.lookupProjectByPath(assetElem.fullProjectPath);
+			projectLocation = new ProjectLocation(info.name, assetElem.fullProjectPath);
 			projectLocation.packageId = info.packageId;
 		}
 		else {
@@ -510,9 +514,7 @@ public class OpenCpiAssets {
 		return null;
 	}
 
-	void loadProject(ProjectLocation location, Project projectXml, OpencpiEnvService srv) {
-		AngryViperProjectInfo info = srv.getProjectByPath(location.projectPath);
-		location.packageId = info.packageId;
+	void loadProject(ProjectLocation location, Project projectXml, AngryViperProjectInfo info) {
 		AngryViperAsset asset = OpenCPIAssetFactory.createOcpiAsset(null, null,OpenCPICategory.project,location);
 		asset.assetDetails = info;
 		

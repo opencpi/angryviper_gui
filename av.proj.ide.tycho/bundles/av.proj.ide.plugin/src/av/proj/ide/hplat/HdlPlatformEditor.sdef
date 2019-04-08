@@ -30,16 +30,18 @@
 				<label>HdlPlatform</label>
 				<section>
 					<label>HDL Platform Worker</label>
-					<description>Top-level attributes of the OpenCPI HDL Worker XML
-					</description>
+					<description>Top-level attributes of the OpenCPI HDL Platform Worker XML</description>
 					<content>
-						<include>HdlWorkerAttributesForm</include>
+						<include>PlatformWorkerAttributesForm</include>
                         <section>
                             <label>About</label>
                             <collapsible>true</collapsible>
                             <collapsed-initially>true</collapsed-initially>
                             <content>
-                                <label>The Platform worker does the following: - It is a singleton worker that bootstraps the platform and container. - It is specific type of HDL worker providing infrastructure for implementing control/data interfaces to devices and interconnects external to the FPGA or simulator (e.g. PCI Express, Clocks).</label>
+                                <label>Platform Worker is a singleton worker that bootstraps the platform and container. It is a specific type
+                                 of HDL worker providing infrastructure for implementing control/data interfaces to devices and interconnects 
+                                 external to the FPGA or simulator (e.g. PCI Express, Clocks).
+                                </label>
                             </content>
                         </section>
 					</content>
@@ -469,80 +471,65 @@
                     <label>Infrastructure Interfaces</label>
                     <section>
                         <content>
-                            <split-form>
-                                <scale-vertically>true</scale-vertically>
-                                <block>
-                                    <content>
-                                        <section>
-                                            <collapsible>false</collapsible>
-                                            <content>
-                                                <property-editor>Metadata</property-editor>
-                                                <property-editor>Timebase</property-editor>
-                                                <property-editor>TimeServerRead</property-editor>
-                                            </content>
-                                            <label>Required Ports and Devices</label>
-                                            <description>The MetaData and TimeBase ports must be enabled. Verify the TimeServer device has a frequency assigned.</description>
-                                        </section>
-                                    </content>
-                                </block>
-                                <block>
-                                    <content>
-                                        <section>
-                                            <content>
-                                                <section>
-                                                    <label>Data Plane Selection</label>
+                            <section>
+                                <collapsible>false</collapsible>
+                                <content>
+                                    <property-editor>Metadata</property-editor>
+                                    <property-editor>Timebase</property-editor>
+                                    <property-editor>TimeServerRead</property-editor>
+                                </content>
+                                <description>The MetaData and TimeBase ports must be enabled. Verify the TimeServer device has a frequency assigned.</description>
+                                <label>Required Ports and Devices</label>
+                            </section>
+                            <section>
+                                <content>
+                                    <section>
+                                        <content>
+                                            <with>
+                                                <case>
                                                     <content>
-                                                        <composite>
-                                                               <content>
-                                                                    <with>
-                                                                        <case>
-                                                                            <content>
-                                                                                <property-editor>Name</property-editor>
-                                                                                <property-editor>Master</property-editor>
-                                                                                <property-editor>Count</property-editor>
-                                                                            </content>
-                                                                            <element-type>SDP</element-type>
-                                                                        </case>
-                                                                        <label>Enable SDP</label>
-                                                                        <path>SDP</path>
-                                                                    </with>
-                                                                <label>======================================== ========================================</label>
-                                                                </content>
-                                                        </composite>
-                                                        <composite>
-                                                                 <content>
-                                                                    <with>
-                                                                        <case>
-                                                                            <content>
-                                                                                <property-editor>Name</property-editor>
-                                                                                <property-editor>Master</property-editor>
-                                                                            </content>
-                                                                            <element-type>UNOC</element-type>
-                                                                        </case>
-                                                                        <label>Enable UNOC</label>
-                                                                        <path>UNOC</path>
-                                                                    </with>
-                                                                </content>
-                                                        </composite>
-                                                        <section>
-                                                            <label>Control Plane</label>
-                                                            <content>
-                                                                <property-editor>
-                                                                    <label>Enable</label>
-                                                                    <property>Cpmaster</property>
-                                                                </property-editor>
-                                                            </content>
-                                                            <description>DIrectly support the control plane.</description>
-                                                        </section>
+                                                        <property-editor>Name</property-editor>
+                                                        <property-editor>Master</property-editor>
+                                                        <property-editor>Count</property-editor>
                                                     </content>
-                                                    <description>The platform worker must have an interconnect, either the SDP or the UNOC.</description>
-                                                </section>
-                                             </content>
-                                            <label>Additional Ports</label>
-                                        </section>
-                                    </content>
-                                </block>
-                            </split-form>
+                                                    <element-type>SDP</element-type>
+                                                </case>
+                                                <label>Enable SDP</label>
+                                                <path>SDP</path>
+                                            </with>
+                                        </content>
+                                        <label>SDP</label>
+                                    </section>
+                                    <section>
+                                        <content>
+                                            <with>
+                                                <case>
+                                                    <content>
+                                                        <property-editor>Name</property-editor>
+                                                        <property-editor>Master</property-editor>
+                                                    </content>
+                                                    <element-type>UNOC</element-type>
+                                                </case>
+                                                <label>Enable UNOC</label>
+                                                <path>UNOC</path>
+                                            </with>
+                                        </content>
+                                        <label>Or UNOC</label>
+                                    </section>
+                                </content>
+                                <description>The platform worker must have an interconnect, either the SDP or the UNOC.</description>
+                                <label>Data Plane Selection</label>
+                            </section>
+                            <section>
+                                <content>
+                                    <property-editor>
+                                        <label>Enable</label>
+                                        <property>Cpmaster</property>
+                                    </property-editor>
+                                </content>
+                                <description>DIrectly support the control plane.</description>
+                                <label>Control Plane</label>
+                            </section>
                         </content>
                         <label>Enable Infrastructure Interfaces</label>
                     </section>
@@ -552,6 +539,96 @@
 
 		</root-node>
 	</editor-page>
+
+	<composite>
+		<id>PlatformWorkerAttributesForm</id>
+		<content>
+
+			<section>
+				<label>HDL Platform Worker Attributes</label>
+				<content>
+					<property-editor>Spec</property-editor>
+					<property-editor>Language</property-editor>
+				</content>
+			</section>
+
+			<section>
+				<label>Advanced Configuration</label>
+				<content>
+
+					<section>
+						<label>Add to the Control Interface</label>
+						<collapsible>true</collapsible>
+						<collapsed-initially>false</collapsed-initially>
+						<content>
+							<with>
+								<path>ControlInterface</path>
+								<case>
+									<content>
+										<property-editor>Timeout</property-editor>
+									</content>
+								</case>
+                                <label>Modify the Control Interface</label>
+							</with>
+						</content>
+					</section>
+
+					<split-form>
+						<block>
+							<content>
+								<section>
+									<label>Advanced Attributes</label>
+									<content>
+										<include>WorkerAdvancedAttributesForm</include>
+										<property-editor>FirstRawProperty</property-editor>
+										<property-editor>
+											<property>RawProperties</property>
+											<style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+											<hint>
+												<name>checkbox.layout</name>
+												<value>leading.label</value>
+											</hint>
+											<related-content>
+												<label>
+													<visible-when>${RawProperties != null}</visible-when>
+													<text>The top level raw properties attribute is now
+														deprecated.</text>
+												</label>
+											</related-content>
+											<related-content-width>80</related-content-width>
+											<visible-when>${RawProperties != null}</visible-when>
+										</property-editor>
+									</content>
+                                    <collapsible>true</collapsible>
+								</section>
+							</content>
+						</block>
+
+						<block>
+							<content>
+								<section>
+									<label>Infrastructure Worker Attributes</label>
+									<content>
+										<include>InfrastructureWorkerAttributesForm</include>
+									</content>
+                                    <collapsible>true</collapsible>
+								</section>
+							</content>
+
+						</block>
+						<orientation>vertical</orientation>
+
+					</split-form>
+
+
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+
+		</content>
+	</composite>
+	
 	<import>
 		<package>av.proj.ide.owd</package>
 		<package>av.proj.ide.hplat</package>
@@ -560,7 +637,9 @@
 		<definition>av.proj.ide.owd.hdl.sdef.HdlPropertyForm</definition>
 		<definition>av.proj.ide.owd.hdl.sdef.HdlSpecPropertyForm</definition>
 		<definition>av.proj.ide.owd.hdl.sdef.HdlDataPortForm</definition>
-		<definition>av.proj.ide.owd.hdl.sdef.HdlWorkerAttributesForm
+		<definition>av.proj.ide.owd.sdef.WorkerAdvancedAttributesForm
+		</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.InfrastructureWorkerAttributesForm
 		</definition>
 	</import>
 </definition>

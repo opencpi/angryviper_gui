@@ -18,7 +18,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package av.proj.ide.hplat;
+package av.proj.ide.hplat.specialBinds;
 
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;

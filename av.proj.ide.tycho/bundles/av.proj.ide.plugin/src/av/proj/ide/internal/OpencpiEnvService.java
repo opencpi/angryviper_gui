@@ -36,8 +36,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Display;
@@ -78,7 +76,7 @@ public class OpencpiEnvService {
 		invalidSpecPath.add("assemblies");
 		invalidSpecPath.add("primitives");
 		
-		getEnvironmentProjects();
+		//getEnvironmentProjects();
 	}
 
 	//***************************************
@@ -129,6 +127,9 @@ public class OpencpiEnvService {
 		unregisterCmd.add("project");    
 		unregisterCmd.add("-f");
 	}
+	public Collection<AngryViperProjectInfo> getEnvProjects() {
+		return projectLookup.values();
+	}
 	
 	public Set<String> getRegisteredProjects() {
 		return registeredProjects;
@@ -138,7 +139,11 @@ public class OpencpiEnvService {
 		return registeredProjectsLessCore;
 	}
 	
-	public AngryViperProjectInfo getProjectByPath(String path) {
+	public AngryViperProjectInfo lookupProjectByPath(String path) {
+		AngryViperProjectInfo info = projectLookup.get(path);
+		return info;	
+	}
+	public AngryViperProjectInfo retrieveProjectByPath(String path) {
 		AngryViperProjectInfo info = projectLookup.get(path);
 		if(info == null) {
 			// See if it's there just not registered.
@@ -168,9 +173,65 @@ public class OpencpiEnvService {
 		}
 	}
 
+	
+	public void checkForOpciPackageId(String path, AngryViperProjectInfo info) {
+		showProjectCmd[2] = path;
+		JSONObject jsonObject = EnvBuildTargets.getEnvInfo(showProjectCmd);
+		
+		if(jsonObject == null) {
+			return;
+		}
+		JSONObject projObject = (JSONObject)jsonObject.get("project");
+		if(projObject == null) {
+			return;
+		}
+		// Looks like it was registered
+		String packageId = (String) projObject.get("package");
+		String directory = (String) projObject.get("directory");
+		String[] pathSegments = directory.split("/");
+		String name = pathSegments[pathSegments.length -1];
+		//info.fullPath = directory;
+		info.name = name;
+		info.packageId = packageId;
+		info.projectDirectory = name;
+    	projectPathLookup.put(packageId, directory);
+    	projectPathLookup.put(name, directory);
+	}
+	
 	public AngryViperProjectInfo getProjectInfo(String projectName) {
 		String projectPath = projectPathLookup.get(projectName);
 		return projectLookup.get(projectPath);
+	}
+	
+	void mergeElipseProjectData(ArrayList<IProject> eclipseProjects) {
+		
+		// Now see what projects are open in the Eclipse workspace.  Note the
+		// eclipse project name can differ from the registered project name.
+		for(IProject eProject : eclipseProjects) {
+			
+			if(! eProject.isOpen()) continue;
+			if("RemoteSystemsTempFiles".equals(eProject.getName())) continue;
+			
+			String eProjectName = eProject.getName();
+			IPath path = eProject.getLocation();
+			String fullpath = path.toOSString();
+			
+			AngryViperProjectInfo ocpiProject = projectLookup.get(fullpath);
+			if(ocpiProject != null) {
+				ocpiProject.eclipseName = eProjectName;
+				ocpiProject.isOpenInEclipse = true;
+				continue;
+			}
+			else {
+				// It is open in eclipse, but it not currently registered.
+				AngryViperProjectInfo eclipseProject = new AngryViperProjectInfo();
+				eclipseProject.eclipseName = eProjectName;
+				eclipseProject.fullPath = fullpath;
+				eclipseProject.isOpenInEclipse = true;
+				projectLookup.put(fullpath, eclipseProject);
+				projectPathLookup.put(eProjectName, fullpath);
+			}
+		}
 	}
 	
 	protected void getEnvironmentProjects() {
@@ -201,50 +262,6 @@ public class OpencpiEnvService {
         			}
     	        }
    		    }
-		}
-		
-		// Now see what projects are open in the Eclipse workspace.  Note the
-		// eclipse project name can differ from the registered project name.
-		
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IProject [] eProjects = workspace.getRoot().getProjects();
-		IProject eProject;
-		for(int i= 0; i<eProjects.length; i++) {
-			eProject = eProjects[i];
-			
-			if(! eProject.isOpen()) continue;
-			if("RemoteSystemsTempFiles".equals(eProject.getName())) continue;
-			
-			String eProjectName = eProject.getName();
-			IPath path = eProject.getLocation();
-			String fullpath = path.toOSString();
-			
-			AngryViperProjectInfo ocpiProject = projectLookup.get(fullpath);
-			if(ocpiProject != null) {
-				ocpiProject.eclipseName = eProjectName;
-				ocpiProject.isOpenInEclipse = true;
-				continue;
-			}
-			
-			// It is not registered, see if it was before.
-			ocpiProject = getProjectByPath(fullpath);
-			if(ocpiProject != null) {
-				// This project was registered, it is not now.
-				ocpiProject.isOpenInEclipse = true;
-				ocpiProject.eclipseName = eProjectName;
-				projectLookup.put(fullpath, ocpiProject);
-				projectPathLookup.put(eProjectName, fullpath);
-				projectPathLookup.put(ocpiProject.name, fullpath);
-			}
-			else {
-				// It's not an Opencpi Project, but is is open in eclipse.
-				AngryViperProjectInfo eclipseProject = new AngryViperProjectInfo();
-				eclipseProject.eclipseName = eProjectName;
-				eclipseProject.fullPath = fullpath;
-				eclipseProject.isOpenInEclipse = true;
-				projectLookup.put(fullpath, eclipseProject);
-				projectPathLookup.put(eProjectName, fullpath);
-			}
 		}
 	}
 
@@ -365,8 +382,8 @@ public class OpencpiEnvService {
 		if(p == null) {
 			return null;
 		}
-		if(p.packageId == null || ! p.isRegistered()) {
-			//this is not a registered project.
+		if(! p.isOpenCpiProject()) {
+			//this is not an OpenCPI Project.
 			return null;
 		}
 		
