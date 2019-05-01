@@ -346,7 +346,7 @@
 			<property-editor>Script</property-editor>
 			<property-editor>File</property-editor>
             <property-editor>
-                <style>Sapphire.PropertyEditor.PopUpListField.Editable</style>
+                <style>Sapphire.PropertyEditor.PopUpListField.Strict</style>
                 <property>StressorMode</property>
             </property-editor>
 			<section>

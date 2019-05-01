@@ -128,7 +128,7 @@ public class AngryViperAssetService {
 			load.loadDataStores();
 			instance.assetsRepo = load.assetsRepo;
 			instance.environmentService = load.environmentService;
-			System.out.println(instance.assetsRepo.getProjectsMap().size() + " projects collected.");
+			//System.out.println(instance.assetsRepo.getProjectsMap().size() + " projects collected.");
 		}
 		TLock.release();
 
@@ -155,6 +155,7 @@ public class AngryViperAssetService {
 	 */
 	public Map<String, AssetModelData> getWorkspaceProjects() {
 		//System.out.println("Projects Map requested.");
+		//System.out.println(instance.assetsRepo.getProjectsMap().size() + " projects pulled.");
 		return assetsRepo.getProjectsMap();
 	}
 
@@ -241,6 +242,7 @@ public class AngryViperAssetService {
 			AngryViperProjectInfo info = environmentService.getProjectInfo(newAsset.assetName);
 			if(info != null) {
 				newAsset.projectLocation.packageId = info.packageId;
+				newAsset.projectLocation.eclipseName = info.eclipseName;
 				newAsset.qualifiedName = info.packageId;
 				assetsRepo.addProject(newAsset, newAssetModel);
 			}

@@ -119,7 +119,7 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 		return canFinish;
 	}
 
-	private IProject createNewProject(IWorkspaceRoot root, CreateProjectFields projInputs) {
+	private AngryViperAsset createNewProject(IWorkspaceRoot root, CreateProjectFields projInputs) {
 		String fullPath = root.getLocation().toString();
 		projInputs.setProjectPath(fullPath);
 		StringBuilder sb = new StringBuilder();
@@ -136,8 +136,7 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 			});
 			return null;
 		}
-		IProject newProject = root.getProject(projInputs.getName());
-		return newProject;
+		return newAsset;
 	}
 	
 /******************************************************************************************************************************/
@@ -152,12 +151,31 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 		IProject eclipseProject;
 		
 		if(type == OpenCPICategory.project) {
-			eclipseProject = createNewProject(root, (CreateProjectFields)usersRequest);
+			AngryViperAsset newProject = createNewProject(root, (CreateProjectFields)usersRequest);
+			// Gets a resource handle for a project.  The project itself doesn't exist in the workspace
+			// until it is created below.
+			eclipseProject = root.getProject(usersRequest.getProjectName());
+			
 			if(eclipseProject != null) {
 				if(! eclipseProject.exists()) {
 					eclipseProject.refreshLocal(2, monitor);
 					eclipseProject.create(monitor);
 					eclipseProject.open(monitor);
+					
+					// TODO: Now this is getting kludgey now - need to update
+					// project info with the now eclipse conditions. Also need
+					// to update the asset. This should get pushed down into the 
+					// service somehow.  This is also getting time consuming.
+					// look into optimizing it and/or giving control back to
+					// the UI.
+					OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+					String eclipseName = eclipseProject.getName();
+					AngryViperProjectInfo projectInfo = srv.getProjectInfo(eclipseName);
+					if(projectInfo != null) {
+						projectInfo.eclipseName = eclipseName;
+						projectInfo.setOpenInEclipse(true);
+						newProject.setLocation(projectInfo.getProjectLocation());
+					}
 				}
 				return true;
 			}
@@ -165,6 +183,8 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 				return false;
 			}
 		}
+		// TODO - this is dumb.  AssetService should be able to get the project name from
+		// name used in the input.
 		String opencpiProject = usersRequest.getProjectName();
 		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
 		AngryViperProjectInfo projectInfo = srv.getProjectInfo(opencpiProject);
@@ -185,8 +205,14 @@ public class NewOcpiAssetWizard extends Wizard implements INewWizard {
 			});
 			return false;
 		}
-		eclipseProject = root.getProject(projectInfo.projectDirectory);
+		eclipseProject = root.getProject(projectInfo.eclipseName);
 		eclipseProject.refreshLocal(2, monitor);
+		OpenCPICategory cat =  newAsset.category;
+		if(cat == OpenCPICategory.componentsLibraries || cat ==  OpenCPICategory.componentsLibrary || 
+			cat == OpenCPICategory.library || cat == OpenCPICategory.primitive) {
+			// No editor to open
+			return true;
+		}
 		IFolder folder = OcpiAssetFileService.getAssetFolder(newAsset, eclipseProject);
 		if(folder == null || ! folder.exists()) {
 			AvpsResourceManager.getInstance()

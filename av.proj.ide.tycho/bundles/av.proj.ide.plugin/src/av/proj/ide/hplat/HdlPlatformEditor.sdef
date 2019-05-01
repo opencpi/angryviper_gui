@@ -221,7 +221,7 @@
                     </section>
                 </node>
 <!--
-    Ports are currently not defined in the HDL PLatform, but they may be coming.
+    Ports are currently not defined in the HDL Platform, but they may be coming.
     Keep it for now.
 				<node>
 					<label>Ports</label>
@@ -514,7 +514,7 @@
                                                 <path>UNOC</path>
                                             </with>
                                         </content>
-                                        <label>Or UNOC</label>
+                                        <label>UNOC</label>
                                     </section>
                                 </content>
                                 <description>The platform worker must have an interconnect, either the SDP or the UNOC.</description>

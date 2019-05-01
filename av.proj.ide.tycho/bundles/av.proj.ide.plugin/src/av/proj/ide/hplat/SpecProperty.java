@@ -36,7 +36,7 @@ public interface SpecProperty extends av.proj.ide.owd.SpecProperty {
 	// ***Value ***
 	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "value")
-	@Validation(rule     = "${Name == 'platform' && Value != null }",
+	@Validation(rule     = "${! (Name == 'platform' && value == null)}",
     message  = "Must specify a value for the platform SpecProperty",
     severity = Status.Severity.ERROR)
 
