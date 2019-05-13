@@ -37,6 +37,7 @@
                         </actuator>
                     </content>
                     <label>HDL Slot</label>
+                    <description>The SlotType XML provides a map of pin signals in an HDL platform connector.</description>
                 </section>
                 
                 <node-factory>
@@ -117,7 +118,7 @@
     </form>
 -->    
     <import>
-        <definition>av.proj.ide.sdef.shared.SignalCharacteristicsForm</definition>
+        <definition>av.proj.ide.hdl.slot.SlotSignalForm</definition>
     </import>
     
 </definition>

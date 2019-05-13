@@ -42,7 +42,7 @@ public class HdlPlatformEditor extends HdlWorkerEditor {
 		name = "SlotFileEditorPage";
 		if(docScan == null) {
 			docScan = new OcpiXmlDocScanner();
-			docScan.setEditorName("HDL PLatform OWD Editor");
+			docScan.setEditorName("HDL Platform OWD Editor");
 			//docScan.addScanElements("controlinterface", "ControlInterface");
 			docScan.setShowXTimes(2);
 		}

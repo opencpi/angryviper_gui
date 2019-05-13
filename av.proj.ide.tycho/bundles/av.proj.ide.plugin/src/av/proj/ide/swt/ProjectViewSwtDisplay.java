@@ -365,7 +365,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 	protected void openEditor(AngryViperAsset asset) {
 		
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(asset.projectLocation.projectName);
+		IProject project = root.getProject(asset.projectLocation.eclipseName);
 		IFolder folder = OcpiAssetFileService.getAssetFolder(asset, project);
 		if(folder == null || ! folder.exists()) {
 			AvpsResourceManager.getInstance()
@@ -501,7 +501,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 						
 						try {
 							if(asset.category == OpenCPICategory.project){
-								IProject project = root.getProject(asset.projectLocation.projectName);
+								IProject project = root.getProject(asset.projectLocation.eclipseName);
 								project.close(monitor);
 								boolean r = AngryViperAssetService.getInstance().deleteAsset(asset, s);
 								project.delete(false, monitor);
@@ -511,7 +511,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 								root.refreshLocal(IResource.DEPTH_ONE, monitor);
 							}
 							else {
-								IProject project = root.getProject(asset.projectLocation.projectName);
+								IProject project = root.getProject(asset.projectLocation.eclipseName);
 								IFile file = project.getFile(asset.assetName);
 								if(file.exists()) {
 									file.delete(false, monitor);
@@ -538,67 +538,6 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 				try {
 					new ProgressMonitorDialog(shell).run(true, true, op);
 				} catch (InvocationTargetException | InterruptedException e) {
-				}
-			}
-		}
-		public void openThisEditor(AngryViperAsset asset, IFile assetFile) {
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			
-			try {
-				OcpiAssetFileService.openEditor(asset, null, assetFile, page, null, false);
-			} catch (CoreException e) {
-				AvpsResourceManager.getInstance().writeToNoticeConsole("Internal Eclipse runtime error occurred. \n --> " + e.toString() );
-			}
-		}
-		
-		public void openEditor(AngryViperAsset asset) {
-//			Display display = Display.getDefault();
-//			//Display display = PlatformUI.getWorkbench().getDisplay();
-//			display.sleep();
-//			Runnable task = new Runnable() {
-//				public void run() {
-//					System.out.println("OpenEditor task starting");
-			
-			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-			IProject project = root.getProject(asset.projectLocation.projectName);
-			IFolder folder = OcpiAssetFileService.getAssetFolder(asset, project);
-			if(folder == null || ! folder.exists()) {
-				AvpsResourceManager.getInstance()
-				.writeToNoticeConsole("Unable to find this asset's parent folder. Use Project Explorer to look for it.");
-				return;
-			}
-			IFile assetFile = OcpiAssetFileService.getAssetFile(asset, folder);
-			if(assetFile != null && assetFile.exists()) {
-				openThisEditor(asset, assetFile);
-				return;
-			}
-			
-			File[] xmlFiles =  OcpiAssetFileService.getAssetXmlFiles(folder);
-			if(xmlFiles == null) {
-				AvpsResourceManager.getInstance()
-				.writeToNoticeConsole("Unable to find any XML files for this asset. Use Project Explorer to look for it.");
-				return;
-			}
-			String[] names = new String[xmlFiles.length];
-			int i = 0;
-			for(File file : xmlFiles) {
-				names[i] = file.getName();
-				i++;
-			}
-			ListSelectionDialog dialog = 
-			new ListSelectionDialog(getShell(), xmlFiles, ArrayContentProvider.getInstance(),
-					fileLabel, "Open one or more of these?");
-			dialog.setTitle("Unable to find asset XML file.");
-			//dialog.setInitialSelections(names);
-			dialog.open();
-			Object[] result = dialog.getResult();
-			if(result != null) {
-				for(Object name : result) {
-					File zname = (File) name;
-					IFile wbFile = FileBuffers.getWorkspaceFileAtLocation(Path.fromOSString(zname.getPath()));
-					if(wbFile.exists()) {
-						openThisEditor(asset, wbFile);
-					}
 				}
 			}
 		}

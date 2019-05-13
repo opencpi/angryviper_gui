@@ -198,6 +198,21 @@ public class OpencpiEnvService {
     	projectPathLookup.put(name, directory);
 	}
 	
+	public void updateOpciPackageId(AngryViperProjectInfo pInfo, String packageId, String projectPath) {
+		pInfo.packageId = packageId;
+		if(pInfo.fullPath == null) {
+			pInfo.fullPath = projectPath;
+		}
+		if(pInfo.name == null) {
+			String[] pathSegments = projectPath.split("/");
+			String name = pathSegments[pathSegments.length -1];
+			pInfo.name = name;
+			pInfo.projectDirectory = name;
+		}
+    	projectPathLookup.put(packageId, projectPath);
+	}
+
+	
 	public AngryViperProjectInfo getProjectInfo(String projectName) {
 		String projectPath = projectPathLookup.get(projectName);
 		return projectLookup.get(projectPath);

@@ -35,7 +35,7 @@ public class AngryViperProjectInfo {
 	public String eclipseName = null;
 	
 	public String packageId = null;
-	public String fullPath;
+	public String fullPath = null;
 	public String projectDirectory;
 	boolean isRegistered = false;
 	
@@ -50,6 +50,8 @@ public class AngryViperProjectInfo {
 			else {
 				location = new ProjectLocation(name, fullPath);
 			}
+			location.packageId = packageId;
+			location.eclipseName = eclipseName;
 		}
 		return location;
 	}
@@ -64,6 +66,10 @@ public class AngryViperProjectInfo {
 	
 	public boolean isOpenInEclipse() {
 		return isOpenInEclipse;
+	}
+
+	public void setOpenInEclipse(boolean b) {
+		isOpenInEclipse = b;
 	}
 	
 	// Constructors purposely given package scope, this is for internal use.

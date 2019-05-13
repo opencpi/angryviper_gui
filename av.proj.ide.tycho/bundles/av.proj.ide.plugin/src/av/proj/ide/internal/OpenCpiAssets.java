@@ -223,6 +223,7 @@ public class OpenCpiAssets {
 			AngryViperProjectInfo info = srv.lookupProjectByPath(assetElem.fullProjectPath);
 			projectLocation = new ProjectLocation(info.name, assetElem.fullProjectPath);
 			projectLocation.packageId = info.packageId;
+			projectLocation.eclipseName = info.eclipseName;
 		}
 		else {
 			// Can't get the package Id until the project is created.
@@ -519,8 +520,14 @@ public class OpenCpiAssets {
 		asset.assetDetails = info;
 		
 		AssetModelData projectData = new AssetModelData(asset);
-		addProject(asset, projectData);
-		buildData(projectXml, projectData, assetLookup);
+		synchronized (this) {
+			addProject(asset, projectData);
+		}
+		LinkedHashMap<AngryViperAsset, AssetModelData> temp = new LinkedHashMap<AngryViperAsset, AssetModelData> ();
+		buildData(projectXml, projectData, temp);
+		synchronized (this) {
+			assetLookup.putAll(temp);
+		}
 	}
 	
 	/**
@@ -565,7 +572,8 @@ public class OpenCpiAssets {
 		}
 		
 		ElementList<Application> apps = projectXmlModel.getApplications();
-		if(apps.size() > 0) {
+		List<String> xmlApps = getXmlOnlyApps(location);
+		if(apps.size() > 0 || xmlApps.size() > 0 ) {
 			AngryViperAsset asset = OpenCPIAssetFactory.createOcpiAsset(null, null,OpenCPICategory.applications, location);
 			asset.parent = project.asset;
 			
@@ -581,7 +589,6 @@ public class OpenCpiAssets {
 				assetModel.childList.add(c);
 				lookup.put(c.asset, c);
 			}
-			List<String> xmlApps = getXmlOnlyApps(location);
 			for(String xmlApp : xmlApps) {
 				AssetModelData c = new AssetModelData(
 					OpenCPIAssetFactory.createOcpiAsset(xmlApp, null, OpenCPICategory.xmlapp, location));

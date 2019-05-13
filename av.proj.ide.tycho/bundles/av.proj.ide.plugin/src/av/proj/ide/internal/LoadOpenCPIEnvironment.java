@@ -36,6 +36,7 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.modeling.ResourceStoreException;
 import org.eclipse.sapphire.modeling.xml.RootXmlResource;
 import org.eclipse.sapphire.modeling.xml.XmlResourceStore;
@@ -45,8 +46,11 @@ import av.proj.ide.avps.xml.Project;
 
 /***
  * This class is working to optimize reading the environment since ocpidev show is taking
- * much longer. It now contains most of the command logic, 
- *
+ * much longer. The intent is to use this class to construct the colleague classes used by 
+ * AngryViperAssetService.  This was done quickly to make the UI startup more responsive
+ * and to integrate with the current implementations to provide correct information and
+ * not impact refresh processing.  All of this could use a refactoring touch. One of the core
+ * issues faced with these classes was class size as the UI grew in capability.
  */
 public class LoadOpenCPIEnvironment {
 	
@@ -165,7 +169,7 @@ public class LoadOpenCPIEnvironment {
             }
             catch (InterruptedException e)
             {
-    			System.out.println("Got Interrupt");
+    			//System.out.println("Got Interrupt");
             }
         }
         // Perform Second check.
@@ -326,35 +330,54 @@ public class LoadOpenCPIEnvironment {
 				project.refreshLocal(IResource.DEPTH_ONE, new NullProgressMonitor());
 				projectFile = project.getFile("project.xml");
 			}
+			// This throws the exception if project.xml doesn't exist.
 			is = projectFile.getContents(true);
-			
-			AngryViperProjectInfo pInfo = environmentService.lookupProjectByPath(projpath);
-			Thread loader = null; 
-			if(! pInfo.isOpenCpiProject()) {
-		    	long start = System.currentTimeMillis();
-				loader = new Thread(new Runnable() {
-		            public void run()
-		            {
-		            	environmentService.checkForOpciPackageId(projpath, pInfo);
-		            }
-		        });
-				loader.setName(start + " OcpiCheck " + pInfo.eclipseName);
-				loader.start();
-			}
 			
 			XmlResourceStore store = new XmlResourceStore(is);
 			RootXmlResource xmlResource = new RootXmlResource(store);
 			Project proj = Project.TYPE.instantiate(xmlResource);
-			if(loader != null) {
-				loader.join();
-    			//System.out.println(loader.getName() + " finished " +System.currentTimeMillis());
+			
+			// Project XML gives the project name as the package Id. This information
+			// is preserved in the projectLocation object. This is used in a number
+			// of places to get project info when processing the project's assets.
+			// 
+			// pInfo should have a name for the project based on project directory.
+			// The eclipse project holds the name of the project in eclipse which is
+			// a one off for the core and assets projects.
+			
+			/***
+			 * TODO: re-think some of this.
+			 * 1. Eclipse IProject is the first thing obtained.  It is used throughout
+			 *    the application (from varied sources).
+			 * 2. ProjectLocation and AngryViperProjectInfo contain much of the same info.
+			 *    Both originate in this class.  They should become one class that is well
+			 *    defined.  IProject may belong in it; need to consider it going stale?
+			 * 2. Re-evaluate how these objects are created and used when ocpidev show is
+			 *    integrated.
+			 */
+			
+			Value<String> projNameVal = proj.getName();
+			String packageId = null;
+			if(projNameVal != null) {
+				packageId = projNameVal.content();
 			}
-			// Project XML gives the project name as the package Id. Use the 
-			// Environment derived project name which is usually the project
-			// directory name.  Note to the eclipse name for assets and core
-			// is also the package Id.  This is why AVProjectInfo holds so many names.
-			ProjectLocation location = new ProjectLocation(pInfo.name, projpath);
-			location.packageId = pInfo.packageId;
+			// This project is open in eclipse - pInfo will exist.
+			AngryViperProjectInfo pInfo = environmentService.lookupProjectByPath(projpath);
+			
+			if(! pInfo.isOpenCpiProject()) {
+				// This is an OpenCPI project because there is a project XML but it is not
+				// registered. Update ProjectInfo to get the repo current.
+				if(packageId != null) {
+					environmentService.updateOpciPackageId(pInfo, packageId, projpath);
+				}
+				else {
+					// Try another way--shouldn't happen if project.xml is well formed.
+		            environmentService.checkForOpciPackageId(projpath, pInfo);
+				}
+			}
+			
+			// Should get this from pInfo as well.
+			ProjectLocation location = pInfo.getProjectLocation();
 			assetsRepo.loadProject(location, proj, pInfo);
 		} catch (CoreException | ResourceStoreException | IOException | InterruptedException e) {
 			AvpsResourceManager.getInstance().writeToNoticeConsole("Error obtaining project metadata. This happens when a project is not an ANGRYVIPER project.\n --> " + e.toString() );
