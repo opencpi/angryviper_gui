@@ -27,6 +27,10 @@ import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.OcpidevVerb;
 import av.proj.ide.internal.OpenCPICategory;
 
+/***
+ * Currently not in use, some of the functionality such as building tests in a library
+ * need to be added back; why it's still around.
+ */
 public class BuildTestExecAsset extends BuildExecAsset {
 	
 	public BuildTestExecAsset(AngryViperAsset asset, List<String> buildFlags, List<String> cleanflags) {

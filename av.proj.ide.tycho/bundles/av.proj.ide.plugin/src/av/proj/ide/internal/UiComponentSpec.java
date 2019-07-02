@@ -20,6 +20,10 @@
 
 package av.proj.ide.internal;
 
+/***
+ * This class is used to overcome the variation in way a component
+ * spec is reference on OpenCPI XML.
+ */
 public class UiComponentSpec {
 	String componentName;
 	String oasReference = null;

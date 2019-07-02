@@ -85,8 +85,8 @@ import av.proj.ide.internal.OpenCpiAssets.OcpiAssetDifferences;
  *  - OpencpiEnvService functions as a bridge to the ocpidev show interface used to obtain
  *    project registration and component information as well as ocpidev create and delete
  *    commands. Currently there is a mix of data gathering resources used in this class.
- *    In the future this  as we move to solely using ocpidev show work with the framework,
- *    these tools will move back to OpenCpiAssets.
+ *    In the future the intent is to clean these classes up as we move to solely using
+ *    ocpidev to work with the framework.
  */
 public class AngryViperAssetService {
 

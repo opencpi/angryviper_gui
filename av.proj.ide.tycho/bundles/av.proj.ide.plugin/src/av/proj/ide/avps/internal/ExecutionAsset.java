@@ -28,9 +28,9 @@ import av.proj.ide.internal.OcpidevVerb;
 
 /**
  * This class provides a common interface to execute an ocpidev command given an
- * asset. This had to be separated out as another class because a given asset
- * might be used and a variety of builds (could not be done in that asset object
- * itself since it is persistent in the app). Extensions of this class are used
+ * asset or a group of assets. This had to be separated out as another class because
+ * a given asset might be used and a variety of builds (could not be done in that asset
+ * object itself since it is persistent in the app). Extensions of this class are used
  * to assemble the ocpidev command for the asset then allow easy execution of
  * that command without needing additional details.
  */

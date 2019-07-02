@@ -20,6 +20,11 @@
 
 package av.proj.ide.internal;
 
+/***
+ * This class was never realized, it was an idea that stayed
+ * in the baseline. The intent was to hold detailed worker
+ * information such as builds, and configurations.
+ */
 public class AssetDetails {
 	
 	AuthoringModel authoringModel;

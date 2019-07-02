@@ -39,6 +39,8 @@ import org.eclipse.sapphire.modeling.xml.XmlResource;
  * obtained removal or the ending s or changing ies plural to a y. Note
  * the list can have a mix of the element tags - older ones may follow the
  * convention of capitalized name while older ones can be in lower case.
+ * 
+ * TODO: get rid of this impl--use MultiCaseXmlListBinding.
  */
 public class SimpleDualCaseXmlListBinding extends StandardXmlListBindingImpl {
 	String name = null;

@@ -28,6 +28,12 @@ import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.OcpidevVerb;
 import av.proj.ide.internal.OpenCPICategory;
 
+/***
+ * This class provide the execution configuration to run unit tests using the
+ * ocpidev run cammand. 
+ * Note - migration to this class broke the ability to build and run tests
+ * in a library or project.  They want that back.
+ */
 public class OdevTestExecutionAsset extends ExecutionAsset {
 	protected static String format = "%s/%s";
 	protected static String formatTest = "Tests=%s";

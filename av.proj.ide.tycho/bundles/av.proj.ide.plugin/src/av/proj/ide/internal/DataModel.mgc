@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="av.proj.ide.internal.ProjectLocation" x="281" y="534">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="av.proj.ide.internal.AngryViperAsset" x="65" y="53">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.ProjectLocation"
+            endpointName="projectLocation" kind="Simple"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.AngryViperAsset"
+            endpointName="parent" kind="Simple"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.OpenCPICategory"
+            endpointName="category" kind="Simple"/>
+    </Class>
+    <Class name="av.proj.ide.internal.AssetModelData" x="565" y="89">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.AssetModelData"
+            endpointName="childList" kind="Simple"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.AngryViperAsset"
+            endpointName="asset" kind="Simple"/>
+    </Class>
+    <Class name="av.proj.ide.internal.OpenCPICategory" x="593" y="190">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+</ClassDiagram>

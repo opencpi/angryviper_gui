@@ -33,18 +33,21 @@ import org.eclipse.sapphire.modeling.xml.XmlPath;
 import org.eclipse.sapphire.modeling.xml.XmlResource;
 
 /***
- * The was developed to support tag attributes.  It might work for tags as well.
- * Since the XML files used by open cpi is not standardized xml binding need to deal
- * with multiple styles of case. This class is intended to work with single syllable
- * words.  There is another class that deals with multiple syllable words.
-  */
+ * This was developed to support tag attributes. Since the XML files used by open cpi
+ * are not standardized xml, binding needs to deal with multiple styles of case. 
+ * This class will try to find the attribute as the in the following cases:
+ *  - the case of the property name (in the Interface definition), lower case,
+ *  camel case and finally a search.
+ *  
+ *  Over the last year, the Framework has adopted in standard name case: Leading capitol
+ *  letter and Camel case is used for multiple word names.
+ */
 public class CaseInsenitiveAttributeValueBinding extends StandardXmlValueBindingImpl {
 	protected String propertyName;
 	protected String name;
 	protected String lowerName;
 	protected String camelName;
 	protected boolean parentStartsUpperCase;
-	//protected String thisAttributesTrueName = null;
 	protected XmlElement parentElement;
 	
 	protected void getPropertyName() {
@@ -53,7 +56,7 @@ public class CaseInsenitiveAttributeValueBinding extends StandardXmlValueBinding
 	}
 	
 	protected void initNames() {
-        this.name = "@"+propertyName;
+        this.name = "@"+propertyName;  // Sapphire identifies an attribute with a leading @ character.
         this.lowerName = this.name.toLowerCase();
         char c[] = this.name.toCharArray();
         c[1] = Character.toLowerCase(c[1]);
@@ -69,41 +72,20 @@ public class CaseInsenitiveAttributeValueBinding extends StandardXmlValueBinding
 		getPropertyName();
  		initNames();
 		
-        // TODO: In case the attribute doesn't exist- want to follow the trend
-        // of the document-->expecting to use lower case or the standard case.
 		final Element parent = property().element();
 		parentElement = ( (XmlResource) parent.resource() ).getXmlElement();
 		if(parentElement != null) {
 		String parentName = parentElement.getLocalName();
 		char chr = parentName.charAt(0);
-		if(Character.isLowerCase(chr)) {
-			parentStartsUpperCase = false;
+			if(Character.isLowerCase(chr)) {
+				parentStartsUpperCase = false;
+			}
+			else {
+				parentStartsUpperCase = true;
+			}
 		}
-		else {
-			parentStartsUpperCase = true;
-		}
-		}
-        // StandardXmlValueBindingImpl goes for an element by the property name.
-        // This is looking for an attribute.
         this.path = null;
-        
-		/***
-		 * the property name is assigned in the respective interface definition.
-		 * As default ANGRYVIPER uses capitalize element and attribute names. Names
-		 * made of multiple words use camel case.  Examples:
-		 * 
-		 * Single Word
-		 * 	ValueProperty PROP_LANGUAGE = new ValueProperty(TYPE, "Language");
-		 *	- default element or attribute name is Language.
-		 *	ValueProperty PROP_STRING_LENGTH = new ValueProperty(TYPE, "StringLength");
-		 *	- default element or attribute name is StringLength.
-		 *
-		 * The reason these binding cases had to be produced is that framework xml files are
-		 * all over the place; lower case is used, multiple case is used, even in some instances
-		 * all upper case is used.  Since Sapphire takes one shot at getting an element or tag
-		 * these classes have to figure out the XmlPath to the node to read it.
-		 */
-    }
+     }
 	
     @Override
     public String read()
@@ -178,6 +160,9 @@ public class CaseInsenitiveAttributeValueBinding extends StandardXmlValueBinding
     {
     	if(this.path == null) {
     		// If this is a new instance of this attribute, default it to property name.
+            // TODO: In case the attribute doesn't exist- want to follow the trend
+            // of the document i.e., use lower case if most or the file uses it.
+    		
     		this.path = new XmlPath(this.name , resource().getXmlNamespaceResolver());
     	}
     	super.write(value);

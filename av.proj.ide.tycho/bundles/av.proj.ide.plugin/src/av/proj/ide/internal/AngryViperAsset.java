@@ -39,6 +39,10 @@ import org.eclipse.swt.widgets.TreeItem;
  * (equals and hashcode are implemented). This was also done to support refresh
  * updates and makes determination of what's new and what's been removed easy
  * so changes can be sent to presentation (rather than a complete reconstruction).
+ * 
+ * Its full function has not been implemented yet, so there are attributes in here
+ * that are not in use.  This entire package was getting refactored in the 1.6 develop
+ * but this was not completed by the shutdown.
  */
 public class AngryViperAsset {
 	

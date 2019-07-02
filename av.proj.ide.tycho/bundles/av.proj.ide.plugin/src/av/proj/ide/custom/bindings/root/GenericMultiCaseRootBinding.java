@@ -32,6 +32,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /***
+ * This is the latest generalized version for root nodes.
+ * 
  * This class not only deals with the case issue with root nodes but it is
  * also responsible for updating files that use <xi:include> to include
  * the xmlns attribute so the editors will pick these up.

@@ -33,11 +33,11 @@ import av.proj.ide.internal.OcpidevVerb;
  * This class supports building and running requests coming from the other 
  * views. There are a number of things done in the class to make re-runs
  * more efficient.  Things are persisted so a re-run is not a total re-
- * construction at the beginning and the object dump at the end.  The service
+ * construction at the beginning and the object dumped at the end.  The service
  * also has to tie together a number of things to allow these re-runs: console
  * status bar, build number, original selections, etc. Plus, since a re-run
- * can occur from 3 of the views there is communications back and forth 
- * required. Finally, since there is a limit to the number of consoles
+ * can occur from 3 of the views,  communications back and forth 
+ * are required. Finally, since there is a limit to the number of consoles
  * the service has to juggle when to return consoles to the pool.
  *
  */

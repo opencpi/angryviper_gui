@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ClassDiagram>
+    <Class name="av.proj.ide.internal.EnvBuildTargets.HdlPlatformInfo"
+        x="22" y="937">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Extension destinationClassName="av.proj.ide.internal.EnvBuildTargets.HdlTargetInfo"/>
+    </Class>
+    <Class name="av.proj.ide.internal.AngryViperAssetService" x="340" y="142">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.AngryViperAssetService.BuildPlatformUpdate"
+            endpointName="platformUpdater" kind="Simple"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.OpencpiEnvService"
+            endpointName="environmentService" kind="Simple"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.AngryViperAssetService.ModelDataUpdate"
+            endpointName="projectsViewUpdate" kind="Simple"/>
+        <Communication destinationClassName="av.proj.ide.internal.AngryViperAssetService.BuildPlatformUpdate"/>
+        <Communication destinationClassName="av.proj.ide.internal.LoadOpenCPIEnvironment"/>
+        <Communication destinationClassName="av.proj.ide.internal.OpencpiEnvService"/>
+        <Communication destinationClassName="av.proj.ide.internal.AngryViperAssetService.ModelDataUpdate"/>
+    </Class>
+    <Class name="av.proj.ide.internal.LoadOpenCPIEnvironment" x="434" y="987">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.OpencpiEnvService"
+            endpointName="environmentService" kind="Simple"/>
+        <Association
+            destinationClassName="av.proj.ide.internal.EnvBuildTargets"
+            endpointName="envBuildInfo" kind="Simple"/>
+        <Communication destinationClassName="av.proj.ide.internal.OpencpiEnvService"/>
+        <Communication destinationClassName="av.proj.ide.internal.EnvBuildTargets"/>
+    </Class>
+    <Class name="av.proj.ide.internal.OpencpiEnvService" x="398" y="473">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="av.proj.ide.internal.EnvBuildTargets"/>
+    </Class>
+    <Class name="av.proj.ide.internal.EnvBuildTargets" x="-22" y="502">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+        <Communication destinationClassName="av.proj.ide.internal.EnvBuildTargets.HdlVendor"/>
+    </Class>
+    <Class name="av.proj.ide.internal.EnvBuildTargets.HdlTargetInfo"
+        x="23" y="741">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="av.proj.ide.internal.AngryViperAssetService.BuildPlatformUpdate"
+        x="102" y="408">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="av.proj.ide.internal.EnvBuildTargets.HdlVendor" x="134" y="1115">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class name="av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo"
+        x="3" y="1121">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="av.proj.ide.internal.AngryViperAssetService.AckModelDataUpdate"
+        x="59" y="129">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+    <Class
+        name="av.proj.ide.internal.AngryViperAssetService.ModelDataUpdate"
+        x="375" y="3">
+        <AttributesDisplayFilter public-accepted="true"
+            private-accepted="true" protected-accepted="true"
+            default-accepted="true" static-accepted="false"/>
+        <MethodDisplayFilter public-accepted="true"
+            private-accepted="false" protected-accepted="false"
+            default-accepted="false" static-accepted="false"
+            accessors-accepted="false" constructors-accepted="false"/>
+    </Class>
+</ClassDiagram>

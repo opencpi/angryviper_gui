@@ -28,6 +28,10 @@ import av.proj.ide.plugin.views.AVBuildStatusView;
 import av.proj.ide.plugin.views.AVMainOperationView;
 import av.proj.ide.plugin.views.AVProjectView;
 
+/***
+ * Never completed.  This would be a way to set a specific layout of the 
+ * perspective.
+ */
 public class AngryViperPerspectiveFactory implements IPerspectiveFactory {
 	
     public void createInitialLayout(IPageLayout layout) {

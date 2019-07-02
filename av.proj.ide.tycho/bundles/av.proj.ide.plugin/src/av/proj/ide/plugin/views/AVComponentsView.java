@@ -29,7 +29,10 @@ import av.proj.ide.swt.ColorSchemeBlue;
 import av.proj.ide.swt.ComponentsViewSwtDisplay;
 import av.proj.ide.swt.ProjectImages;
 
-
+/***
+ * Never completed. This was going to be something to support
+ * application and assembly development.
+ */
 public class AVComponentsView extends ViewPart {
 
 	/**

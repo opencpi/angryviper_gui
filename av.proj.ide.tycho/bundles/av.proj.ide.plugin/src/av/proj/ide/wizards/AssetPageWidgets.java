@@ -42,7 +42,10 @@ import av.proj.ide.internal.CreateAssetFields;
 import av.proj.ide.internal.OpenCPICategory;
 import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.wizards.internal.WizardInputConverter;
-
+/***
+ * Never completed. The intent is to separate the widgets and layout form
+ * the control logic.  This was accomplished in the AV-5507_ocpidev branch.
+ */
 public class AssetPageWidgets {
 	Composite container;
 	// general across all assets except projects and unit tests:

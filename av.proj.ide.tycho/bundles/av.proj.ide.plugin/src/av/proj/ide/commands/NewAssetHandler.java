@@ -36,6 +36,9 @@ import org.eclipse.ui.wizards.IWizardDescriptor;
 
 import av.proj.ide.wizards.NewOcpiAssetWizard;
 
+/***
+ * Used by the Eclipse Project Explorer view to kick off the Wizard.
+ */
 public class NewAssetHandler extends AbstractHandler {
 
 	@Override

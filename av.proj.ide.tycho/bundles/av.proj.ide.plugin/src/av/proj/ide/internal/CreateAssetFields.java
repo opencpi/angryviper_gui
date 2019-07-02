@@ -20,6 +20,9 @@
 
 package av.proj.ide.internal;
 
+/**
+ * Holds input information from the Wizard.
+ */
 public class CreateAssetFields {
 	OpenCPICategory type;
 	String projectName;

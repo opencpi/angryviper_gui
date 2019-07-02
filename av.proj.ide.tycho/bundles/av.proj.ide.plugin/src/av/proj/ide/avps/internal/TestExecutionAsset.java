@@ -28,6 +28,9 @@ import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.OcpidevVerb;
 import av.proj.ide.internal.OpenCPICategory;
 
+/***
+ * Currently not in use? This used an old interface to run tests.
+ */
 public class TestExecutionAsset extends ExecutionAsset {
 	protected File projectDirectory;
 	protected static String format = "%s/%s";

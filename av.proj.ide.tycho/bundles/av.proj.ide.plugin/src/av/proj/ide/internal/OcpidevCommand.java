@@ -23,6 +23,10 @@ package av.proj.ide.internal;
 import java.util.ArrayList;
 import java.util.List;
 
+/***
+ * This appears to be an idea that was never fully implemented and put into
+ * service.
+ */
 public class OcpidevCommand {
 	
 	List<String> ocpidevCmd;
