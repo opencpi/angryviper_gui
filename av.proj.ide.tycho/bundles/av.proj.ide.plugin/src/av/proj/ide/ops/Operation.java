@@ -32,14 +32,14 @@ import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.list.OPSArgumentXmlListBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.list.MultiCaseXmlListBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface Operation extends Element {
 	ElementType TYPE = new ElementType(Operation.class);
 
 	// *** Name ***
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Name")
 	@Required
 	
@@ -50,11 +50,9 @@ public interface Operation extends Element {
 
 	// *** Arguments ***
 	@Type( base = Argument.class )
-	//@XmlListBinding(mappings = { @XmlListBinding.Mapping(element = "Argument", type = Argument.class), @XmlListBinding.Mapping(element = "argument", type = ArgumentLower.class) } )
-	@CustomXmlListBinding(impl = OPSArgumentXmlListBinding.class )
+	@CustomXmlListBinding(impl = MultiCaseXmlListBinding.class )
 	@Label(standard = "Arguments")
 	
 	ListProperty PROP_ARGUMENTS = new ListProperty(TYPE, "Arguments");
-
 	ElementList<Argument> getArguments();
 }

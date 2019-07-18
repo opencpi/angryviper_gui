@@ -20,77 +20,54 @@
 
 package av.proj.ide.hplat;
 
-import org.eclipse.jface.dialogs.MessageDialog;
+import java.util.ArrayList;
+
 import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.modeling.xml.RootXmlResource;
-import org.eclipse.sapphire.ui.SapphireEditor;
 import org.eclipse.sapphire.ui.swt.xml.editor.XmlEditorResourceStore;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.wst.sse.ui.StructuredTextEditor;
 
-import av.proj.ide.common.Signal;
-import av.proj.ide.common.SignalDirection;
+import av.proj.ide.hdl.signal.Signal;
+import av.proj.ide.internal.OcpiXmlDocScanner;
+import av.proj.ide.owd.hdl.HdlWorkerEditor;
 
-public class HdlPlatformEditor extends SapphireEditor {
+public class HdlPlatformEditor extends HdlWorkerEditor {
+
+	private static OcpiXmlDocScanner docScan = null;
 	
-	private StructuredTextEditor hplatSourceEditor;
-	protected static boolean signaledFileModMessage = false;
-	
-	protected void presentModWarning() {
-		if(signaledFileModMessage == false) {
-			Display.getDefault().asyncExec(new Runnable(){
-				public void run() {
-					String message = "The HDL Platform XML editor is going to programmatically add an external signal tag to support presentation of existing platform files. Please save these files and make them part of your baseline.";
-					MessageDialog.openInformation(Display.getDefault().getActiveShell(), "HDL Platform XML File Modifications", message);
-				}
-			});
-			signaledFileModMessage = true;
+	public HdlPlatformEditor () {
+		type = HdlPlatform.TYPE;
+		name = "SlotFileEditorPage";
+		if(docScan == null) {
+			docScan = new OcpiXmlDocScanner();
+			docScan.setEditorName("HDL Platform OWD Editor");
+			//docScan.addScanElements("controlinterface", "ControlInterface");
+			docScan.setShowXTimes(2);
 		}
 	}
-    
+   
 	@Override
     protected void createEditorPages() throws PartInitException 
     {
         addDeferredPage( "Design", "HdlPlatformEditorPage" );
-        
-        this.hplatSourceEditor = new StructuredTextEditor();
-        this.hplatSourceEditor.setEditorPart(this);
-        
-        int index = addPage( this.hplatSourceEditor, getEditorInput() );
+        this.xmlSourceEditor = new StructuredTextEditor();
+        this.xmlSourceEditor.setEditorPart(this);
+        int index = addPage( this.xmlSourceEditor, getEditorInput() );
         setPageText( index, "Source" );
     }
-    
+	
     @Override
     protected Element createModel() 
     {
-    	Element element = HdlPlatform.TYPE.instantiate(new RootXmlResource(new XmlEditorResourceStore(this, this.hplatSourceEditor)));
-    	HdlPlatform hdlp = (HdlPlatform)element;
-    	ElementList<Signal> signals = hdlp.getSignals();
-
-    	/**
-    	 * Backward compatibility with older signal definitions.  Current UI depends on the direction attribute.
-    	 */
-    	for(Signal signal : signals) {
-    		SignalDirection sd = signal.getDirection().content();
-    		if( ! (sd == null || sd == SignalDirection.NOTSET) )
-    			continue;
-    		
-    		if(signal.getInput().content() != null) {
-    			signal.setDirection(SignalDirection.INPUT);
-    		}
-    		else if(signal.getOutput().content() != null) {
-    			signal.setDirection(SignalDirection.OUTPUT);
-    		}
-    		else if(signal.getInout().content() != null) {
-    			signal.setDirection(SignalDirection.INOUT);
-    		}
-    		else if(signal.getBidirectional().content() != null) {
-    			signal.setDirection(SignalDirection.BIDIRECTIONAL);
-    		}
-    		presentModWarning();
-    	}
+    	Element element = type.instantiate(new RootXmlResource(new XmlEditorResourceStore(this, this.xmlSourceEditor)));
+    	ArrayList<String> repairs = new ArrayList<String>();
+    	HdlPlatform fileElement = (HdlPlatform)element;
+    	ElementList<Signal> signals = fileElement.getSignals();
+    	docScan.scanSignalElements(signals, repairs);
+    	docScan.processModifications(repairs);
     	return element;
     }
+   
 }

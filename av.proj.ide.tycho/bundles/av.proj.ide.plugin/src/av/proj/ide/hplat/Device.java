@@ -33,10 +33,10 @@ import org.eclipse.sapphire.modeling.annotations.MustExist;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.annotations.Service;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
-import org.eclipse.sapphire.modeling.xml.annotations.XmlBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.list.DevicePropertyXmlListBinding;
-import av.proj.ide.custom.bindings.list.DeviceSignalXmlListBinding;
+import av.proj.ide.custom.bindings.list.SimpleDualCaseXmlListBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.services.NameValidationService;
 
 public interface Device extends Element
@@ -44,11 +44,17 @@ public interface Device extends Element
 	ElementType TYPE = new ElementType(Device.class);
 	
 	// *** worker attribute***
-	@XmlBinding(path = "@worker")
-	@Label(standard = "worker")
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+	@Label(standard = "Worker")
 	@Required
 	@Service(impl=NameValidationService.class)
 	ValueProperty PROP_WORKER = new ValueProperty(TYPE, "Worker");
+	
+	// *** card attribute***
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
+	@Label(standard = "Card")
+	//@Service(impl=NameValidationService.class)
+	ValueProperty PROP_CARD = new ValueProperty(TYPE, "Card");
 	
 	// *** Device property element ***
 	public interface Property extends Element
@@ -56,7 +62,7 @@ public interface Device extends Element
 	 	ElementType TYPE = new ElementType(Property.class);
 	 	
 	 	// *** name attribute***
-	 	@XmlBinding(path = "@name")
+		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	 	@Label(standard = "name")
 	 	@Required
 	 	@Service(impl=NameValidationService.class)
@@ -67,7 +73,7 @@ public interface Device extends Element
 
 
 	 	// *** name attribute***
-	 	@XmlBinding(path = "@value")
+		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	 	@Label(standard = "value")
 	 	@Required
 	 	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
@@ -76,7 +82,7 @@ public interface Device extends Element
 	 	void setValue(String value);
 	}
 	@Type( base = Property.class )
-	@CustomXmlListBinding(impl = DevicePropertyXmlListBinding.class)
+	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class)
 	@Label( standard = "property" )
 	ListProperty PROP_PROPERTIES = new ListProperty( TYPE, "Properties" );
 	ElementList<Property> getProperties();
@@ -87,7 +93,7 @@ public interface Device extends Element
 		ElementType TYPE = new ElementType(Signal.class);
 		
 		// *** name attribute***
-		@XmlBinding(path = "@name")
+		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 		@Label(standard = "name")
 		@Required
 		ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
@@ -96,7 +102,7 @@ public interface Device extends Element
 		void setName(String value);
 		
 		// *** name attribute***
-		@XmlBinding(path = "@platform")
+		@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 		@Label(standard = "platform")
 		@DefaultValue(text="")
 		@MustExist
@@ -107,7 +113,7 @@ public interface Device extends Element
 	}
 	// *** Device property element ***
 	@Type( base = Signal.class )
-	@CustomXmlListBinding(impl = DeviceSignalXmlListBinding.class)
+	@CustomXmlListBinding(impl = SimpleDualCaseXmlListBinding.class)
 	@Label( standard = "signal" )
 	ListProperty  PROP_SIGNALS = new ListProperty(TYPE, "Signals");
 	

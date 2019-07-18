@@ -191,15 +191,20 @@ public class ProjectBuildService {
 		
 		Integer thisBuildNumber = new Integer(nextExecutionNumber++);
 		StatusNotificationInterface statusMonitor = AvpsResourceManager.getInstance().getStatusMonitor();
+		BuildTargetSelections targs = selections.buildTargetSelections;
+		StatusRegistration reg = new StatusRegistration(selections.verb, exAssets,
+				targs.hdlBldSelects , targs.rccBldSelects);
+		reg.consoleName = bldConsole.getName();
+		ExecutionComponents buildComps = new ExecutionComponents(thisBuildNumber,bldConsole, statusMonitor);
+		buildComps.statusRegistration = reg;
 		if(statusMonitor != null) {
-			statusMonitor.registerBuild(thisBuildNumber, selections.verb, bldConsole.getName(), selections.buildDescription);
+			statusMonitor.registerBuild(thisBuildNumber, reg);
 		}
 		
-		
-		ExecutionComponents buildComps = new ExecutionComponents(thisBuildNumber,bldConsole, statusMonitor);
 		registeredExecutions.put(thisBuildNumber, buildComps);
 		buildConfigurations.put(selections.getConfigurationHash(), thisBuildNumber);
 		
+		// TODO: Log the build Config to the console.
 		buildComps.setExecutionAssets(exAssets);
 		CommandExecutor ex = new CommandExecutor();
 		buildComps.commandExecutor = ex;
@@ -234,7 +239,10 @@ public class ProjectBuildService {
 				}
 			}
 		}
-		buildComps.statusMonitor.restartBuild(myBuildNumber, verb);
+		StatusRegistration reg = buildComps.statusRegistration;
+		reg.resetVerb(verb);
+		buildComps.statusMonitor.restartBuild(myBuildNumber, reg);
+		
 		AvpsResourceManager.getInstance().bringConsoleToView(buildComps.bldConsole.getName());
 		buildComps.commandExecutor.executeCommandSet(buildComps, verb, noAssemblies);
 	}
@@ -255,22 +263,28 @@ public class ProjectBuildService {
 			buildComps = registeredExecutions.get(runNumber);
 			if(buildComps != null) {
 				buildComps.setExecutionAssets(exAssets);
-				buildComps.statusMonitor.restartBuild(runNumber, selections.verb);
+				StatusRegistration reg = buildComps.statusRegistration;
+				buildComps.statusMonitor.restartBuild(runNumber, reg);
 				AvpsResourceManager.getInstance().bringConsoleToView(buildComps.bldConsole.getName());
 			}
 		}
 		else {
 			runNumber = new Integer(nextExecutionNumber++);
-			StatusNotificationInterface statusMonitor = AvpsResourceManager.getInstance().getStatusMonitor();
 			MessageConsole bldConsole = AvpsResourceManager.getInstance().getNextConsole();
 			if (bldConsole == null) {
 				return -1;
 			}
+			StatusNotificationInterface statusMonitor = AvpsResourceManager.getInstance().getStatusMonitor();
+			buildComps = new ExecutionComponents(runNumber,bldConsole, statusMonitor);
+			BuildTargetSelections targs = selections.buildTargetSelections;
+			StatusRegistration reg = new StatusRegistration(selections.verb, exAssets,
+					targs.hdlBldSelects , targs.rccBldSelects);
+			buildComps.statusRegistration = reg;
+			
 			if(statusMonitor != null) {
-				statusMonitor.registerBuild(runNumber, selections.verb, bldConsole.getName(), "Unit Tests # " + runNumber );
+				statusMonitor.registerBuild(runNumber, reg);
 			}
 			
-			buildComps = new ExecutionComponents(runNumber,bldConsole, statusMonitor);
 			registeredExecutions.put(runNumber, buildComps);
 			CommandExecutor ex = new CommandExecutor();
 			buildComps.commandExecutor = ex;

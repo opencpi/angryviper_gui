@@ -1,0 +1,411 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+	<import>
+		<package>av.proj.ide</package>
+		<package>av.proj.ide.owd</package>
+		<package>av.proj.ide.owd.hdl</package>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlDataPortForm</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlWorkerAttributesForm
+		</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlPropertyForm</definition>
+		<definition>av.proj.ide.owd.hdl.sdef.HdlSpecPropertyForm</definition>
+		<definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+		<definition>av.proj.ide.sdef.shared.SignalCharacteristicsForm</definition>
+	</import>
+	<editor-page>
+		<id>HdlDeviceWorkerEditorPage</id>
+		<element-type>av.proj.ide.hdl.device.HdlDevice</element-type>
+		<initial-selection>HdlDevice</initial-selection>
+		<page-header-text>HDL Device Worker OWD Editor</page-header-text>
+		<root-node>
+			<node>
+				<label>${ Name == null ? &quot;HdlDevice&quot; : Name }</label>
+				<section>
+					<label>HDL Device Worker</label>
+					<description>Top-level attributes of the OpenCPI HDL Worker XML
+					</description>
+					<content>
+						<include>HdlWorkerAttributesForm</include>
+					</content>
+				</section>
+                <node>
+                    <node-factory>
+                        <case>
+                            <label>${ Name == null ? &quot;&lt;spec property&gt;&quot; : Name }</label>
+                            <section>
+                                <content>
+                                    <include>HdlSpecPropertyForm</include>
+                                </content>
+                                <label>OWD SpecProperty Definition</label>
+                            </section>
+                        </case>
+                        <property>SpecProperties</property>
+                    </node-factory>
+                    <label>SpecProperties</label>
+                    <section>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add a SpecProperty.</label>
+                            </actuator>
+                        </content>
+                        <description>OpenCPI Worker Description XML Spec Property Definitions</description>
+                        <label>SpecProperties</label>
+                    </section>
+                </node>
+				
+				<node>
+					<label>Properties</label>
+					<section>
+						<label>Properties</label>
+						<description>OpenCPI Worker Description XML Property Definitions
+						</description>
+						<content>
+							<section>
+								<collapsed-initially>true</collapsed-initially>
+								<collapsible>true</collapsible>
+								<content>
+									<property-editor>
+										<show-label>false</show-label>
+										<property>Includes</property>
+									</property-editor>
+								</content>
+								<label>Include Files</label>
+								<description>
+									Include a property file to inherit it's properties. Note: The order of
+									included files and OWD properties is
+									important as it directly impacts the indexing. This insert tool places
+									an include file as the next element in the file.
+									Review the source XML to ensure it is positioned in the desired
+									location. Reordering of include files with respect
+									to properties must be performed manually in the source."
+								</description>
+							</section>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add a Property.</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<property>Properties</property>
+						<case>
+							<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
+							<section>
+								<label>OWD Property Definition</label>
+								<content>
+									<actuator>
+										<action-id>Sapphire.Add</action-id>
+										<label>Add a Member</label>
+									</actuator>
+									<include>HdlPropertyForm</include>
+								</content>
+							</section>
+
+							<node-factory>
+								<property>Members</property>
+								<case>
+									<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+									<section>
+										<label>Member</label>
+										<description>Modify attributes of this member.</description>
+										<content>
+											<actuator>
+												<action-id>Sapphire.Add</action-id>
+												<label>Add a Member</label>
+											</actuator>
+											<include>DataTypeForm</include>
+										</content>
+									</section>
+									<node-factory>
+										<property>Members</property>
+										<case>
+											<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+											<section>
+												<label>Member</label>
+												<description>Modify attributes of this member.</description>
+												<content>
+													<include>DataTypeForm</include>
+												</content>
+											</section>
+										</case>
+										<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+									</node-factory>
+								</case>
+								<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+							</node-factory>
+							<element-type>Property</element-type>
+
+						</case>
+					</node-factory>
+				</node>
+
+				<node>
+					<label>Ports</label>
+					<section>
+						<label>Ports</label>
+						<description>OpenCPI Worker Description XML Port Definitions
+						</description>
+						<content>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add a StreamInterface.</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<property>StreamInterfaces</property>
+						<case>
+							<label>${ Name == null ? &quot;&lt;streaminterface&gt;&quot; :
+								Name }</label>
+
+							<section>
+								<label>StreamInterface Characteristics</label>
+								<content>
+									<include>HdlDataPortForm</include>
+								</content>
+							</section>
+
+						</case>
+					</node-factory>
+				</node>
+                <node>
+                    <node-factory>
+                        <case>
+                            <label>TimeInterface</label>
+                            <section>
+                                <content>
+                                    <property-editor>Name</property-editor>
+                                    <property-editor>SecondsWidth</property-editor>
+                                    <property-editor>FractionWidth</property-editor>
+                                    <property-editor>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                        <property>AllowUnavailable</property>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                    </property-editor>
+                                </content>
+                            </section>
+                        </case>
+                        <property>TimeInterface</property>
+                    </node-factory>
+                    <label>Service Interfaces</label>
+                    <section>
+                        <content>
+                            <with>
+                                <case>
+                                    <content>
+                                        <property-editor>Name</property-editor>
+                                        <property-editor>SecondsWidth</property-editor>
+                                        <property-editor>FractionWidth</property-editor>
+                                        <property-editor>
+                                            <hint>
+                                                <name>checkbox.layout</name>
+                                                <value>leading.label</value>
+                                            </hint>
+                                            <property>AllowUnavailable</property>
+                                            <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                        </property-editor>
+                                    </content>
+                                </case>
+                                <label>Enable the Time Interface</label>
+                                <path>TimeInterface</path>
+                            </with>
+                        </content>
+                        <label>Enable Service Interfaces</label>
+                    </section>
+                </node>
+
+
+				<node>
+					<label>DevSignal Ports</label>
+					<section>
+						<label>Dev Signal Ports</label>
+						<content>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add Dev Signal</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<case>
+							<section>
+								<label>OpenCPI Dev Signal Port Definition</label>
+								<content>
+                                    <property-editor>Name</property-editor>
+                                    <property-editor>Signals</property-editor>
+                                    <property-editor>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                        <property>Master</property>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                    </property-editor>
+                                    <property-editor>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                        <property>Optional</property>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                    </property-editor>
+                                    <property-editor>Count</property-editor>
+								</content>
+							</section>
+							<label>${ name != null ?  name  : &quot;&lt;signal&gt;&quot; }</label>
+							<element-type>av.proj.ide.hdl.device.DevSignal</element-type>
+						</case>
+						<property>DevSignals</property>
+					</node-factory>
+				</node>
+                <node>
+                    <node-factory>
+                        <case>
+                            <label>RawProp</label>
+                            <section>
+                                <content>
+                                    <property-editor>Name</property-editor>
+                                    <property-editor>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                        <property>Master</property>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                    </property-editor>
+                                    <property-editor>
+                                        <hint>
+                                            <name>checkbox.layout</name>
+                                            <value>leading.label</value>
+                                        </hint>
+                                        <property>OPtional</property>
+                                        <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                    </property-editor>
+                                    <property-editor>Count</property-editor>
+                                </content>
+                            </section>
+                        </case>
+                        <property>RawProp</property>
+                    </node-factory>
+                    <label>RawProp Port</label>
+                    <section>
+                        <content>
+                            <with>
+                                <case>
+                                    <content>
+                                        <property-editor>Name</property-editor>
+                                        <property-editor>
+                                            <hint>
+                                                <name>checkbox.layout</name>
+                                                <value>leading.label</value>
+                                            </hint>
+                                            <property>Master</property>
+                                            <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                        </property-editor>
+                                        <property-editor>
+                                            <hint>
+                                                <name>checkbox.layout</name>
+                                                <value>leading.label</value>
+                                            </hint>
+                                            <property>OPtional</property>
+                                            <style>Sapphire.PropertyEditor.CheckBoxGroup</style>
+                                        </property-editor>
+                                        <property-editor>Count</property-editor>
+                                    </content>
+                                </case>
+                                <label>Use the RawProp Port</label>
+                                <path>RawProp</path>
+                            </with>
+                        </content>
+                        <label>RawProp</label>
+                    </section>
+                </node>
+                <node>
+                    <node-factory>
+                        <case>
+                            <element-type>av.proj.ide.hdl.signal.Signal</element-type>
+                            <label>${ name != null ?  name  : &quot;&lt;signal&gt;&quot; }</label>
+                            <section>
+                                <content>
+                                    <include>SignalCharacteristicsForm</include>
+                                </content>
+                                <label>Signal Direction</label>
+                            </section>
+                        </case>
+                        <property>Signals</property>
+                    </node-factory>
+                    <label>Signals</label>
+                    <section>
+                        <content>
+                            <actuator>
+                                <action-id>Sapphire.Add</action-id>
+                                <label>Add Signal</label>
+                            </actuator>
+                        </content>
+                        <label>Signals</label>
+                    </section>
+                </node>
+
+				<node>
+					<label>Supports Worker</label>
+					<section>
+						<label>Supports Worker</label>
+						<content>
+							<actuator>
+								<action-id>Sapphire.Add</action-id>
+								<label>Add Supports Worker</label>
+							</actuator>
+						</content>
+					</section>
+					<node-factory>
+						<case>
+							<section>
+								<label>OpenCPI Supports Definition</label>
+								<content>
+                                    <property-editor>Worker</property-editor>
+                                    <property-editor>Index</property-editor>
+                                    <property-editor>
+                                        <child-property>Port</child-property>
+                                        <property>Connects</property>
+                                        <child-property>To</child-property>
+                                        <child-property>Index</child-property>
+                                    </property-editor>
+								</content>
+							</section>
+							<label>${ worker != null ?  worker  : &quot;&lt;worker&gt;&quot; }</label>
+							<element-type>av.proj.ide.hdl.device.Supports</element-type>
+						</case>
+						<property>Supportss</property>
+					</node-factory>
+				</node>
+
+			</node>
+		</root-node>
+	</editor-page>
+
+
+</definition>

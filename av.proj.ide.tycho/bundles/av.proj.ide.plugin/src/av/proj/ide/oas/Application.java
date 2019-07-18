@@ -40,7 +40,7 @@ import av.proj.ide.custom.bindings.list.OASConnectionXmlListBinding;
 import av.proj.ide.custom.bindings.list.OASInstanceXmlListBinding;
 import av.proj.ide.custom.bindings.list.OASPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.root.ApplicationRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
 
 @CustomXmlRootBinding(value = ApplicationRootXmlBinding.class)
@@ -76,7 +76,7 @@ public interface Application extends Element {
 	void setDone(String value);
 	
 	// *** MaxProcessors ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "MaxProcessors")
 	
 	ValueProperty PROP_MAX_PROCESSORS = new ValueProperty(TYPE, "MaxProcessors");

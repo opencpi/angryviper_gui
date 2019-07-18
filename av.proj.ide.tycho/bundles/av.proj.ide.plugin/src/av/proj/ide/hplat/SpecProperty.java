@@ -20,33 +20,25 @@
 
 package av.proj.ide.hplat;
 
-import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
+import org.eclipse.sapphire.Validation;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.Status;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface SpecProperty extends Element {
+public interface SpecProperty extends av.proj.ide.owd.SpecProperty {
 	ElementType TYPE = new ElementType(SpecProperty.class);
 
-	// *** Name ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
-	@Label(standard = "Name")
-	@Required
-
-	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
-
-	Value<String> getName();
-	void setName(String value);
-
 	// ***Value ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "value")
-	@Required
+	@Validation(rule     = "${! (Name == 'platform' && value == null)}",
+    message  = "Must specify a value for the platform SpecProperty",
+    severity = Status.Severity.ERROR)
 
 	ValueProperty PROP_VALUE = new ValueProperty(TYPE, "Value");
 

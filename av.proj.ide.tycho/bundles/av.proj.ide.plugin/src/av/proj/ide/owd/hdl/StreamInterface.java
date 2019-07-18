@@ -20,7 +20,6 @@
 
 package av.proj.ide.owd.hdl;
 
-import org.eclipse.sapphire.Element;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
@@ -30,14 +29,13 @@ import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface StreamInterface extends Element {
+public interface StreamInterface extends HdlDataPortSpecific {
 	ElementType TYPE = new ElementType( StreamInterface.class );
 	
 	// *** Name *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Name")
 	@Required 
 	
@@ -45,49 +43,10 @@ public interface StreamInterface extends Element {
 
 	Value<String> getName();
 	void setName(String value);
-		
-	// *** DataWidth *** 
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label(standard = "DataWidth")
-		
-	ValueProperty PROP_DATA_WIDTH = new ValueProperty(TYPE, "DataWidth");
 
-	Value<String> getDataWidth();
-	void setDataWidth(String value);
-	
-	// *** PreciseBurst ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label( standard = "PreciseBurst" )
-			
-	ValueProperty PROP_PRECISE_BURST = new ValueProperty(TYPE, "PreciseBurst");
-			
-	Value<Boolean> getPreciseBurst();
-	void setPreciseBurst( String value );
-	void setPreciseBurst( Boolean value );
-	
-	// *** Abortable ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label( standard = "Abortable" )
-				
-	ValueProperty PROP_ABORTABLE = new ValueProperty(TYPE, "Abortable");
-				
-	Value<Boolean> getAbortable();
-	void setAbortable( String value );
-	void setAbortable( Boolean value );
-	
-	// *** Pattern *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
-	@Label(standard = "Pattern")
-			
-	ValueProperty PROP_PATTERN = new ValueProperty(TYPE, "Pattern");
-
-	Value<String> getPattern();
-	void setPattern(String value);
-	
+	// These two have yet to be supported.  Leave them.
 	// *** Clock *** 
-	@CustomXmlValueBinding( impl=GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "Clock")
 			
 	ValueProperty PROP_CLOCK = new ValueProperty(TYPE, "Clock");
@@ -97,7 +56,7 @@ public interface StreamInterface extends Element {
 	
 	// *** MyClock ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label( standard = "MyClock" )
 		
 	ValueProperty PROP_MY_CLOCK = new ValueProperty(TYPE, "MyClock");
@@ -106,82 +65,15 @@ public interface StreamInterface extends Element {
 	void setMyClock( String value );
 	void setMyClock( Boolean value );
 	
-	// *** NumberOfOpCodes ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label(standard = "NumberOfOpCodes")
-			
-	ValueProperty PROP_NUMBER_OF_OP_CODES = new ValueProperty(TYPE, "NumberOfOpCodes");
-
-	Value<String> getNumberOfOpCodes();
-	void setNumberOfOpCodes(String value);
-	
-	// *** DataValueWidth ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label(standard = "DataValueWidth")
-			
-	ValueProperty PROP_DATA_VALUE_WIDTH = new ValueProperty(TYPE, "DataValueWidth");
-
-	Value<String> getDataValueWidth();
-	void setDataValueWidth(String value);
-	
-	// *** DataValueGranularity ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label(standard = "DataValueGranularity")
-			
-	ValueProperty PROP_DATA_VALUE_GRANULARITY = new ValueProperty(TYPE, "DataValueGranularity");
-
-	Value<String> getDataValueGranularity();
-	void setDataValueGranularity(String value);
-	
-	// *** ZeroLengthMessages ***
+	// *** MyClock ***
 	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label( standard = "ZeroLengthMessages" )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Producer" )
 		
-	ValueProperty PROP_ZERO_LENGTH_MESSAGES = new ValueProperty(TYPE, "ZeroLengthMessages");
+	ValueProperty PROP_PRODUCER = new ValueProperty(TYPE, "Producer");
 		
-	Value<Boolean> getZeroLengthMessages();
-	void setZeroLengthMessages( String value );
-	void setZeroLengthMessages( Boolean value );
+	Value<Boolean> getProducer();
+	void setProducer( String value );
+	void setProducer( Boolean value );
 	
-	// *** MaxMessageValues ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "MaxMessageValues")
-
-	ValueProperty PROP_MAX_MESSAGE_VALUES = new ValueProperty(TYPE, "MaxMessageValues");
-	Value<String> getMaxMessageValues();
-	void setMaxMessageValues(String value);
-
-	// *** VariableMessageLength ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "VariableMessageLength")
-
-	ValueProperty PROP_VARIABLE_MESSAGE_LENGTH = new ValueProperty(TYPE, "VariableMessageLength");
-
-	Value<Boolean> getVariableMessageLength();
-	void setVariableMessageLength(String value);
-	void setVariableMessageLength(Boolean value);
-
-	// *** DiverseDataSizes ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "DiverseDataSizes")
-
-	ValueProperty PROP_DIVERSE_DATA_SIZES = new ValueProperty(TYPE, "DiverseDataSizes");
-
-	Value<Boolean> getDiverseDataSizes();
-	void setDiverseDataSizes(String value);
-	void setDiverseDataSizes(Boolean value);
-
-	// *** UnBounded ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "UnBounded")
-
-	ValueProperty PROP_UN_BOUNDED = new ValueProperty(TYPE, "UnBounded");
-
-	Value<Boolean> getUnBounded();
-	void setUnBounded(String value);
-	void setUnBounded(Boolean value);
 }

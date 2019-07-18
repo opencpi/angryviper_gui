@@ -29,13 +29,13 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 public interface ControlOperation extends Element {
 	ElementType TYPE = new ElementType( ControlOperation.class );
     
 	//*** Name ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class )
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class )
 	@Label( standard = "Name" )
 	@Required
 	@Unique

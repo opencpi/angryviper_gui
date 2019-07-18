@@ -23,6 +23,7 @@ package av.proj.ide.internal;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -30,6 +31,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.eclipse.sapphire.ElementList;
 import org.eclipse.ui.console.MessageConsole;
@@ -49,6 +51,7 @@ import av.proj.ide.avps.xml.Test;
 import av.proj.ide.avps.xml.Worker;
 import av.proj.ide.internal.AssetDetails.AuthoringModel;
 import av.proj.ide.internal.EnvBuildTargets.HdlPlatformInfo;
+import av.proj.ide.internal.EnvBuildTargets.HdlVendor;
 import av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo;
 
 
@@ -63,24 +66,67 @@ import av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo;
  */
 public class OpenCpiAssets {
 	
-	Map<String, AssetModelData> projects;
+	private Map<String, AssetModelData> projects;
+	/**
+	 * This had to be done to compensate to a lookup by packageId and
+	 * a lookup by the name.
+	 */
+	private Map<String, String> projectNameLookup;
+	
+	Map<String, AssetModelData> getProjectsMap() {
+		return projects;
+	}
+	AssetModelData getProject(String referredName) {
+		String mappedName = projectNameLookup.get(referredName);
+		if(mappedName != null) {
+			return projects.get(mappedName);
+		}
+		// Try the other one.
+		return projects.get(referredName);
+	}
+	public void removeProject(String projectRefer) {
+		String projectName = projectNameLookup.get(projectRefer);
+		AssetModelData projectModel = projects.get(projectName);
+		String packageId = null;
+		if(projectModel != null) {
+			packageId = projectModel.asset.projectLocation.packageId;
+		}
+		projectNameLookup.remove(projectName);
+		if(packageId != null) {
+			projectNameLookup.remove(packageId);
+		}
+		projects.remove(projectName);
+	}
+	
+	public void addProject(AngryViperAsset asset, AssetModelData newAssetModel) {
+		String packageId = asset.projectLocation.packageId;
+		String projectName = asset.projectLocation.projectName;
+		if(packageId != null) {
+			projectNameLookup.put(packageId, projectName);
+		}
+		projectNameLookup.put(projectName, projectName);
+		projects.put(projectName, newAssetModel);
+	}
 	
 	// Leverages load order.
 	LinkedHashMap<AngryViperAsset, AssetModelData> assetLookup;
 	
-	List<av.proj.ide.internal.EnvBuildTargets.HdlVendor> hdlVendors;
-	List<HdlPlatformInfo> hdlPlatforms;
-	List<RccPlatformInfo> rccPlatforms;
+	Collection<HdlVendor> hdlVendors;
+	Collection<HdlPlatformInfo> hdlPlatforms;
+	Collection<RccPlatformInfo> rccPlatforms;
 	
 	OpenCpiAssets() {
-		projects = new HashMap <String, AssetModelData> ();
+		projects = new TreeMap <String, AssetModelData> ();
 		assetLookup = new LinkedHashMap<AngryViperAsset, AssetModelData> ();
+		projectNameLookup = new HashMap <String, String>();
 		
-		EnvBuildTargets envBuildInfo = new EnvBuildTargets();
-		hdlVendors = envBuildInfo.getHdlVendors();
+	};
+	
+	public void setEnvTargets(EnvBuildTargets envBuildInfo) {
+		hdlVendors = envBuildInfo.getVendors();
 		hdlPlatforms = envBuildInfo.getHdlPlatforms();
 		rccPlatforms = envBuildInfo.getRccPlatforms();
-	};
+	}
 
 	private static ArrayList<String> baseCmd = null;
 	private static ArrayList<String> getBaseCmd() {
@@ -173,9 +219,14 @@ public class OpenCpiAssets {
 			if(assetElem.name.endsWith(".xml")) {
 				assetElem.name.replace(".xml", "");
 			}
-			projectLocation = new ProjectLocation(assetElem.projectName, assetElem.fullProjectPath);
+			OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+			AngryViperProjectInfo info = srv.lookupProjectByPath(assetElem.fullProjectPath);
+			projectLocation = new ProjectLocation(info.name, assetElem.fullProjectPath);
+			projectLocation.packageId = info.packageId;
+			projectLocation.eclipseName = info.eclipseName;
 		}
 		else {
+			// Can't get the package Id until the project is created.
 			String pathname =  assetElem.fullProjectPath + "/" + assetElem.name;
 			projectLocation = new ProjectLocation(assetElem.name, pathname);
 		}
@@ -325,15 +376,10 @@ public class OpenCpiAssets {
 			if(asset != null){
 				Set<AssetModelData> assetModel = createModel(asset, parentAssetName);
 				for(AssetModelData model : assetModel){
-					if(model.asset.category == OpenCPICategory.project) {
-						projects.put(model.asset.assetName, model);
-					}
-//					try {
+					// Assets service will load the project after getting 
+					// updated environment info.
+					//if(model.asset.category == OpenCPICategory.project) {
 					assetLookup.put(model.asset,  model);
-//					}
-//					catch (Exception e) {
-//						e.printStackTrace();
-//					}
 				}
 				return assetModel;
 			}
@@ -469,12 +515,19 @@ public class OpenCpiAssets {
 		return null;
 	}
 
-	void loadProject(ProjectLocation location, Project projectXml) {
-		AngryViperAsset asset = OpenCPIAssetFactory.createOcpiAsset(location.projectName, null,OpenCPICategory.project,location);
+	void loadProject(ProjectLocation location, Project projectXml, AngryViperProjectInfo info) {
+		AngryViperAsset asset = OpenCPIAssetFactory.createOcpiAsset(null, null,OpenCPICategory.project,location);
+		asset.assetDetails = info;
+		
 		AssetModelData projectData = new AssetModelData(asset);
-		projects.put(location.projectName, projectData);
-		Map<AngryViperAsset, AssetModelData> projLookup = buildData(projectXml, projectData, assetLookup);
-		assetLookup.putAll(projLookup);
+		synchronized (this) {
+			addProject(asset, projectData);
+		}
+		LinkedHashMap<AngryViperAsset, AssetModelData> temp = new LinkedHashMap<AngryViperAsset, AssetModelData> ();
+		buildData(projectXml, projectData, temp);
+		synchronized (this) {
+			assetLookup.putAll(temp);
+		}
 	}
 	
 	/**
@@ -483,7 +536,7 @@ public class OpenCpiAssets {
 	 * @param project - the project model data container to be populated.
 	 * @return - an asset lookup map for this project.
 	 */
-	protected static LinkedHashMap<AngryViperAsset, AssetModelData> 
+	protected static void 
 	  buildData(Project projectXmlModel, AssetModelData project, LinkedHashMap<AngryViperAsset, AssetModelData> lookup) {
 		
 		ProjectLocation location = project.asset.projectLocation;
@@ -519,7 +572,8 @@ public class OpenCpiAssets {
 		}
 		
 		ElementList<Application> apps = projectXmlModel.getApplications();
-		if(apps.size() > 0) {
+		List<String> xmlApps = getXmlOnlyApps(location);
+		if(apps.size() > 0 || xmlApps.size() > 0 ) {
 			AngryViperAsset asset = OpenCPIAssetFactory.createOcpiAsset(null, null,OpenCPICategory.applications, location);
 			asset.parent = project.asset;
 			
@@ -535,7 +589,6 @@ public class OpenCpiAssets {
 				assetModel.childList.add(c);
 				lookup.put(c.asset, c);
 			}
-			List<String> xmlApps = getXmlOnlyApps(location);
 			for(String xmlApp : xmlApps) {
 				AssetModelData c = new AssetModelData(
 					OpenCPIAssetFactory.createOcpiAsset(xmlApp, null, OpenCPICategory.xmlapp, location));
@@ -619,8 +672,15 @@ public class OpenCpiAssets {
 					
 					for(Spec spec : specs) {
 						String specName = spec.getName().content();
+						OpenCPICategory type;
+						if(isSpecName(specName)) {
+							type = OpenCPICategory.component;
+						}
+						else {
+							type = OpenCPICategory.protocol;
+						}
 						AssetModelData s = new AssetModelData(
-							OpenCPIAssetFactory.createOcpiAsset(specName, library.asset.buildName, OpenCPICategory.component, location));
+							OpenCPIAssetFactory.createOcpiAsset(specName, library.asset.buildName, type, location));
 						s.asset.parent = librarySpecs.asset;
 						librarySpecs.childList.add(s);
 						lookup.put(s.asset, s);
@@ -746,8 +806,6 @@ public class OpenCpiAssets {
 				}
 			}
 		}
-		
-		return lookup;
 	}
 
 	private static List<String> getXmlOnlyApps(ProjectLocation location) {
@@ -804,6 +862,62 @@ public class OpenCpiAssets {
 		}
 	}
 	
+	/***
+	 * This must compare the current repo against the new.
+	 */
+	OcpiAssetDifferences getPlatformDifferences (OpenCpiAssets otherOcpiAssets ) {
+		// See if the HDL platforms have changed.
+		Collection<HdlPlatformInfo> hdlPlats = otherOcpiAssets.hdlPlatforms;
+		ArrayList<HdlPlatformInfo> hdlAddList = new ArrayList<HdlPlatformInfo> ();
+
+		if(hdlPlats.size() > this.hdlPlatforms.size() ){
+			for (HdlPlatformInfo platform : hdlPlats) {
+				if(! this.hdlPlatforms.contains(platform)) {
+					hdlAddList.add(platform);
+				}
+			}
+		}
+		ArrayList<HdlPlatformInfo> hdlRemoveList = new ArrayList<HdlPlatformInfo> ();
+		
+		if(hdlPlats.size() < this.hdlPlatforms.size() ){
+			for (HdlPlatformInfo platform : this.hdlPlatforms) {
+				if(! hdlPlats.contains(platform)) {
+					hdlRemoveList.add(platform);
+				}
+			}
+		}
+		
+		// See if the RCC platforms have changed.
+		Collection<RccPlatformInfo> rccPlats = otherOcpiAssets.rccPlatforms;
+		ArrayList<RccPlatformInfo> rccAddList = new ArrayList<RccPlatformInfo> ();
+
+		if(rccPlats.size() > this.rccPlatforms.size() ){
+			for (RccPlatformInfo platform : rccPlats) {
+				if(! this.rccPlatforms.contains(platform)) {
+					rccAddList.add(platform);
+				}
+			}
+		}
+		ArrayList<RccPlatformInfo> rccRemoveList = new ArrayList<RccPlatformInfo> ();
+		
+		if(rccPlats.size() < this.rccPlatforms.size() ){
+			for (RccPlatformInfo platform : this.rccPlatforms) {
+				if(! rccPlats.contains(platform)) {
+					rccRemoveList.add(platform);
+				}
+			}
+		}
+		
+		OcpiAssetDifferences result = new OcpiAssetDifferences();
+		result.hdlAddList = hdlAddList;
+		result.hdlRemoveList = hdlRemoveList;
+		result.rccAddList = rccAddList;
+		result.rccRemoveList = rccRemoveList;
+		
+		return result;
+		
+		
+	}
 	public OcpiAssetDifferences diff(OpenCpiAssets otherOcpiAssets) {
 		Map<String, AssetModelData> otherProjects = otherOcpiAssets.projects;
 		LinkedHashMap<AngryViperAsset, AssetModelData> otherAssetsLookup = otherOcpiAssets.assetLookup;
@@ -874,57 +988,16 @@ public class OpenCpiAssets {
 				removedChangeset.add(currentAsset);
 			}
 		}
-		
-		// See if the HDL platforms have changed.
-		List<HdlPlatformInfo> hdlPlats = otherOcpiAssets.hdlPlatforms;
-		ArrayList<HdlPlatformInfo> hdlAddList = new ArrayList<HdlPlatformInfo> ();
-
-		if(hdlPlats.size() > this.hdlPlatforms.size() ){
-			for (HdlPlatformInfo platform : hdlPlats) {
-				if(! this.hdlPlatforms.contains(platform)) {
-					hdlAddList.add(platform);
-				}
-			}
-		}
-		ArrayList<HdlPlatformInfo> hdlRemoveList = new ArrayList<HdlPlatformInfo> ();
-		
-		if(hdlPlats.size() < this.hdlPlatforms.size() ){
-			for (HdlPlatformInfo platform : this.hdlPlatforms) {
-				if(! hdlPlats.contains(platform)) {
-					hdlRemoveList.add(platform);
-				}
-			}
-		}
-		
-		// See if the RCC platforms have changed.
-		List<RccPlatformInfo> rccPlats = otherOcpiAssets.rccPlatforms;
-		ArrayList<RccPlatformInfo> rccAddList = new ArrayList<RccPlatformInfo> ();
-
-		if(rccPlats.size() > this.rccPlatforms.size() ){
-			for (RccPlatformInfo platform : rccPlats) {
-				if(! this.rccPlatforms.contains(platform)) {
-					rccAddList.add(platform);
-				}
-			}
-		}
-		ArrayList<RccPlatformInfo> rccRemoveList = new ArrayList<RccPlatformInfo> ();
-		
-		if(rccPlats.size() < this.rccPlatforms.size() ){
-			for (RccPlatformInfo platform : this.rccPlatforms) {
-				if(! rccPlats.contains(platform)) {
-					rccRemoveList.add(platform);
-				}
-			}
-		}
+		OcpiAssetDifferences platformDiff = getPlatformDifferences (otherOcpiAssets);
 		
 		OcpiAssetDifferences result = new OcpiAssetDifferences();
 		result.addedChangeset = addedChangeset;
 		result.removedChangeset = removedChangeset;
 		result.removedProjects	= removedProjects;
-		result.hdlAddList = hdlAddList;
-		result.hdlRemoveList = hdlRemoveList;
-		result.rccAddList = rccAddList;
-		result.rccRemoveList = rccRemoveList;
+		result.hdlAddList = platformDiff.hdlAddList;
+		result.hdlRemoveList = platformDiff.hdlRemoveList;
+		result.rccAddList = platformDiff.rccAddList;
+		result.rccRemoveList = platformDiff.rccRemoveList;
 		
 		return result;
 		

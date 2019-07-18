@@ -36,22 +36,16 @@ import org.eclipse.sapphire.modeling.xml.XmlResource;
 
 /***
  * Supports simple plural list elements where the singular element name is 
- * obtained removal or the ending s or changing ies plural to a y. 
+ * obtained removal or the ending s or changing ies plural to a y. Note
+ * the list can have a mix of the element tags - older ones may follow the
+ * convention of capitalized name while older ones can be in lower case.
  */
 public class SimpleDualCaseXmlListBinding extends StandardXmlListBindingImpl {
 	String name = null;
 	String lowerName = null;
-	
-	@Override
-	protected void initBindingMetadata() {
-		super.initBindingMetadata();
-        final XmlNamespaceResolver xmlNamespaceResolver = ( (XmlResource) property().element().resource() ).getXmlNamespaceResolver();
-		this.path = new XmlPath( "", xmlNamespaceResolver );
-		
-		Property p = property();
+
+	protected void initNames(Property p) {
 		String name = p.name();
-        ElementType elementType = p.definition().getType();
-        
         String genericListElementName = null;
         if(name.endsWith("ies")) {
             genericListElementName = name.substring(0, name.length()-3) + "y";
@@ -62,6 +56,21 @@ public class SimpleDualCaseXmlListBinding extends StandardXmlListBindingImpl {
 
         this.name = genericListElementName;
         this.lowerName = this.name.toLowerCase();
+	}
+	
+	@Override
+	protected void initBindingMetadata() {
+		super.initBindingMetadata();
+        final XmlNamespaceResolver xmlNamespaceResolver = ( (XmlResource) property().element().resource() ).getXmlNamespaceResolver();
+		this.path = new XmlPath( "", xmlNamespaceResolver );
+		
+		Property p = property();
+        initNames(p);
+        // Thinking element type <--> @Type annotation in the interface definitions.
+        // So this sets up the interface to the element.  Not sure why arrays as used
+        // this way, they are both the same.?
+        
+        ElementType elementType = p.definition().getType();
 
 		this.modelElementTypes = new ElementType[2];
 		this.modelElementTypes[0] = elementType;

@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <definition>
     <import>
+        <definition>av.proj.ide.ocs.sdef.OcsPropertyForm</definition>
+        <definition>av.proj.ide.sdef.shared.MemberDataTypeForm</definition>
+        <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
+        <definition>av.proj.ide.ocs.sdef.OcsAccessibilityForm</definition>
         <package>av.proj.ide</package>
         <package>av.proj.ide.ocs</package>
     </import>
@@ -14,7 +38,7 @@
             <node>
                 <label>${ Name == null ? &quot;ComponentSpec&quot; : Name }</label>
                 <section>
-                	<description>Modify attributes of the ComponentSpec element.</description>
+                	<description>Top-level attributes of the OpenCPI Component Specification XML.</description>
                     <content>
                     	<section>
                     		<label>Advanced Attributes</label>
@@ -39,92 +63,46 @@
             		<label>Properties</label>
             		<section>
             			<label>Properties</label>
-            			<description>Add a property to your spec xml.</description>
+            			<description>OpenCPI Component Specification XML Property Definitions.</description>
             			<content>
+               	
+			                <section>
+			                    <collapsed-initially>true</collapsed-initially>
+			                    <collapsible>true</collapsible>
+			                    <content>
+	                                <property-editor>
+	                                    <show-label>false</show-label>
+	                                    <property>Includes</property>
+	                                </property-editor>
+			                    </content>
+			                    <label>Include Files</label>
+	                            <description>
+Include a property file to inherit it's properties. Note: The order of included files and OCS properties is
+important as it directly impacts the indexing. This insert tool places an include file as the next element in the file.
+Review the source XML to ensure it is positioned in the desired location. Reordering of include files with respect
+to properties must be performed manually in the source."
+								</description>
+			                </section>
+                    
             				<actuator>
             					<action-id>Sapphire.Add</action-id>
-            					<action-handler-id>Sapphire.Add.Property</action-handler-id>
             					<label>Add a Property</label>
-            				</actuator>
-            				<actuator>
-            					<action-id>Sapphire.Add</action-id>
-            					<action-handler-id>Sapphire.Add.PropertiesFile</action-handler-id>
-            					<label>Add a Properties File Reference</label>
             				</actuator>
             			</content>
             		</section>
             		<node-factory>
             			<property>ComponentSpecProperties</property>
             			<case>
-            				<element-type>Property</element-type>
+            				<element-type>OcsProperty</element-type>
             				<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
             				<section>
-            					<label>Property</label>
-            					<description>Modify attributes of this Property.</description>
+            					<label>OCS Property Definition</label>
             					<content>
             						<actuator>
 	               						<action-id>Sapphire.Add</action-id>
 	               						<label>Add a Member</label>
 	               					</actuator>
-            						<property-editor>Name</property-editor>
-                                	<property-editor>Type</property-editor>
-                                    <property-editor>
-                                        <visible-when>${ Type == &quot;string&quot; }</visible-when>
-                                        <property>StringLength</property>
-                                    </property-editor>
-                                    <property-editor>
-                                    	<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-                                    	<property>Enums</property>
-                                    </property-editor>
-                                    <property-editor>Default</property-editor>
-                                	<!--<property-editor>ArrayLength</property-editor>-->
-                                	<property-editor>SequenceLength</property-editor>
-                                	<property-editor>ArrayDimensions</property-editor>
-                                    <property-editor>
-                    					<property>Parameter</property>
-                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    					<hint>
-                    						<name>checkbox.layout</name>
-                    						<value>leading.label</value>
-                    					</hint>
-                    				</property-editor>
-                                    <section>
-               							<label>Accessibility</label>
-               							<content>
-               								<property-editor>
-                    							<property>Readable</property>
-                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    							<hint>
-                    								<name>checkbox.layout</name>
-                    								<value>leading.label</value>
-                    							</hint>
-                    						</property-editor>
-               								<property-editor>
-                    							<property>Volatile</property>
-                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    							<hint>
-                    								<name>checkbox.layout</name>
-                    								<value>leading.label</value>
-                    							</hint>
-                    						</property-editor>
-               								<property-editor>
-                    							<property>Writable</property>
-                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    							<hint>
-                    								<name>checkbox.layout</name>
-                    								<value>leading.label</value>
-                    							</hint>
-                    						</property-editor>
-               								<property-editor>
-                    							<property>Initial</property>
-                    							<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    							<hint>
-                    								<name>checkbox.layout</name>
-                    								<value>leading.label</value>
-                    							</hint>
-                    						</property-editor>              								
-               							</content>
-               						</section>
+ 	               					<include>OcsPropertyForm</include>
             					</content>
             				</section>
             				<node-factory>
@@ -132,26 +110,13 @@
             					<case>
                						<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
                						<section>
-               							<label>Member</label>
-               							<description>Modify attributes of this member.</description>
+               							<label>OCS Structure Member Definition</label>
                							<content>
                								<actuator>
 	               								<action-id>Sapphire.Add</action-id>
 				               					<label>Add a Member</label>
 				               				</actuator>
-               								<property-editor>Name</property-editor>
-               								<property-editor>Type</property-editor>
-               								<property-editor>
-               									<property>Enums</property>
-               									<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-               								</property-editor>
-               								<property-editor>
-               									<property>StringLength</property>
-               									<visible-when>${ Type == &quot;string&quot; }</visible-when>
-               								</property-editor>
-               								<property-editor>Default</property-editor>
-               								<property-editor>SequenceLength</property-editor>
-               								<property-editor>ArrayDimensions</property-editor>
+					               				<include>MemberDataTypeForm</include>
                							</content>
                						</section>
                						<node-factory>
@@ -159,22 +124,9 @@
                							<case>
                								<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
 			               					<section>
-			               						<label>Member</label>
-			               						<description>Modify attributes of this member.</description>
+			               						<label>OCS Structure Member Definition</label>
 			               						<content>
-			               							<property-editor>Name</property-editor>
-			               							<property-editor>Type</property-editor>
-			               							<property-editor>
-			               								<property>Enums</property>
-			               								<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-			               							</property-editor>
-			               							<property-editor>
-			               								<property>StringLength</property>
-			               								<visible-when>${ Type == &quot;string&quot; }</visible-when>
-			               							</property-editor>
-			               							<property-editor>Default</property-editor>
-			               							<property-editor>SequenceLength</property-editor>
-			               							<property-editor>ArrayDimensions</property-editor>
+					               					<include>MemberDataTypeForm</include>
 			               						</content>
 			               					</section>
                							</case>
@@ -184,82 +136,14 @@
                					<visible-when>${ Type == &quot;struct&quot; }</visible-when>
             				</node-factory>
             			</case>
-            			<case>
-            				<element-type>PropertiesFile</element-type>
-            				<label>Properties File Reference</label>
-            				<section>
-            					<label>Properties File Reference</label>
-            					<content>
-            						<property-editor>href</property-editor>
-            					</content>
-            				</section>
-            			</case>
             		</node-factory>
             	</node>
-            	<!-- Properties Element -->
-            	<!--
-                <node>
-                    <label>Properties Elements</label>
-                    <section>
-                		<description>This is deprecated. Use Properties node above to add properties to your spec.</description>
-                    	<content>
-                        	<actuator>
-                            	<action-id>Sapphire.Add</action-id>
-                            	<label>Add a property.</label>
-                        	</actuator>
-                   	 	</content>
-                	</section>
-                	<node-factory>
-                		<property>Properties</property>
-                    	<case>
-                        	<label>${ Name == null ? "&lt;property&gt;" : Name }</label>
-                        	<section>
-                            	<label>property</label>
-                            	<description>Modify attributes of this property.</description>
-                            	<content>
-                                    <property-editor>Name</property-editor>
-                                	<property-editor>Type</property-editor>
-                                    <property-editor>
-                                        <visible-when>${ Type == &quot;String&quot; }</visible-when>
-                                        <property>StringLength</property>
-                                    </property-editor>
-                                    <property-editor>
-                                    	<visible-when>${ Type == &quot;Struct&quot; }</visible-when>
-                                    	<property>Members</property>
-                                    </property-editor>
-                                    <property-editor>Enums</property-editor>
-                                    <property-editor>Default</property-editor>
-                                	<property-editor>ArrayLength</property-editor>
-                                	<property-editor>SequenceLength</property-editor>
-                                	<property-editor>ArrayDimensions</property-editor>
-                                    <property-editor>
-                    					<property>Parameter</property>
-                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    					<hint>
-                    						<name>checkbox.layout</name>
-                    						<value>leading.label</value>
-                    					</hint>
-                    				</property-editor>
-                                    <section>
-               							<label>Accessibility</label>
-               							<content>
-               								<property-editor>Readable</property-editor>
-               								<property-editor>Volatile</property-editor>
-               								<property-editor>Writable</property-editor>
-               								<property-editor>Initial</property-editor>               								
-               							</content>
-               						</section>
-                            	</content>
-                        	</section>
-                    	</case>
-                	</node-factory>
-                </node>-->
-                <!-- Ports -->
+            	
                 <node>
             		<label>Ports</label>
             		<section>
             			<label>Ports</label>
-            			<description>Add a Port to your spec xml.</description>
+            			<description>OpenCPI Component Specification XML Port Definitions.</description>
             			<content>
             				<actuator>
             					<action-id>Sapphire.Add</action-id>
@@ -272,8 +156,7 @@
             			<case>
             				<label>${ Name == null ? "&lt;port&gt;" : Name }</label>
             				<section>
-            					<label>Port</label>
-            					<description>Modify attributes of this Port.</description>
+            					<label>OCS Port Definition</label>
             					<content>
             						<property-editor>Name</property-editor>
             						<property-editor>
@@ -296,49 +179,7 @@
                     						<value>leading.label</value>
                     					</hint>
                     				</property-editor>
-                    				<section>
-                    					<label>Advanced Attributes</label>
-                    					<content>
-                    						<property-editor>NumberOfOpCodes</property-editor>
-		                                	<property-editor>DataValueWidth</property-editor>
-		                                	<property-editor>DataValueGranularity</property-editor>
-		                                	<property-editor>
-		                    					<property>ZeroLengthMessages</property>
-		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-		                    					<hint>
-		                    						<name>checkbox.layout</name>
-		                    						<value>leading.label</value>
-		                    					</hint>
-		                    				</property-editor>
-		                                	<property-editor>MaxMessageValues</property-editor>
-		                                	<property-editor>
-		                    					<property>VariableMessageLength</property>
-		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-		                    					<hint>
-		                    						<name>checkbox.layout</name>
-		                    						<value>leading.label</value>
-		                    					</hint>
-		                    				</property-editor>
-		                                	<property-editor>
-		                    					<property>DiverseDataSizes</property>
-		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-		                    					<hint>
-		                    						<name>checkbox.layout</name>
-		                    						<value>leading.label</value>
-		                    					</hint>
-		                    				</property-editor>
-		                                	<property-editor>
-		                    					<property>UnBounded</property>
-		                    					<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-		                    					<hint>
-		                    						<name>checkbox.layout</name>
-		                    						<value>leading.label</value>
-		                    					</hint>
-		                    				</property-editor>
-                    					</content>
-                    					<collapsible>true</collapsible>
-	                    				<collapsed-initially>true</collapsed-initially>
-                    				</section>
+                    				<include>advanced.port.form</include>
             					</content>
             				</section>
             			</case>
@@ -347,4 +188,25 @@
             </node>
         </root-node>
     </editor-page>
+    
+    <composite>
+        <id>advanced.port.form</id>
+        <content>
+			<section>
+				<label>Advanced Port Attributes</label>
+				<content>
+					<section>
+						<label>Override Protocol Summary Attributes</label>
+						<content>
+						    <include>ProtocolSummaryForm</include>
+						</content>
+					</section>
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+	
+	    </content>
+    </composite>
+   
 </definition>

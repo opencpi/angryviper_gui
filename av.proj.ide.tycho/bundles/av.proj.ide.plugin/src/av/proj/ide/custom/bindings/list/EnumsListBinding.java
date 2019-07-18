@@ -35,7 +35,7 @@ public class EnumsListBinding extends DelimitedListBindingImpl {
 	private final XmlPath path;
 	
 	public EnumsListBinding() {
-		this.path = new XmlPath( "@enums", NAMESPACE_RESOLVER );
+		this.path = new XmlPath( "@Enums", NAMESPACE_RESOLVER );
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class EnumsListBinding extends DelimitedListBindingImpl {
 	    XmlNode listXmlNode = parentXmlElement.getChildNode( this.path, false );
 	    
 	    if( listXmlNode == null ) {
-	        XmlPath tmpPath = new XmlPath("@Enums", NAMESPACE_RESOLVER);
+	        XmlPath tmpPath = new XmlPath("@enums", NAMESPACE_RESOLVER);
 	        listXmlNode = parentXmlElement.getChildNode(tmpPath , false);
 	        
 	        if (listXmlNode == null) {
@@ -79,7 +79,7 @@ public class EnumsListBinding extends DelimitedListBindingImpl {
 	    {
 	        parentXmlElement.setChildNodeText( this.path, str, false );
 	                    
-            XmlPath tmpPath = new XmlPath("@Enums", NAMESPACE_RESOLVER);
+            XmlPath tmpPath = new XmlPath("@enums", NAMESPACE_RESOLVER);
             listXmlNode = parentXmlElement.getChildNode(tmpPath , false);
             if( listXmlNode != null ){
             	listXmlNode.remove();

@@ -1,69 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
 <definition>
+    <import>
+        <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+        <definition>av.proj.ide.sdef.shared.ProtocolSummaryForm</definition>
+    </import>
     <editor-page>
         <id>OPSEditorPage</id>
         <element-type>av.proj.ide.ops.Protocol</element-type>
         <page-header-text>OPS Editor</page-header-text>
         <initial-selection>Protocol</initial-selection>
         <root-node>
+        
             <node>
                 <label>${ Name == null ? &quot;Protocol&quot; : Name }</label>
                 <section>
                 	<label>Protocol</label>
-                    <description>Modify attributes of the Protocol element.</description>
+                    <description>The OpenCPI Protocol Spec (OPS) defines the set of messages that may flow between the ports of components.
+                    A protocol can effectively extend common operations by including other protocol files. 
+                    </description>
                     <content>
+               	
+		                <section>
+		                    <collapsed-initially>true</collapsed-initially>
+		                    <collapsible>true</collapsible>
+		                    <content>
+                                <property-editor>
+                                    <show-label>false</show-label>
+                                    <property>Includes</property>
+                                </property-editor>
+		                    </content>
+		                    <label>Include Files</label>
+                            <description>
+Include a protocol file to inherit it's operations. Note: The order of included files and this protocol operations is
+important as it directly impacts the indexing. This insert tool places an include file as the next element in the file.
+Review the source XML to ensure it is positioned in the desired location. Reordering of include files with respect
+to Operations must be performed manually in the source."
+                            </description>
+		                </section>
+                    
                     	<actuator>
                				<action-id>Sapphire.Add</action-id>
                				<label>Add an operation</label>
                			</actuator>
-	                    <section>
-	                    	<label>Advanced Attributes</label>
-	                    	<content>
-	                    		<property-editor>Name</property-editor>
-	                        	<property-editor>NumberOfOpCodes</property-editor>
-	                        	<property-editor>DataValueWidth</property-editor>
-	                        	<property-editor>DataValueGranularity</property-editor>
-	                        	<property-editor>
-                    				<property>ZeroLengthMessages</property>
-                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    				<hint>
-                    					<name>checkbox.layout</name>
-                    					<value>leading.label</value>
-                    				</hint>
-                    			</property-editor>
-	                        	<property-editor>MaxMessageValues</property-editor>
-	                        	<property-editor>
-                    				<property>VariableMessageLength</property>
-                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    				<hint>
-                    					<name>checkbox.layout</name>
-                    					<value>leading.label</value>
-                    				</hint>
-                    			</property-editor>
-                    			<property-editor>
-                    				<property>DiverseDataSizes</property>
-                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    				<hint>
-                    					<name>checkbox.layout</name>
-                    					<value>leading.label</value>
-                    				</hint>
-                    			</property-editor>
-                    			<property-editor>
-                    				<property>UnBounded</property>
-                    				<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
-                    				<hint>
-                    					<name>checkbox.layout</name>
-                    					<value>leading.label</value>
-                    				</hint>
-                    			</property-editor>
-	                    	</content>
-	                    	<collapsible>true</collapsible>
-	                    	<collapsed-initially>true</collapsed-initially>
-	                    </section>
+                        <include>protocol.summary.form</include>
 	            	</content>
                 </section>
+                
                	<node-factory>
                		<property>Operations</property>
+                		
                		<case>
                			<label>${ Name == null ? "&lt;operation&gt;" : Name }</label>
                			<section>
@@ -77,6 +82,7 @@
                					<property-editor>Name</property-editor>
                				</content>
                			</section>
+               			
                			<node-factory>
                				<property>Arguments</property>
                				<case>
@@ -89,21 +95,10 @@
 	               							<action-id>Sapphire.Add</action-id>
 	               							<label>Add a Member</label>
 	               						</actuator>
-               							<property-editor>Name</property-editor>
-               							<property-editor>Type</property-editor>
-               							<property-editor>
-                                   			<visible-when>${ Type == &quot;string&quot; }</visible-when>
-                                   			<property>StringLength</property>
-                               			</property-editor>
-                               			<property-editor>
-                               				<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-                               				<property>Enums</property>
-                               			</property-editor>
-                                        <!--<property-editor>ArrayLength</property-editor>-->
-               							<property-editor>SequenceLength</property-editor>
-               							<property-editor>ArrayDimensions</property-editor>
+ 	               						<include>DataTypeForm</include>
                						</content>
                					</section>
+               					
                					<node-factory>
 	            					<property>Members</property>
 	            					<case>
@@ -116,21 +111,10 @@
 					               					<action-id>Sapphire.Add</action-id>
 					               					<label>Add a Member</label>
 					               				</actuator>
-	               								<property-editor>Name</property-editor>
-	               								<property-editor>Type</property-editor>
-	               								<property-editor>
-	               									<property>Enums</property>
-	               									<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-	               								</property-editor>
-	               								<property-editor>
-	               									<property>StringLength</property>
-	               									<visible-when>${ Type == &quot;string&quot; }</visible-when>
-	               								</property-editor>
-	               								<property-editor>Default</property-editor>
-	               								<property-editor>SequenceLength</property-editor>
-	               								<property-editor>ArrayDimensions</property-editor>
+	               								<include>DataTypeForm</include>
 	               							</content>
 	               						</section>
+	               						
 	               						<node-factory>
 	               							<property>Members</property>
 	               							<case>
@@ -139,19 +123,7 @@
 				               						<label>Member</label>
 				               						<description>Modify attributes of this member.</description>
 				               						<content>
-				               							<property-editor>Name</property-editor>
-				               							<property-editor>Type</property-editor>
-				               							<property-editor>
-				               								<property>Enums</property>
-				               								<visible-when>${ Type == &quot;enum&quot; }</visible-when>
-				               							</property-editor>
-				               							<property-editor>
-				               								<property>StringLength</property>
-				               								<visible-when>${ Type == &quot;string&quot; }</visible-when>
-				               							</property-editor>
-				               							<property-editor>Default</property-editor>
-				               							<property-editor>SequenceLength</property-editor>
-				               							<property-editor>ArrayDimensions</property-editor>
+	               										<include>DataTypeForm</include>
 				               						</content>
 				               					</section>
 	               							</case>
@@ -160,11 +132,59 @@
 	               					</case>
 	               					<visible-when>${ Type == &quot;struct&quot; }</visible-when>
 	            				</node-factory>
+	            				
                				</case>
                			</node-factory>
                		</case>
                	</node-factory>
             </node>
+
         </root-node>
     </editor-page>
+    
+    <composite>
+        <id>protocol.summary.form</id>
+        <content>
+        
+			<section>
+				<label>Advanced Protocol XML</label>
+				<content>
+			
+					<section>
+						<label>Protocol Name</label>
+						<content>
+							<property-editor>Name</property-editor>
+						</content>
+						<description>In the typical case a name for the protocol is not
+							specified and by default the name is derived from the name of this
+							XML file. A specific name can be provided that overrides the
+							default name and it must be different than the default name. Know
+							what you're doing if you give it a name.
+						</description>
+					</section>
+			
+					<section>
+						<label>Protocol Summary Attributes</label>
+						<content>
+						    <include>ProtocolSummaryForm</include>
+						</content>
+						<description>The protocol may specify the basic behavior of the
+							ports using the protocol in top level attributes. The information is
+							called a protocol summary. (If messages are specified, protocol
+							summary
+							attributes are inferred from the messages.) If protocol summary
+							attributes are present when messages are specified, they override
+							the attributes inferred from the message specifications.
+						</description>
+					</section>
+			
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+	
+	    </content>
+    </composite>
+
+    
 </definition>

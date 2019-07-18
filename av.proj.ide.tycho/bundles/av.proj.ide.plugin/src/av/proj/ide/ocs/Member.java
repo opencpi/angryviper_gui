@@ -26,93 +26,43 @@ import org.eclipse.sapphire.ListProperty;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
-import org.eclipse.sapphire.modeling.annotations.DefaultValue;
 import org.eclipse.sapphire.modeling.annotations.Label;
+import org.eclipse.sapphire.modeling.annotations.LongString;
 import org.eclipse.sapphire.modeling.annotations.Required;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.common.MemberPropertyType;
-import av.proj.ide.common.PropertyEnum;
-import av.proj.ide.custom.bindings.list.EnumsListBinding;
-import av.proj.ide.custom.bindings.list.OCSMemberXmlListBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.SpecialDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.list.OPSMemberXmlListBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface Member extends av.proj.ide.common.Property {
+public interface Member extends av.proj.ide.common.PropertyAttributes  {
 	ElementType TYPE = new ElementType(Member.class);
 
-	// *** Name ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
-	@Label(standard = "Name")
-	@Required
+	// *** Description ***
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Description")
+	@LongString
+	
+	ValueProperty PROP_DESCRIPTION = new ValueProperty(TYPE, "Description");
 
-	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
-
-	Value<String> getName();
-	void setName(String value);
-
-	// *** Type ***
-	@Type(base = MemberPropertyType.class)
-	@CustomXmlValueBinding(impl = SpecialDualCaseXmlValueBinding.class)
-	@Label(standard = "Type")
-	@DefaultValue(text = "uLong")
-
-	ValueProperty PROP_TYPE = new ValueProperty(TYPE, "Type");
-
-	Value<MemberPropertyType> getType();
-	void setType(String value);
-	void setType(MemberPropertyType value);
-
-	// *** Enums ***
-	@Label(standard = "Enums")
-	@Type(base = PropertyEnum.class)
-	@CustomXmlListBinding(impl = EnumsListBinding.class)
-
-	ListProperty PROP_ENUMS = new ListProperty(TYPE, "Enums");
-
-	ElementList<PropertyEnum> getEnums();
-
-	// *** ArrayLength ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "ArrayLength")
-
-	ValueProperty PROP_ARRAY_LENGTH = new ValueProperty(TYPE, "ArrayLength");
-
-	Value<String> getArrayLength();
-	void setArrayLength(String value);
+	Value<String> getDescription();
+	void setDescription(String value);
 
 	// *** StringLength ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	// This is a property attribute. It is separated out because it is 
+	// not required in an Argument description but is in OCS Property.
+	// 
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "StringLength")
-	@Required
-
+	@Required( "${ Type == 'String' }" )
+	
 	ValueProperty PROP_STRING_LENGTH = new ValueProperty(TYPE, "StringLength");
 
 	Value<String> getStringLength();
 	void setStringLength(String value);
 
-	// *** SequenceLength ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "SequenceLength")
-
-	ValueProperty PROP_SEQUENCE_LENGTH = new ValueProperty(TYPE, "SequenceLength");
-
-	Value<String> getSequenceLength();
-	void setSequenceLength(String value);
-
-	// *** ArrayDimensions ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "ArrayDimensions")
-
-	ValueProperty PROP_ARRAY_DIMENSIONS = new ValueProperty(TYPE, "ArrayDimensions");
-
-	Value<String> getArrayDimensions();
-	void setArrayDimensions(String value);
-
 	// *** Default ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Default")
 
 	ValueProperty PROP_DEFAULT = new ValueProperty(TYPE, "Default");
@@ -120,13 +70,11 @@ public interface Member extends av.proj.ide.common.Property {
 	Value<String> getDefault();
 	void setDefault(String value);
 	
-	// *** Members ***
 	@Type ( base = Member.class )
-	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element="Member", type=Member.class ), @XmlListBinding.Mapping( element = "member", type = MemberLower.class ) } )
-	@CustomXmlListBinding(impl = OCSMemberXmlListBinding.class )
+	@CustomXmlListBinding(impl = OPSMemberXmlListBinding.class )
 	@Label( standard = "Members" )
-				
+		
 	ListProperty PROP_MEMBERS = new ListProperty( TYPE, "Members" );
-		    
 	ElementList<Member> getMembers();
+	
 }

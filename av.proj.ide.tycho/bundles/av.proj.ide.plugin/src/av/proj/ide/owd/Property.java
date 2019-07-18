@@ -20,222 +20,105 @@
 
 package av.proj.ide.owd;
 
-import org.eclipse.sapphire.ElementList;
 import org.eclipse.sapphire.ElementType;
-import org.eclipse.sapphire.ListProperty;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
-import org.eclipse.sapphire.modeling.annotations.Required;
-import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
+import org.eclipse.sapphire.modeling.annotations.LongString;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
-import av.proj.ide.common.PropertyEnum;
-import av.proj.ide.common.PropertyType;
-import av.proj.ide.custom.bindings.list.EnumsListBinding;
-import av.proj.ide.custom.bindings.list.OWDMemberXmlListBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.SpecialDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
-public interface Property extends av.proj.ide.common.Property {
+public interface Property extends  OwdPropertyAttributes {
 	ElementType TYPE = new ElementType( Property.class );
+	// TODO:  If this gets nailed down and SpecProperty does not somehow diverge,
+	// SepcProperty can be in the parent tree of Property.
+	// *** Description ***
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Description")
+	@LongString
 	
-	// *** Name ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
-	@Label(standard = "Name")
-	@Required
+	ValueProperty PROP_DESCRIPTION = new ValueProperty(TYPE, "Description");
 
-	ValueProperty PROP_NAME = new ValueProperty(TYPE, "Name");
+	Value<String> getDescription();
+	void setDescription(String value);
 
-	Value<String> getName();
-	void setName(String value);
-
-	// *** Type ***
-	@Type(base = PropertyType.class)
-	@CustomXmlValueBinding(impl = SpecialDualCaseXmlValueBinding.class)
-	@Label(standard = "Type")
-
-	ValueProperty PROP_TYPE = new ValueProperty(TYPE, "Type");
-
-	Value<PropertyType> getType();
-	void setType(String value);
-	void setType(PropertyType value);
-
-	// *** Enums ***
-	@Label(standard = "Enums")
-	@Type(base = PropertyEnum.class)
-	@CustomXmlListBinding(impl = EnumsListBinding.class)
-
-	ListProperty PROP_ENUMS = new ListProperty(TYPE, "Enums");
-
-	ElementList<PropertyEnum> getEnums();
-
-	// *** ArrayLength ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "ArrayLength")
-
-	ValueProperty PROP_ARRAY_LENGTH = new ValueProperty(TYPE, "ArrayLength");
-
-	Value<String> getArrayLength();
-	void setArrayLength(String value);
-
-	// *** StringLength ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "StringLength")
-	@Required
-
-	ValueProperty PROP_STRING_LENGTH = new ValueProperty(TYPE, "StringLength");
-
-	Value<String> getStringLength();
-	void setStringLength(String value);
-
-	// *** SequenceLength ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "SequenceLength")
-
-	ValueProperty PROP_SEQUENCE_LENGTH = new ValueProperty(TYPE, "SequenceLength");
-
-	Value<String> getSequenceLength();
-	void setSequenceLength(String value);
-
-	// *** ArrayDimensions ***
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
-	@Label(standard = "ArrayDimensions")
-
-	ValueProperty PROP_ARRAY_DIMENSIONS = new ValueProperty(TYPE, "ArrayDimensions");
-
-	Value<String> getArrayDimensions();
-	void setArrayDimensions(String value);
-
-	// *** Default ***
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
-	@Label(standard = "Default")
-
-	ValueProperty PROP_DEFAULT = new ValueProperty(TYPE, "Default");
-
-	Value<String> getDefault();
-	void setDefault(String value);
-
-	// *** Parameter ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Parameter")
-
-	ValueProperty PROP_PARAMETER = new ValueProperty(TYPE, "Parameter");
-
-	Value<Boolean> getParameter();
-	void setParameter(String value);
-	void setParameter(Boolean value);
-
-	// *** Readable ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Readable")
-
-	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
-
-	Value<Boolean> getReadable();
-	void setReadable(String value);
-	void setReadable(Boolean value);
-
-	// *** Volatile ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Volatile")
-
-	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
-
-	Value<Boolean> getVolatile();
-	void setVolatile(String value);
-	void setVolatile(Boolean value);
-
-	// *** Writable ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Writable")
-
-	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
-
-	Value<Boolean> getWritable();
-	void setWritable(String value);
-	void setWritable(Boolean value);
-
-	// *** Initial ***
-	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
-	@Label(standard = "Initial")
-
-	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
-
-	Value<Boolean> getInitial();
-	void setInitial(String value);
-	void setInitial(Boolean value);
-	
+	/*%%%%%%%%%%%%%%%  Special Access property attributes %%%%%%%%%%%%%%%%%%%*/
 	// *** Padding ***
 	@Type(base = Boolean.class)
 	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "Padding")
+    @Enablement( expr = "${ Parameter == null && Volatile == null && Writable == null && Initial == null  && Readable == null }" )
 
 	ValueProperty PROP_PADDING = new ValueProperty(TYPE, "Padding");
 
 	Value<Boolean> getPadding();
 	void setPadding(String value);
 	void setPadding(Boolean value);
-		
-	// *** ReadSync ***
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Type( base = Boolean.class )
-	@Label( standard = "ReadSync" )
-	
-	ValueProperty PROP_READ_SYNC = new ValueProperty(TYPE, "ReadSync");
 
-	Value<Boolean> getReadSync();
-	void setReadSync( String value );
-	void setReadSync( Boolean value ); 
+	// *** Parameter ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Parameter")
+    @Enablement( expr = "${ Padding == null && Volatile == null && Writable == null && Initial == null }" )
 	
-	// *** WriteSync ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label( standard = "WriteSync" )
-		
-	ValueProperty PROP_WRITE_SYNC = new ValueProperty(TYPE, "WriteSync");
+	ValueProperty PROP_PARAMETER = new ValueProperty(TYPE, "Parameter");
+	
+	Value<Boolean> getParameter();
+	void setParameter(String value);
+	void setParameter(Boolean value);
+	
+	/*%%%%%%%%%%%%%%%  Write attributes %%%%%%%%%%%%%%%%%%%*/
+	// *** Writable ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Initial == null }" )
+	@Label(standard = "Writable")
+	
+	ValueProperty PROP_WRITABLE = new ValueProperty(TYPE, "Writable");
+	
+	Value<Boolean> getWritable();
+	void setWritable(String value);
+	void setWritable(Boolean value);
+	
+	// *** Initial ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Writable == null}" )
+	@Label(standard = "Initial")
+	
+	ValueProperty PROP_INITIAL = new ValueProperty(TYPE, "Initial");
+	
+	Value<Boolean> getInitial();
+	void setInitial(String value);
+	void setInitial(Boolean value);
+	
+	
+	/*%%%%%%%%%%%%%%%  Read attributes %%%%%%%%%%%%%%%%%%%*/
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label(standard = "Readable")
+	   @Enablement( expr = "${ Padding == null && Volatile == null}" )
 
-	Value<Boolean> getWriteSync();
-	void setWriteSync( String value );
-	void setWriteSync( Boolean value ); 
-	
-	// *** ReadError ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label( standard = "ReadError" )
-	
-	ValueProperty PROP_READ_ERROR = new ValueProperty(TYPE, "ReadError");
+	ValueProperty PROP_READABLE = new ValueProperty(TYPE, "Readable");
 
-	Value<Boolean> getReadError();
-	void setReadError( String value );
-	void setReadError( Boolean value ); 
-	
-	// *** WriteError ***
-	@Type( base = Boolean.class )
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
-	@Label( standard = "WriteError" )
+	Value<Boolean> getReadable();
+	void setReadable(String value);
+	void setReadable(Boolean value);
 		
-	ValueProperty PROP_WRITE_ERROR = new ValueProperty(TYPE, "WriteError");
-
-	Value<Boolean> getWriteError();
-	void setWriteError( String value );
-	void setWriteError( Boolean value );
+	// *** Volatile ***
+	@Type(base = Boolean.class)
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
+    @Enablement( expr = "${ Padding == null &&  Parameter == null && Readable == null}" )
+	@Label(standard = "Volatile")
 	
-	// *** Members ***
-	@Type ( base = Member.class )
-	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "Member", type = Member.class ), @XmlListBinding.Mapping( element = "member", type = MemberLower.class) } )
-	@CustomXmlListBinding(impl = OWDMemberXmlListBinding.class)
-	@Label( standard = "Members" )
-		
-	ListProperty PROP_MEMBERS = new ListProperty( TYPE, "Members" );
-	    
-	ElementList<Member> getMembers();
+	ValueProperty PROP_VOLATILE = new ValueProperty(TYPE, "Volatile");
+	
+	Value<Boolean> getVolatile();
+	void setVolatile(String value);
+	void setVolatile(Boolean value);
+	
 }

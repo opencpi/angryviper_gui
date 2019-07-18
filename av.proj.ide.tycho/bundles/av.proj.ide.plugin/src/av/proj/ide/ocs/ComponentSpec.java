@@ -33,20 +33,25 @@ import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.XmlListBinding;
+import org.eclipse.sapphire.modeling.xml.annotations.XmlNamespace;
 
 import av.proj.ide.custom.bindings.list.OCSPortXmlListBinding;
 import av.proj.ide.custom.bindings.list.OCSPropertyXmlListBinding;
 import av.proj.ide.custom.bindings.root.ComponentSpecRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.ops.Include;
 
 @CustomXmlRootBinding(value = ComponentSpecRootXmlBinding.class)
+
+@XmlNamespace( uri = "http://www.w3.org/2001/XInclude", prefix = "xi" )
 
 public interface ComponentSpec extends Element {
 	ElementType TYPE = new ElementType( ComponentSpec.class );
 
 	// *** Name ***
-	@CustomXmlValueBinding( impl = GenericDualCaseXmlValueBinding.class ) 
+	@CustomXmlValueBinding( impl = CaseInsenitiveAttributeValueBinding.class ) 
 	@Label( standard = "Name" )
 	
 	ValueProperty PROP_NAME = new ValueProperty( TYPE, "Name" );
@@ -56,7 +61,7 @@ public interface ComponentSpec extends Element {
 	
 	// *** NoControl ***
 	@Type(base = Boolean.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding(impl = BooleanAttributeRemoveIfFalseValueBinding.class )
 	@Label(standard = "NoControl")
 	
 	ValueProperty PROP_NO_CONTROL = new ValueProperty(TYPE, "NoControl");
@@ -67,15 +72,22 @@ public interface ComponentSpec extends Element {
 		
 	// *** Property Elements ***
 	//@Type( base = Property.class, possible = { Property.class, PropertyLower.class } )
-	@Type (base = Property.class )
+	@Type (base = OcsProperty.class )
 	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "Property", type = Property.class ), @XmlListBinding.Mapping( element = "property", type = PropertyLower.class ) } )
 	@CustomXmlListBinding( impl=OCSPropertyXmlListBinding.class )
 	@Label( standard = "ComponentSpecProperties" )
 	
 	ListProperty PROP_COMPONENT_SPEC_PROPERTIES = new ListProperty( TYPE, "ComponentSpecProperties" );
 	
-	ElementList<Property> getComponentSpecProperties();
+	ElementList<OcsProperty> getComponentSpecProperties();
 	
+	@Type( base = Include.class )
+    @XmlListBinding( mappings = @XmlListBinding.Mapping(element = "xi:include", type = Include.class ) )
+	@Label( standard = "Property File Includes" )
+	
+	ListProperty PROP_INCLUDES = new ListProperty( TYPE, "Includes" );
+	ElementList<Include> geIncludes();
+
 	/*
 	// *** Properties Element ***
 	@Type( base = Property.class, possible = { Property.class, PropertyLower.class } )

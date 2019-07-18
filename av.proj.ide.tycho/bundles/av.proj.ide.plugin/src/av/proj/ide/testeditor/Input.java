@@ -33,15 +33,14 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 
 import av.proj.ide.custom.bindings.root.GenericMultiCaseRootBinding;
 import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
-import av.proj.ide.custom.bindings.value.GenericDualCaseXmlValueBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
 
 @CustomXmlRootBinding( value = GenericMultiCaseRootBinding.class )
 public interface Input extends Element {
 	ElementType TYPE = new ElementType(Input.class);
 	
 	// Name
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Name")
     @Enablement( expr = "${ Port == null }" )
 
@@ -51,7 +50,7 @@ public interface Input extends Element {
 	void setName(String value);
 
 	// Or Port 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Port")
     @Enablement( expr = "${ Name == null }" )
 
@@ -62,7 +61,7 @@ public interface Input extends Element {
 
 	
 	// File 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "File")
     @Enablement( expr = "${ Script == null }" )
 
@@ -72,7 +71,7 @@ public interface Input extends Element {
 	void setFile(String value);
 
 	// Or Script 
-	@CustomXmlValueBinding(impl = GenericDualCaseXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Script")
     @Enablement( expr = "${ File  == null }" )
 
@@ -82,7 +81,7 @@ public interface Input extends Element {
 	void setScript(String value);
 
 	// Stressor Mode
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Stressor Mode")
 	@Service(impl=SuppressorModeValuesService.class)
 	
@@ -93,7 +92,7 @@ public interface Input extends Element {
 	
 	// Message Size
 	@Type(base = Integer.class)
-	@CustomXmlValueBinding(impl = GenericMultiwordXmlValueBinding.class)
+	@CustomXmlValueBinding(impl = CaseInsenitiveAttributeValueBinding.class)
 	@Label(standard = "Message Size")
 	
 	ValueProperty PROP_MESSAGE_SIZE = new ValueProperty(TYPE, "MessageSize");

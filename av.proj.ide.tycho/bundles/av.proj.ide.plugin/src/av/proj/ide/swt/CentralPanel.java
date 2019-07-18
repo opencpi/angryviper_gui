@@ -48,7 +48,6 @@ import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.wb.swt.SWTResourceManager;
@@ -74,7 +73,6 @@ public class CentralPanel  extends Composite  {
 	Button buildAssembliesButton;
 	Button runButton;
 	Button cleanButton;
-	Text   text;
 	
 	Button assets;
 	Button tests;
@@ -266,15 +264,6 @@ public class CentralPanel  extends Composite  {
 		
 		gl = new GridLayout(1, false);
 		buildControls.setLayout(gl);
-		
-		Label l = new Label(buildControls, SWT.NONE);
-		l.setText("Build Label (optional):");
-		gd =  new GridData(SWT.FILL, GridData.BEGINNING, true, false);
-		l.setLayoutData(gd);
-		
-		text = new Text(buildControls, SWT.BORDER);
-		gd =  new GridData(SWT.FILL, GridData.BEGINNING, true, false);
-		text.setLayoutData(gd);
 		
 		buildAssembliesButton = new Button(buildControls, SWT.CHECK);
 		buildAssembliesButton.setText("Build Assemblies");

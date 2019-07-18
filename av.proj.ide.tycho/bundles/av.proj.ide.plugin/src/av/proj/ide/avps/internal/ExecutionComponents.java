@@ -39,7 +39,8 @@ public class ExecutionComponents {
 	public CommandExecutor  commandExecutor;
 	MessageConsole bldConsole;
 	StatusNotificationInterface statusMonitor;
-	List<ExecutionAsset> executionAssets;	
+	List<ExecutionAsset> executionAssets;
+	StatusRegistration   statusRegistration;
 	
 	public List<ExecutionAsset> getExecutionAssets() {
 		return executionAssets;

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+
+	<composite>
+		<id>OcsPropertyForm</id>
+		<content>
+		
+            <section>
+                <label>Property Data Type</label>
+				<content>
+					<include>DataTypeForm</include>
+				</content>
+                <collapsible>true</collapsible>
+            </section>
+            <section>
+                <label>Property Accessibility</label>
+				<content>
+					<include>OcsAccessibilityForm</include>
+				</content>
+                <collapsible>true</collapsible>
+                <description>Property Accessibility may be defined for OCS but it is not required.</description>
+            </section>
+            <section>
+                <label>Advanced</label>
+                <collapsible>true</collapsible>
+                <content>
+                    <property-editor>
+                        <property>Parameter</property>
+						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    </property-editor>
+                    <property-editor>
+                        <visible-when>${Padding != null}</visible-when>
+                        <property>Padding</property>
+ 						<hint>
+							<name>checkbox.layout</name>
+							<value>leading.label</value>
+						</hint>
+						<style>Sapphire.PropertyEditor.CheckBoxGroup.Horizontal</style>
+                    </property-editor>
+                    <label>
+                        <visible-when>${ Parameter != null }</visible-when>
+                        <text>A parameter property is effectively a build-time constant; see documentation.</text>
+                    </label>
+                    <label>
+                        <visible-when>${ Padding != null }</visible-when>
+                        <text>Padding in the OCS is deprecated. It is intending as special parameter for the worker.</text>
+                    </label>
+                </content>
+                <collapsed-initially>true</collapsed-initially>
+            </section>
+
+		</content>
+
+	</composite>
+    <import>
+       <definition>av.proj.ide.sdef.shared.DataTypeForm</definition>
+        <definition>av.proj.ide.ocs.sdef.OcsAccessibilityForm</definition>
+    </import>
+
+</definition>

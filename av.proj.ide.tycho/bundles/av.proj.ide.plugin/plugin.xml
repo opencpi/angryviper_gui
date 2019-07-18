@@ -43,10 +43,12 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.owdrcc" />
 		</editor>
 		<editor id="av.proj.ide.owd.hdl.HdlWorker" name="OWD HDL Editor"
-			extensions="xml">
-			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
+			class="av.proj.ide.owd.hdl.HdlWorkerEditor" extensions="xml">
+			
+			<!--class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
 				<parameter name="sdef" value="av.proj.ide.owd.hdl.HdlWorker" />
-			</class>
+			</class -->
+			
 			<contentTypeBinding contentTypeId="av.proj.ide.OwdHdl" />
 			<contentTypeBinding contentTypeId="av.proj.ide.owdhdl" />
 		</editor>
@@ -68,6 +70,7 @@
 			<contentTypeBinding contentTypeId="av.proj.ide.Unittests.upper" />
 			<contentTypeBinding contentTypeId="av.proj.ide.unittests.lower" />
 		</editor>
+
 		<editor id="av.proj.ide.hplat.HdlPlatform" name="HDL Platform Editor"
 			class="av.proj.ide.hplat.HdlPlatformEditor" extensions="xml">
 			<!-- Above w/ class=".. launches the editor. below the the sdef file is 
@@ -76,6 +79,41 @@
 				<parameter name="sdef" value="av.proj.ide.hplat.HdlPlatformEditor"/> </class> -->
 			<contentTypeBinding contentTypeId="av.proj.ide.Hplat" />
 			<contentTypeBinding contentTypeId="av.proj.ide.hplat" />
+		</editor>
+		<editor id="av.proj.ide.hdl.device.HdlDeviceWorkerEditor"  name="HDL Device Worker Editor"
+			 class="av.proj.ide.hdl.device.HdlDeviceWorkerEditor"  extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.device.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.device.lower" />
+		</editor>
+
+		<editor id="av.proj.ide.hdl.signal.SignalsFileEditor"  name="Signals File Editor"
+			 class="av.proj.ide.hdl.signal.SignalsFileEditor"  extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.signals.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.signals.lower" />
+		</editor>
+		<editor id="av.proj.ide.hdl.slot.SlotFileEditor"  name="Slot File Editor"
+			 class="av.proj.ide.hdl.slot.SlotFileEditor"  extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.slot.upper" />
+			<contentTypeBinding contentTypeId="av.proj.ide.hdl.slot.lower" />
+		</editor>
+		
+		<!--editor id should match <id>name</id> in 'sdef' file. 
+		    editor name should mach docScan.setEditorName(name).
+		 -->
+		 <!--
+		 <editor id="av.proj.ide.ocs.OCSEditor" name="OCS Editor"
+			class="av.proj.ide.ocs.OCSEditor" filenames="*-spec.xml" extensions="xml">
+			<contentTypeBinding contentTypeId="av.proj.ide.Ocs" />
+			<contentTypeBinding contentTypeId="av.proj.ide.ocs" />
+		</editor>
+		-->
+		<editor id="av.proj.ide.properties.PropertiesFileEditor" name="Properties File Editor"
+		        extensions="xml">
+ 			<class class="org.eclipse.sapphire.ui.swt.xml.editor.SapphireEditorForXml">
+				<parameter name="sdef" value="av.proj.ide.properties.PropertiesFileEditor" />
+			</class>
+		     <contentTypeBinding contentTypeId="av.proj.ide.properties.upper"/>
+		     <contentTypeBinding contentTypeId="av.proj.ide.properties.lower"/>
 		</editor>
 	</extension>
 
@@ -218,6 +256,82 @@
 			<describer
 				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
 				<parameter name="element" value="hdlplatform" />
+			</describer>
+		</content-type>
+		
+		<!-- HdlDevice Content Type -->
+		<content-type id="av.proj.ide.hdl.device.lower" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="hdldevice" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.hdl.device.upper" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="HdlDevice" />
+			</describer>
+		</content-type>
+		
+		<!-- Signals Content Type -->
+		<content-type id="av.proj.ide.hdl.signals.lower" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="signals" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.hdl.signals.upper" priority="high"
+			name="Signals File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Signals" />
+			</describer>
+		</content-type>
+
+		<!-- Slot Content Type -->
+		<content-type id="av.proj.ide.hdl.slot.lower" priority="high"
+			name="Unit Test Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="slottype" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.hdl.slot.upper" priority="high"
+			name="Unit Test Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="SlotType" />
+			</describer>
+		</content-type>
+
+		<!-- Property File Content Type -->
+		<content-type id="av.proj.ide.properties.lower" priority="high"
+			name="Properties File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="properties" />
+			</describer>
+		</content-type>
+		
+		<content-type id="av.proj.ide.properties.upper" priority="high"
+			name="Properties File Content Type" file-extensions="xml"
+			base-type="org.eclipse.core.runtime.xml">
+			<describer
+				class="org.eclipse.core.runtime.content.XMLRootElementContentDescriber2">
+				<parameter name="element" value="Properties" />
 			</describer>
 		</content-type>
 

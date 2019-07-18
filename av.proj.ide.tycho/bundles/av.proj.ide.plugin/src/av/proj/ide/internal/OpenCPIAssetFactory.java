@@ -31,18 +31,22 @@ public class OpenCPIAssetFactory {
 		
 		AngryViperAsset asset = null;
 		String libPath = null;
+		String projectPackageId = projectLocation.packageId;
 		switch(cat) {
 		case project:
-			asset = new AngryViperAsset(name, projectLocation, cat);
+			asset = new AngryViperAsset(projectLocation.projectName, projectLocation, cat);
+			asset.qualifiedName = projectPackageId;
 			asset.setAssetFolder(projectLocation.projectPath);
 			break;
 		case xmlapp:	
 			asset = new AngryViperAsset(name, projectLocation, cat);
 			asset.buildable = false;
+			asset.qualifiedName = projectPackageId + ".apps" + name;
 			asset.setAssetFolder("applications");
 			break;
 		case application:
 			asset = new AngryViperAsset(name, projectLocation, cat);
+			asset.qualifiedName = projectPackageId + ".apps." + name;
 			asset.buildName = name;
 			break;
 		
@@ -52,6 +56,7 @@ public class OpenCPIAssetFactory {
 		case assembly:
 			asset = new AngryViperAsset(name, projectLocation, cat);
 			asset.buildName = name;
+			asset.qualifiedName = projectPackageId + "." + name;
 			asset.setAssetFolder(name);
 			break;
 
@@ -67,6 +72,7 @@ public class OpenCPIAssetFactory {
 			
 			asset.buildName = name;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectPackageId + "." + libraryName +"."  + name;
 			asset.setAssetFolder(name);
 			break;
 
@@ -76,6 +82,7 @@ public class OpenCPIAssetFactory {
 			asset.setAssetFolder(asset.libraryName);
 			asset.buildable = false;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectPackageId + "." + libraryName +"." + name;
 			libPath = getLibraryPath(asset);
 			asset.assetFolder = libPath + "/" + OpenCPICategory.specs.getFrameworkName();
 			break;
@@ -84,6 +91,7 @@ public class OpenCPIAssetFactory {
 			asset = new AngryViperAsset(name, projectLocation, cat);
 			asset.buildName = name;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectPackageId + "." + libraryName +"." + name;
 			libPath = getLibraryPath(asset);
 			asset.assetFolder = libPath + "/" + name;
 			break;
@@ -93,6 +101,7 @@ public class OpenCPIAssetFactory {
 			asset.buildable = true;
 			asset.buildName = name;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectPackageId + "." + libraryName +"." + name;
 			libPath = getLibraryPath(asset);
 			asset.assetFolder = libPath + "/" + name;
 			break;
@@ -103,11 +112,13 @@ public class OpenCPIAssetFactory {
 		case tests:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
 			asset.buildName = cat.getFrameworkName();
+			asset.qualifiedName = projectPackageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder(cat.getFrameworkName());
 			break;
 			
 		case applications:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
+			asset.qualifiedName = projectPackageId + "."  + cat.getFrameworkName();
 			asset.setAssetFolder(name);
 			break;
 			
@@ -115,6 +126,7 @@ public class OpenCPIAssetFactory {
 		case platforms :
 		case assemblies:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
+			asset.qualifiedName = projectPackageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder("hld/" + name);
 			break;
 			
@@ -122,6 +134,7 @@ public class OpenCPIAssetFactory {
 		case devices:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
 			asset.buildName = cat.getFrameworkName();
+			asset.qualifiedName = projectPackageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder("hld/" + name);
 			break;
 			
@@ -131,11 +144,13 @@ public class OpenCPIAssetFactory {
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
 			asset.buildable = false;
 			asset.libraryName = libraryName;
+			asset.qualifiedName = projectPackageId + "." + cat.getFrameworkName();
 			asset.setAssetFolder("specs");
 			break;
 			
 		case workers:
 			asset = new AngryViperAsset(cat.getFrameworkName(), projectLocation, cat);
+			asset.qualifiedName = projectPackageId + "." + cat.getFrameworkName();
 			asset.buildable = false;
 			// needs to be though out.  Actually this is constructed in another
 			// flow of control that is not un use yet.

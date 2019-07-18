@@ -20,12 +20,6 @@
 
 package av.proj.ide.internal;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -34,23 +28,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.IWorkspace;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.sapphire.modeling.ResourceStoreException;
-import org.eclipse.sapphire.modeling.xml.RootXmlResource;
-import org.eclipse.sapphire.modeling.xml.XmlResourceStore;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.console.MessageConsole;
 
-import av.proj.ide.avps.internal.AvpsResourceManager;
-import av.proj.ide.avps.internal.CommandExecutor;
-import av.proj.ide.avps.xml.Project;
 import av.proj.ide.internal.EnvBuildTargets.HdlPlatformInfo;
 import av.proj.ide.internal.EnvBuildTargets.HdlVendor;
 import av.proj.ide.internal.EnvBuildTargets.RccPlatformInfo;
@@ -89,31 +68,41 @@ import av.proj.ide.internal.OpenCpiAssets.OcpiAssetDifferences;
 
 
 /**
- * This class is responsible for assembling AngryViper project information and environment
- * information for presentation.  It is implemented as a singleton. When it is instantiated
- * if looks for open projects in the workspace. Each open project has the project.xml file 
- * regenerated, then read, and the data model for the project is produced. It also obtains
- * the OCPI build targets and platforms from the development environment.  This information
- * is provided to the respective project tool view upon request.
+ * This and surrounding classes have evolved over time and much of the evolution was an effort
+ * to reduce class size.  This class now primarily serves as the central point for the plugin 
+ * application to obtain information. It primarily supports the OpenCPI Projects view and the
+ * OpenCPI XML editors.
  * 
- * The service is also responsible for assembling workspace change information. Refresh is
- * currently initiated by the user.  In the future this will be automated.
+ *  The class now relies on several colleague classes that have more focused responsibility.
+ *  The most recent addition to the support group is the LoadOpenCPIEnvironment class, 
+ *  developed to optimize gathering and assembling environment data.  Others in the group:
+ *  
+ *  - OpenCpiAssets has become the repository for project assets.  It also holds the logic
+ *    to construct the asset objects used by the UI for presentation and it holds the built
+ *    target information. It also supports the asset operations provided by the Angryviper
+ *    wizard.
+ *    
+ *  - OpencpiEnvService functions as a bridge to the ocpidev show interface used to obtain
+ *    project registration and component information as well as ocpidev create and delete
+ *    commands. Currently there is a mix of data gathering resources used in this class.
+ *    In the future this  as we move to solely using ocpidev show work with the framework,
+ *    these tools will move back to OpenCpiAssets.
  */
 public class AngryViperAssetService {
 
 	protected OpenCpiAssets assetsRepo = null;
+	protected OpencpiEnvService environmentService = null;
 	protected OcpiAssetDifferences newSnapshotDiff = null;
 	
-	protected Set<String> allHdlWorkers = null;
-	private static RegisteredProjectsService registerProjectsService = null;
 	private static AngryViperAssetService instance = null;
 
-	private File   scriptsDir;
-	private String cdkPath;
+//	private File   scriptsDir;
+//	private String cdkPath;
 	protected boolean assetsBuilt = false;
 	
 	private AngryViperAssetService() {
-		//registerProjectsService = new RegisteredProjectsService();
+    	environmentService = new OpencpiEnvService();
+    	
 		// Add Listeners to detect changes project assets.
 		
 //        IWorkspace ws =  ResourcesPlugin.getWorkspace();
@@ -128,83 +117,54 @@ public class AngryViperAssetService {
 
 
 	public static AngryViperAssetService getInstance() {
-		if(instance == null) {
-			instance = new AngryViperAssetService();
-		}
-
 		// Ran into a conflict where assets were constructed twice
 		// and flow of control was the main thread?  Somewhere things
 		// were handed off to another thread and constructAssets was 
 		// entered twice.  Created a lock to solve the problem.
-		
-		if(instance.assetsBuilt == false)
-			instance.constructAssets();
+		TLock.acquire();
+		if(instance == null) {
+			instance = new AngryViperAssetService();
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadDataStores();
+			instance.assetsRepo = load.assetsRepo;
+			instance.environmentService = load.environmentService;
+			//System.out.println(instance.assetsRepo.getProjectsMap().size() + " projects collected.");
+		}
+		TLock.release();
+
 		return instance;
 	}
 	
+	public Collection<HdlPlatformInfo> getHdlPlatforms() {
+		return assetsRepo.hdlPlatforms;
+	}
+	public Collection<RccPlatformInfo> getRccPlatforms() {
+		return assetsRepo.rccPlatforms;
+	}
+	public Collection<HdlVendor> getHdlTargets() {
+		return assetsRepo.hdlVendors;
+	}
+	
+	public OpencpiEnvService getEnvironment() {
+		return environmentService;
+	}
 	/***
 	 * This public interface is used by the UI to setup the ANGRYVIPER
 	 * views. Information maintained in these object are relative to 
 	 * open projects in the eclipse workspace.
 	 */
 	public Map<String, AssetModelData> getWorkspaceProjects() {
-		return assetsRepo.projects;
+		//System.out.println("Projects Map requested.");
+		//System.out.println(instance.assetsRepo.getProjectsMap().size() + " projects pulled.");
+		return assetsRepo.getProjectsMap();
 	}
 
-	public UiComponentSpec getUiSpecByDisplayName(String specSelect) {
-		return getRegistedProjectService().getUiSpecByDisplayName(specSelect);
-	}
-	
-	public String getComponentName (String specFileName) {
-		
-		if(specFileName.toLowerCase().endsWith("spec.xml")) {
-			String componentName = specFileName.substring(0, specFileName.length() -9);
-			return componentName;
-		}
-		return null;
-	}
-	
-	public String getComponentByRef (String specFileName) {
-		
-		return null;
-	}
-	
-	
-	public UiComponentSpec getSpecByFileName(String projectName, String library, String specFileName) {
-		List<UiComponentSpec> possibleSpecs= registerProjectsService.specLookup.get(specFileName);
-		if(possibleSpecs == null)
-			return null;
-		
-		if(possibleSpecs.size() == 1) {
-			return possibleSpecs.get(0);
-		}
-		return null;
-	}
-
-
-	public Set<String> getComponentsAvailableToProject(String projectName) {
-		AssetModelData proj = assetsRepo.projects.get(projectName);
-		if(proj == null) 
-			return null;
-		
-		return getRegistedProjectService().getComponentsAvailableToProject(projectName);
-	}
-	
 	public AssetModelData lookupAsset(AngryViperAsset asset) {
 		return assetsRepo.assetLookup.get(asset);
 	}
 	
-	public List<HdlPlatformInfo> getHdlPlatforms() {
-		return assetsRepo.hdlPlatforms;
-	}
-	public List<HdlVendor> getHdlTargets() {
-		return assetsRepo.hdlVendors;
-	}
-	public List<RccPlatformInfo> getRccPlatforms() {
-		return assetsRepo.rccPlatforms;
-	}
 	public Set<String> getComponentsInLibrary(String projectName, String libraryName) {
-		AssetModelData project = assetsRepo.projects.get(projectName);
+		AssetModelData project = assetsRepo.getProject(projectName);
 		TreeSet<String> comps = new TreeSet<String>();
 		
 		AssetModelData componentsFolder = null;
@@ -239,7 +199,9 @@ public class AngryViperAssetService {
 			for(AssetModelData child : library.getChildList()) {
 				if(child.asset.category == OpenCPICategory.specs) {
 					for(AssetModelData comp : child.getChildList()) {
-						comps.add(comp.asset.assetName);
+						if(comp.asset.category == OpenCPICategory.component) {
+							comps.add(comp.asset.assetName);
+						}
 					}
 				}
 			}
@@ -248,98 +210,42 @@ public class AngryViperAssetService {
 		return comps;
 	}
 	
-
-	public  av.proj.ide.internal.RegisteredProjectsService.Project getProjectInfo(String projectName) {
-		return getRegistedProjectService().getProjectInfo(projectName);
-	}
-
-	// ***************************************************
-	
-	/***
-	 * The following public interface block provides information
-	 * relative to the OpenCPI environment.  These are on static
-	 * access because they are used by the wizard, and editors which
-	 * may be used from any perspective and thus the UI objects
-	 * do not have to be loaded.
-	 */
-	public static  Collection<String> getApplicationComponents() {
-		return getRegistedProjectService().getApplicationComponents();
-	}
-	
-	public static  Set<String> getProtocols() {
-		return getRegistedProjectService().getProtocols();
-	}
-	
-//	public static  Set<String> getAllSpecs() {
-//		return getRegistedProjectService().getSpecsList();
-//	}
-	
-	public static Set<String>  getRegisteredProjectsLessCore() {
-		return getRegistedProjectService().getRegisteredProjectsLessCore();
-	}
-	
-	public static String getApplicationSpecName(String fullProjectPathname, String libName, String specFileName) {
-		return getRegistedProjectService().getApplicationSpecName(fullProjectPathname, libName, specFileName);
-	}
-	
-
-	public Set<String> getAllHdlWorkers() {
-		return getRegistedProjectService().getAllHdlWorkers();
-	}
-
-	/***
-	 * UI Services that support the wizard and the OpenCPI Project view.
-	 */
-	public boolean unregisterProject(AngryViperAsset asset, StringBuilder s) {
-		final List<String> ocpiCmd = new ArrayList<String>();
-		ocpiCmd.add("ocpidev");
-		ocpiCmd.add("-d");
-	    ocpiCmd.add(asset.projectLocation.projectPath);
-	    ocpiCmd.add("unregister");
-	    ocpiCmd.add("project");    
-	    ocpiCmd.add("-f");
-	    
-	    StringBuilder sb = new StringBuilder();
-		MessageConsole consoleMsg = AvpsResourceManager.getInstance().getNoticeConsoleInView();
-		boolean result = CommandExecutor.executeCommand(ocpiCmd, consoleMsg, sb);
-        if(result == true) {
-    		// Setup to reload registered project information.
-    		registerProjectsService = null;
-         }
-        return result;
-	}
-
-	public boolean registerProject(AngryViperAsset asset, StringBuilder s) {
-		final List<String> ocpiCmd = new ArrayList<String>();
-		ocpiCmd.add("ocpidev");
-		ocpiCmd.add("-d");
-	    ocpiCmd.add(asset.projectLocation.projectPath);
-	    ocpiCmd.add("register");
-	    ocpiCmd.add("project");    
-	    
-	    StringBuilder sb = new StringBuilder();
-		MessageConsole consoleMsg = AvpsResourceManager.getInstance().getNoticeConsoleInView();
-		boolean result = CommandExecutor.executeCommand(ocpiCmd, consoleMsg, sb);
-        if(result == true) {
-    		registerProjectsService = null;
-         }
-        return result;
-	}
-	
 	public AngryViperAsset createAsset (OpenCPICategory type, CreateAssetFields assetElem, StringBuilder sb) {
+		AssetModelData  newAssetModel = null;
 		AngryViperAsset newAsset = null;
 		Set<AssetModelData> addedChangeset = assetsRepo.createAsset(type, assetElem, sb);
 		if(addedChangeset == null) {
 			return newAsset;
 		}
-		if(type == OpenCPICategory.worker) {
-			allHdlWorkers = null;
+		int numberOfNewAssets = addedChangeset.size();
+		Iterator<AssetModelData> itor = addedChangeset.iterator();
+		// The change set may include several layers up to the main holding element.
+		for (int i = 1; i<numberOfNewAssets; i++) {
+			itor.next();
 		}
-		else if(type == OpenCPICategory.project) {
-			registerProjectsService = null;
+		if(itor.hasNext()) {
+			newAssetModel = itor.next();
+			newAsset = newAssetModel.asset;
+		}
+		if(type == OpenCPICategory.worker) {
+			environmentService.addHdlWorker(newAsset);
 		}
 		else if(type == OpenCPICategory.component || type == OpenCPICategory.protocol) {
-			registerProjectsService = null;
+			environmentService.addComponent(newAsset);
+		}
+		else if(type == OpenCPICategory.project) {
+			// Since this service maintains the environment service, it is responsible for adding
+			// a new project to the projects repo using env information.
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
+			AngryViperProjectInfo info = environmentService.getProjectInfo(newAsset.assetName);
+			if(info != null) {
+				newAsset.projectLocation.packageId = info.packageId;
+				newAsset.projectLocation.eclipseName = info.eclipseName;
+				newAsset.qualifiedName = info.packageId;
+				assetsRepo.addProject(newAsset, newAssetModel);
+			}
 		}
 		
 		if(projectsViewUpdate != null) { 
@@ -349,14 +255,6 @@ public class AngryViperAssetService {
 				}
 			});
 			
-		}
-		int numberOfNewAssets = addedChangeset.size();
-		Iterator<AssetModelData> itor = addedChangeset.iterator();
-		for (int i = 1; i<numberOfNewAssets; i++) {
-			itor.next();
-		}
-		if(itor.hasNext()) {
-			newAsset = itor.next().asset;
 		}
 		return newAsset;
 	}
@@ -368,14 +266,15 @@ public class AngryViperAssetService {
 		}
 		newSnapshotDiff = diffs;
 		if(asset.category == OpenCPICategory.worker) {
-			allHdlWorkers = null;
+			environmentService.removeHdlWorker(asset);
 		}
 		else if(asset.category == OpenCPICategory.component || asset.category == OpenCPICategory.protocol) {
-			registerProjectsService = null;
+			environmentService.removeComponent(asset);
 		}
 		else if(asset.category == OpenCPICategory.project) {
-			registerProjectsService = null;
-			allHdlWorkers = null;
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
 		}
 		if(projectsViewUpdate != null) { 
 			Display.getDefault().asyncExec(new Runnable(){
@@ -383,12 +282,10 @@ public class AngryViperAssetService {
 					projectsViewUpdate.processChangeSet(diffs.removedChangeset, new LinkedHashSet<AssetModelData>());
 				}
 			});
-			
 		}
 		
 		return true;
 	}
-	
 	/***
 	 * Data synchronization processing.  The projects view registers for 
 	 * change updates. Since the updates may occur from other threads
@@ -419,141 +316,84 @@ public class AngryViperAssetService {
 			}
 		};
 	}
+
+	public boolean registerProject(AngryViperAsset asset, StringBuilder s) {
+		boolean result = environmentService.registerProject(asset, s);
+        if(result == true) {
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
+			
+			AngryViperProjectInfo info = environmentService.lookupProjectByPath(asset.projectLocation.projectPath);
+			asset.projectLocation.packageId = info.packageId;
+			asset.qualifiedName = info.packageId;
+			asset.assetDetails = info;
+			
+			OpenCpiAssets otherOcpiAssets = new OpenCpiAssets();
+			otherOcpiAssets.setEnvTargets(load.getEnvBuildInfo());
+			
+			OcpiAssetDifferences platformDiff = assetsRepo.getPlatformDifferences (otherOcpiAssets);
+			if(platformDiff.areBuildPlatformsDifferent()) {
+				assetsRepo.hdlPlatforms = otherOcpiAssets.hdlPlatforms;
+				assetsRepo.rccPlatforms = otherOcpiAssets.rccPlatforms;
+				signalPlatformChanges(platformDiff);
+			}
+        }
+		return result;
+	}
+	
+	public boolean unregisterProject(AngryViperAsset asset, StringBuilder s) {
+		boolean result = environmentService.unregisterProject(asset, s);
+        if(result == true) {
+			LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+			load.loadCoreServices();
+			environmentService = load.environmentService;
+			
+			AngryViperProjectInfo info = (AngryViperProjectInfo)asset.assetDetails;
+			if(info != null) {
+				info.isRegistered = false;
+			}
+			OpenCpiAssets otherOcpiAssets = new OpenCpiAssets();
+			otherOcpiAssets.setEnvTargets(load.getEnvBuildInfo());
+			
+			OcpiAssetDifferences platformDiff = assetsRepo.getPlatformDifferences (otherOcpiAssets);
+			if(platformDiff.areBuildPlatformsDifferent()) {
+				assetsRepo.hdlPlatforms = otherOcpiAssets.hdlPlatforms;
+				assetsRepo.rccPlatforms = otherOcpiAssets.rccPlatforms;
+				signalPlatformChanges(platformDiff);
+			}
+        }
+		return result;
+	}
+	protected void signalPlatformChanges(OcpiAssetDifferences diffs) {
+		if(platformUpdater != null) {
+			if(! diffs.hdlAddList.isEmpty()) {
+				platformUpdater.addHdlPlatforms(diffs.hdlAddList);
+			}
+			if(! diffs.hdlRemoveList.isEmpty()) {
+				platformUpdater.removeHdlPlatforms(diffs.hdlRemoveList);
+			}
+			if(! diffs.rccAddList.isEmpty()) {
+				platformUpdater.addRccPlatforms(diffs.rccAddList);
+			}
+			if(! diffs.rccRemoveList.isEmpty()) {
+				platformUpdater.removeRccPlatforms(diffs.rccRemoveList);
+			}
+		}
+	}
 	
 	public void registerHdlPlatformRefresh(BuildPlatformUpdate platformUpdater) {
 		this.platformUpdater = platformUpdater;
 	}
 	
-	protected static RegisteredProjectsService getRegistedProjectService() {
-		if(registerProjectsService == null) {
-			synchronized (instance) {
-				registerProjectsService = new RegisteredProjectsService();
-			}
-		}
-		return registerProjectsService;
-	}
-	
-	
-	protected void runGenProject(String projectPath) throws IOException, InterruptedException {
-		String [] cmdp = {"./genProjMetaData.py",  projectPath};
-		Process p=Runtime.getRuntime().exec(cmdp, null, scriptsDir);
-		p.waitFor();
-		BufferedReader rd = new BufferedReader(new InputStreamReader(p.getInputStream()) );
-		String line = rd.readLine();
-		while (line != null) {
-			//System.out.println(line);
-			line = rd.readLine();
-		}
-		rd = new BufferedReader(new InputStreamReader(p.getErrorStream()) );
-		line = rd.readLine();
-		while (line != null) {
-			//System.out.println(line);
-			line = rd.readLine();
-		}
-	}
-	
-	protected void constructAssets() {
-		// To solve the conflict the current thread
-		// is locked out and loading is run in another thread.
-		TLock.acquire();
-		if(! this.assetsBuilt) {
-			cdkPath = System.getenv("OCPI_CDK_DIR");
-			String scripts = cdkPath + "/scripts";
-			scriptsDir = new File(scripts);
-			
-			new Thread(new Runnable() {
-		        public void run() {
-					OpenCpiAssets assets = new OpenCpiAssets();
-					loadWorkspaceProjects(assets);
-					assetsRepo = assets;
-					assetsBuilt = true;
-					TLock.release();
-		        };
-			}).start();
-		}
-		else {
-			TLock.release();
-		}
-	}
-	
-	protected void loadWorkspaceProjects(OpenCpiAssets ocpiAssets) {
-		IWorkspace workspace = ResourcesPlugin.getWorkspace();
-		IProject [] projects = workspace.getRoot().getProjects();
-		IProject project;
-		for(int i= 0; i<projects.length; i++) {
-			project = projects[i];
-			
-			if(! project.isOpen()) continue;
-			if("RemoteSystemsTempFiles".equals(project.getName())) continue;
-			
-			String projectName = project.getName();
-			IPath path = project.getLocation();
-			IFile projectFile = null;
-			InputStream is = null;
-			try {
-				String projpath = path.toOSString();
-				runGenProject(projpath);
-				projectFile = project.getFile("project.xml");
-				
-				if(! projectFile.exists()) {
-					project.refreshLocal(IResource.DEPTH_ONE, new NullProgressMonitor());
-					projectFile = project.getFile("project.xml");
-				}
-				
-				is = projectFile.getContents(true);
-				XmlResourceStore store = new XmlResourceStore(is);
-				RootXmlResource xmlResource = new RootXmlResource(store);
-				Project proj = Project.TYPE.instantiate(xmlResource);
-
-				ProjectLocation location = new ProjectLocation(projectName, projpath);
-				//System.out.println("Loading asset for " + projectName);
-				ocpiAssets.loadProject(location, proj);
-				
-			} catch (CoreException | ResourceStoreException | IOException | InterruptedException e) {
-				AvpsResourceManager.getInstance().writeToNoticeConsole("Error obtaining project metadata. This happens when a project is not an ANGRYVIPER project.\n --> " + e.toString() );
-				//e.printStackTrace();
-			}
-			finally{
-				if(is != null) {
-					try {
-						is.close();
-					} catch (IOException e) {
-					}
-				}
-			}
-		}
-	}
-
 	public void synchronizeWithFileSystem() {
-		if(registerProjectsService != null) {
-			RegisteredProjectsService projEnv = new RegisteredProjectsService();
-			projEnv.getOcpiProjects();
-			if(projEnv.getRegisteredProjects().size() != registerProjectsService.getRegisteredProjects().size()) {
-				registerProjectsService = null;
-			}
-			else {
-				Set<String> currentProjects = registerProjectsService.getRegisteredProjects();
-				// See if something under the hood changed
-				for(String projectName : projEnv.getRegisteredProjects()) {
-					if(! currentProjects.contains(projectName)) {
-						registerProjectsService = null;
-						break;
-					}
-				}
-				if(registerProjectsService != null) {
-					Set<String> newProjects = projEnv.getRegisteredProjects();
-					for(String projectName : currentProjects) {
-						if(! newProjects.contains(projectName)) {
-							registerProjectsService = null;
-							break;
-						}
-					}
-				}
-			}
-		}
+		// Get a fresh snapshot of the OpenCPI Env.
+		LoadOpenCPIEnvironment load = new LoadOpenCPIEnvironment();
+		load.loadDataStores();
+		environmentService = load.environmentService;
 		
-		OpenCpiAssets ocpiAssets = new OpenCpiAssets();
-		loadWorkspaceProjects(ocpiAssets);
+		OpenCpiAssets ocpiAssets = load.assetsRepo;
+		
 		if(projectsViewUpdate == null) {
 			// The OpenCPI Projects view is not open.  No further
 			// processing needed.
@@ -590,10 +430,10 @@ public class AngryViperAssetService {
 		
 		// Reset the specs, applicationComponents, and projects list to be reloaded
 		// no matter what.
-		registerProjectsService = null;
+
 	}
 	
-	// Why it was done this way?
+	// Why was it done this way?
 	// As memory serves I wanted to ensure the UI data model reflected 
 	// the changes before updating the repo.  This way a second refresh
 	// might capture it.  Also, existing model objects hold UI objects
@@ -604,14 +444,14 @@ public class AngryViperAssetService {
 		if(newSnapshotDiff != null) {
 			if(! newSnapshotDiff.removedProjects.isEmpty()){
 				for(String project : newSnapshotDiff.removedProjects.keySet()) {
-					assetsRepo.projects.remove(project);
+					assetsRepo.removeProject(project);
 				}
 			}
 			if(! newSnapshotDiff.addedChangeset.isEmpty()) {
 				for(AssetModelData newAssetModel : newSnapshotDiff.addedChangeset) {
 					loadNewAsset(newAssetModel);
 					if(newAssetModel.asset.category == OpenCPICategory.project) {
-						assetsRepo.projects.put(newAssetModel.asset.assetName, newAssetModel);
+						assetsRepo.addProject(newAssetModel.asset, newAssetModel);
 					}
 				}
 			}
@@ -640,7 +480,25 @@ public class AngryViperAssetService {
 
 
 	public AngryViperAsset[] getProjectLibraries(String projectName) {
-		AssetModelData project = assetsRepo.projects.get(projectName);
+		AssetModelData project = assetsRepo.getProject(projectName);
+		AngryViperProjectInfo info = environmentService.getProjectInfo(projectName);
+		// This may be unnecessary now. All references to a project seem to use the
+		// qualified name (project package-id);
+		if(project == null) {
+			if(info != null) {
+				project = assetsRepo.getProject(info.eclipseName);
+				if(project == null) {
+					project = assetsRepo.getProject(info.name);
+					if(project == null) {
+						project = assetsRepo.getProject(info.packageId);
+					}
+				}
+			}
+		}
+		if(project == null) {
+			return new AngryViperAsset[0];
+		}
+		
 		for(AssetModelData child : project.getChildList()) {
 			if(child.asset.category == OpenCPICategory.componentsLibrary) {
 				return new AngryViperAsset[] {child.asset};

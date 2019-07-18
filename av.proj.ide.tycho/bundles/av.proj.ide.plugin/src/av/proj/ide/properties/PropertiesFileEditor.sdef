@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+   - This file is protected by Copyright. Please refer to the COPYRIGHT file
+   - distributed with this source distribution.
+   -
+   - This file is part of OpenCPI <http://www.opencpi.org>
+   -
+   - OpenCPI is free software: you can redistribute it and/or modify it under
+   - the terms of the GNU Lesser General Public License as published by the Free
+   - Software Foundation, either version 3 of the License, or (at your option)
+   - any later version.
+   -
+   - OpenCPI is distributed in the hope that it will be useful, but WITHOUT ANY
+   - WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+   - FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for
+   - more details.
+   -
+   - You should have received a copy of the GNU Lesser General Public License
+   - along with this program. If not, see <http://www.gnu.org/licenses/>.
+-->
+
+<definition>
+	<editor-page>
+		<id>PropertiesFileEditorPage</id>
+		<page-header-text>Properties File Editor</page-header-text>
+		<initial-selection>Property</initial-selection>
+		<element-type>av.proj.ide.properties.Properties</element-type>
+		<root-node>
+			<node>
+				<label>Properties</label>
+				<section>
+					<content>
+						<actuator>
+							<action-id>Sapphire.Add</action-id>
+							<label>Add Property</label>
+						</actuator>
+					</content>
+					<description>The Properties file allows a group of common properties to be specified then used in OCS and OWD definitions using the xi:include tag.</description>
+					<label>OpenCPI Properties File</label>
+				</section>
+
+				<node-factory>
+					<property>Properties</property>
+					<case>
+						<element-type>av.proj.ide.owd.Property</element-type>
+						<section>
+							<label>Property Definition</label>
+							<content>
+								<actuator>
+									<action-id>Sapphire.Add</action-id>
+									<label>Add a Member</label>
+								</actuator>
+								<include>PropertiesFileForm</include>
+							</content>
+							<scroll-vertically>true</scroll-vertically>
+						</section>
+						<label>${ Name == null ? "new_name" : Name }</label>
+
+						<node-factory>
+							<property>Members</property>
+							<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+							<case>
+								<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+								<section>
+									<label>Member</label>
+									<description>Modify attributes of this member.</description>
+									<content>
+										<actuator>
+											<action-id>Sapphire.Add</action-id>
+											<label>Add a Member</label>
+										</actuator>
+										<include>DataTypeForm</include>
+									</content>
+								</section>
+								<node-factory>
+									<property>Members</property>
+									<case>
+										<label>${ Name == null ? "&lt;member&gt;" : Name }</label>
+										<section>
+											<label>Member</label>
+											<description>Modify attributes of this member.</description>
+											<content>
+												<include>DataTypeForm</include>
+											</content>
+										</section>
+									</case>
+									<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+								</node-factory>
+							</case>
+							<visible-when>${ Type == &quot;struct&quot; }</visible-when>
+						</node-factory>
+
+					</case>
+				</node-factory>
+			</node>
+		</root-node>
+	</editor-page>
+	
+	<composite>
+		<id>PropertiesFileForm</id>
+		<content>
+
+			<section>
+				<label>Property Data Type</label>
+				<content>
+					<include>OwdPropertyDatatypeForm</include>
+				</content>
+				<collapsible>true</collapsible>
+			</section>
+			<section>
+				<label>Property Accessibility</label>
+				<content>
+					<include>OcsAccessibilityForm</include>
+				</content>
+				<collapsible>true</collapsible>
+			</section>
+			<section>
+				<label>Advanced</label>
+				<content>
+					<property-editor>Parameter</property-editor>
+					<property-editor>Padding</property-editor>
+				</content>
+				<collapsible>true</collapsible>
+				<collapsed-initially>true</collapsed-initially>
+			</section>
+
+		</content>
+	</composite>
+
+	<import>
+		<definition>av.proj.ide.owd.sdef.OwdPropertyDatatypeForm</definition>
+        <definition>av.proj.ide.ocs.sdef.OcsAccessibilityForm</definition>
+	</import>
+
+</definition>

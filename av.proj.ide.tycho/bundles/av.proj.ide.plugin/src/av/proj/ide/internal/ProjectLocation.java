@@ -28,6 +28,8 @@ public class ProjectLocation {
 	
 	public String projectPath;
 	public String projectName;
+	public String eclipseName;
+	public String packageId;
 	public String assetTopLevelFolder;
 
 }

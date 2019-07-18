@@ -24,6 +24,7 @@ import org.eclipse.sapphire.modeling.xml.XmlNode;
 import org.eclipse.sapphire.modeling.xml.XmlPath;
 
 import av.proj.ide.internal.AngryViperAssetService;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.internal.UiComponentSpec;
 
 /***
@@ -112,7 +113,8 @@ public class InstanceComponentValueXmlBinding extends GenericDualCaseXmlValueBin
 	 * Two points of entry: the editor and drag-and-drop.
 	 */
 	private String writeName( final String value ) {
-    	UiComponentSpec spec = AngryViperAssetService.getInstance().getUiSpecByDisplayName(value);
+    	UiComponentSpec spec = AngryViperAssetService.getInstance()
+    			               .getEnvironment().getUiSpecByDisplayName(value);
     	String oasComp = null;
     	if(spec != null) {
     		oasComp = spec.getComponentName();
@@ -141,7 +143,7 @@ public class InstanceComponentValueXmlBinding extends GenericDualCaseXmlValueBin
     {
     	// There are two paths to write.  Once it view instance comp selction in the editor
     	// the other is through drag & drop.  Drag and Drop passes the oasReference of the component.
-    	AngryViperAssetService service = AngryViperAssetService.getInstance();
+    	OpencpiEnvService service = AngryViperAssetService.getInstance().getEnvironment();
     	UiComponentSpec spec = service.getUiSpecByDisplayName(value);
     	if(spec != null) {
     		// Editor operation

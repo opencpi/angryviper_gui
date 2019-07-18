@@ -78,11 +78,12 @@ import av.proj.ide.internal.AngryViperAsset;
 import av.proj.ide.internal.AngryViperAssetService;
 import av.proj.ide.internal.AngryViperAssetService.AckModelDataUpdate;
 import av.proj.ide.internal.AngryViperAssetService.ModelDataUpdate;
+import av.proj.ide.internal.AngryViperProjectInfo;
 import av.proj.ide.internal.AssetModelData;
 import av.proj.ide.internal.OcpiAssetFileService;
 import av.proj.ide.internal.OcpidevVerb;
 import av.proj.ide.internal.OpenCPICategory;
-import av.proj.ide.internal.RegisteredProjectsService.Project;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.wizards.NewOcpiAssetWizard;
 
 public class ProjectViewSwtDisplay extends Composite implements SelectionsInterface {
@@ -263,7 +264,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 	private void addProject(AssetModelData project) {
 		TreeItem projItem = new TreeItem(projectsTree, SWT.NONE);
 		AngryViperAsset projectAsset = project.getAsset();
-		projItem.setText(projectAsset.assetName);
+		projItem.setText(projectAsset.qualifiedName);
 		projItem.setImage(projectImages.getProject());
 		projItem.setData(project.getAsset());
 		projectAsset.assetUiItem = projItem;
@@ -356,9 +357,6 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 					AngryViperAsset asset = (AngryViperAsset)sels[i].getData();
 					userSelections.assetSelections.add(asset);
 				}
-				if(userSelections.buildDescription == null) {
-					userSelections.buildDescription = MainOperationSwtDisplayV1.makeBuildLabel(userSelections);
-				}
 				srv.processBuildRequest(userSelections);
 			}
 		}
@@ -367,7 +365,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 	protected void openEditor(AngryViperAsset asset) {
 		
 		IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-		IProject project = root.getProject(asset.projectLocation.projectName);
+		IProject project = root.getProject(asset.projectLocation.eclipseName);
 		IFolder folder = OcpiAssetFileService.getAssetFolder(asset, project);
 		if(folder == null || ! folder.exists()) {
 			AvpsResourceManager.getInstance()
@@ -503,7 +501,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 						
 						try {
 							if(asset.category == OpenCPICategory.project){
-								IProject project = root.getProject(asset.projectLocation.projectName);
+								IProject project = root.getProject(asset.projectLocation.eclipseName);
 								project.close(monitor);
 								boolean r = AngryViperAssetService.getInstance().deleteAsset(asset, s);
 								project.delete(false, monitor);
@@ -513,7 +511,7 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 								root.refreshLocal(IResource.DEPTH_ONE, monitor);
 							}
 							else {
-								IProject project = root.getProject(asset.projectLocation.projectName);
+								IProject project = root.getProject(asset.projectLocation.eclipseName);
 								IFile file = project.getFile(asset.assetName);
 								if(file.exists()) {
 									file.delete(false, monitor);
@@ -540,67 +538,6 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 				try {
 					new ProgressMonitorDialog(shell).run(true, true, op);
 				} catch (InvocationTargetException | InterruptedException e) {
-				}
-			}
-		}
-		public void openThisEditor(AngryViperAsset asset, IFile assetFile) {
-			IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-			
-			try {
-				OcpiAssetFileService.openEditor(asset, null, assetFile, page, null, false);
-			} catch (CoreException e) {
-				AvpsResourceManager.getInstance().writeToNoticeConsole("Internal Eclipse runtime error occurred. \n --> " + e.toString() );
-			}
-		}
-		
-		public void openEditor(AngryViperAsset asset) {
-//			Display display = Display.getDefault();
-//			//Display display = PlatformUI.getWorkbench().getDisplay();
-//			display.sleep();
-//			Runnable task = new Runnable() {
-//				public void run() {
-//					System.out.println("OpenEditor task starting");
-			
-			IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-			IProject project = root.getProject(asset.projectLocation.projectName);
-			IFolder folder = OcpiAssetFileService.getAssetFolder(asset, project);
-			if(folder == null || ! folder.exists()) {
-				AvpsResourceManager.getInstance()
-				.writeToNoticeConsole("Unable to find this asset's parent folder. Use Project Explorer to look for it.");
-				return;
-			}
-			IFile assetFile = OcpiAssetFileService.getAssetFile(asset, folder);
-			if(assetFile != null && assetFile.exists()) {
-				openThisEditor(asset, assetFile);
-				return;
-			}
-			
-			File[] xmlFiles =  OcpiAssetFileService.getAssetXmlFiles(folder);
-			if(xmlFiles == null) {
-				AvpsResourceManager.getInstance()
-				.writeToNoticeConsole("Unable to find any XML files for this asset. Use Project Explorer to look for it.");
-				return;
-			}
-			String[] names = new String[xmlFiles.length];
-			int i = 0;
-			for(File file : xmlFiles) {
-				names[i] = file.getName();
-				i++;
-			}
-			ListSelectionDialog dialog = 
-			new ListSelectionDialog(getShell(), xmlFiles, ArrayContentProvider.getInstance(),
-					fileLabel, "Open one or more of these?");
-			dialog.setTitle("Unable to find asset XML file.");
-			//dialog.setInitialSelections(names);
-			dialog.open();
-			Object[] result = dialog.getResult();
-			if(result != null) {
-				for(Object name : result) {
-					File zname = (File) name;
-					IFile wbFile = FileBuffers.getWorkspaceFileAtLocation(Path.fromOSString(zname.getPath()));
-					if(wbFile.exists()) {
-						openThisEditor(asset, wbFile);
-					}
 				}
 			}
 		}
@@ -904,7 +841,8 @@ public class ProjectViewSwtDisplay extends Composite implements SelectionsInterf
 					TreeItem selection = sels[0];
 					AngryViperAsset project = (AngryViperAsset)selection.getData();
 					String projectName = project.assetName;
-					Project projectInfo = AngryViperAssetService.getInstance().getProjectInfo(projectName);
+					OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+					AngryViperProjectInfo projectInfo = srv.getProjectInfo(projectName);
 					
 					if( projectInfo != null && projectInfo.isRegistered() ) {
 						theItem = new MenuItem(menu, SWT.NONE);

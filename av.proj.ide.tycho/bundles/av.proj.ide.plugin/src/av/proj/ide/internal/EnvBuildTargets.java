@@ -23,9 +23,10 @@ package av.proj.ide.internal;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,16 +41,40 @@ import av.proj.ide.avps.internal.AvpsResourceManager;
  */
 public class EnvBuildTargets {
 	
+	TreeMap<String, HdlVendor> buildEnvironment;
+	TreeMap<String, HdlPlatformInfo> hdlPlatformList;
+	TreeMap<String, RccPlatformInfo> rccPlatformList;
+	
+	public class RccPlatformInfo {
+		String name;
+		String target;
+		
+		public RccPlatformInfo(String name, JSONObject platform) {
+			this.name = name;
+			target = (String) platform.get("target");
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public String getTarget() {
+			return target;
+		}
+	}
+	
 	public class HdlTargetInfo {
 		String name;
-		String tool;
-		List<String> parts;
+		String vendor;
+		String toolSet;
+		protected Collection<String> parts;
 		
-		public HdlTargetInfo(String name, JSONObject target) {
+		public HdlTargetInfo(String name, String vendorName, JSONObject target) {
 			this.name = name;
-			tool = null;
-			parts = new ArrayList<String>();
-			tool = (String)target.get("tool");
+			vendor = vendorName;
+			toolSet = null;
+			parts = new TreeSet<String>();
+			toolSet = (String)target.get("tool");
 			JSONArray prts = (JSONArray) target.get("parts");
 			if(prts == null)
 				return;
@@ -59,60 +84,20 @@ public class EnvBuildTargets {
 				parts.add(part);
 			}
 		}
-	}
-	public class HdlVendor {
-		String vendor;
-		List<HdlTargetInfo> targetList;
-		String[] targets;
 		
-		public HdlVendor(String name, JSONObject vendor) {
-			this.vendor = name;
-			targetList = new ArrayList<HdlTargetInfo>();
-			
-	        @SuppressWarnings("unchecked")
-			Set<String> targetNames = (Set<String>)vendor.keySet();
-			if(targetNames == null)
-				return;
-
-			for(String tname : targetNames) {
-	       	 JSONObject target = (JSONObject) vendor.get(tname);
-	      	 HdlTargetInfo targ = new HdlTargetInfo(tname, target);
-	      	 targetList.add(targ);
-	        }
-	        targets = new String[targetList.size()];
-	        
-	        int i = 0;
-	        for(HdlTargetInfo target: targetList) {
-	        	targets[i++] = target.name;
-	        }
-		}
-
-		public String getVendor() {
-			return vendor;
-		}
-
-		public List<HdlTargetInfo> getTargetList() {
-			return targetList;
-		}
-
-		public String[] getTargets() {
-			return targets;
+		public Collection<String> getParts() {
+			return parts;
 		}
 		
 	}
-
-	public class HdlPlatformInfo {
-		String name;
-		String vendor;
-		String tool;
+	
+	public class HdlPlatformInfo extends HdlTargetInfo {
 		String part;
 		String target;
 		boolean built;
 		
 		public HdlPlatformInfo(String name, JSONObject platform) {
-			this.name = name;
-			vendor = (String) platform.get("vendor");
-			tool = (String) platform.get("tool");
+			super(name, (String) platform.get("vendor"), platform);
 			part = (String) platform.get("part");
 			target = (String) platform.get("target");
 			built = (Boolean) platform.get("built");
@@ -126,8 +111,8 @@ public class EnvBuildTargets {
 			return vendor;
 		}
 
-		public String getTool() {
-			return tool;
+		public String getToolSet() {
+			return toolSet;
 		}
 
 		public String getPart() {
@@ -151,60 +136,104 @@ public class EnvBuildTargets {
 				
 				return name.equals(((HdlPlatformInfo)o).name);
 			}
-			
 			return false;
 		}
-
 	}
 	
-	public class RccPlatformInfo {
-		String name;
-		String target;
+	public class HdlVendor {
+		String vendor;
+		TreeMap<String, HdlTargetInfo> targetList;
+		TreeMap<String, HdlPlatformInfo> platformList;
 		
-		public RccPlatformInfo(String name, JSONObject platform) {
-			this.name = name;
-			target = (String) platform.get("target");
+		public HdlVendor(String name, JSONObject vendor) {
+			this.vendor = name;
+			targetList = new TreeMap<String, HdlTargetInfo>();
+			
+	        @SuppressWarnings("unchecked")
+			Set<String> targetNames = (Set<String>)vendor.keySet();
+			if(targetNames == null)
+				return;
+
+			for (String tname : targetNames) {
+				JSONObject target = (JSONObject) vendor.get(tname);
+				HdlTargetInfo targ = new HdlTargetInfo(tname, name, target);
+				targetList.put(tname, targ);
+			}
 		}
 
-		public String getName() {
-			return name;
+		void loadPlatforms(Collection<HdlPlatformInfo> platforms) {
+			platformList = new TreeMap<String, HdlPlatformInfo>();
+			for(HdlPlatformInfo platform : platforms) {
+				if(platform.vendor.equals(this.vendor)) {
+					platformList.put(platform.name, platform);
+				}
+			}
+		}
+		
+		public String getVendor() {
+			return vendor;
 		}
 
-		public String getTarget() {
-			return target;
+		public Collection <HdlTargetInfo> getTargetList() {
+			return targetList.values();
+		}
+
+		public Collection<String> getTargets() {
+			return targetList.keySet();
+		}
+		public Collection <HdlPlatformInfo> getPlatformList() {
+			return platformList.values();
+		}
+
+		public Collection<String> getPlatforms() {
+			return platformList.keySet();
 		}
 		
 	}
+
+	public Collection<HdlVendor> getVendors () {
+		return buildEnvironment.values();
+	}
+	public Collection<HdlPlatformInfo> getHdlPlatforms() {
+		return hdlPlatformList.values();
+	}
+	public Collection<RccPlatformInfo> getRccPlatforms() {
+		return rccPlatformList.values();
+	}
 	
-	public List<HdlVendor> getHdlVendors() {
+	public void loadVendorPlatforms () {
+		for(HdlVendor vendor : buildEnvironment.values()) {
+			vendor.loadPlatforms(hdlPlatformList.values());
+		}
+	}
+	
+	void buildHdlVendors() {
+		buildEnvironment = new TreeMap<String, HdlVendor> ();
 		
 		JSONObject jsonObject = getEnvInfo(hdlTargetsCmd);		
-        ArrayList<HdlVendor> vendors = new ArrayList<HdlVendor>();
-		if(jsonObject == null) {
+ 		if(jsonObject == null) {
 			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show hdl targets.");
-			return vendors;
 		}
 
         @SuppressWarnings("unchecked")
 		Set<String> keys = jsonObject.keySet();
 		if(keys == null)
-			return vendors;
+			return;
         
         for(String key : keys) {
         	 JSONObject vendorObj = (JSONObject) jsonObject.get(key);
         	 HdlVendor vendor = new HdlVendor(key, vendorObj);
-        	 vendors.add(vendor);
+        	 buildEnvironment.put(key, vendor);
         }
-		return vendors;
 	}
 	
-	public List<HdlPlatformInfo> getHdlPlatforms() {
+	void buildHdPlatforms() {
+		hdlPlatformList = new TreeMap<String, HdlPlatformInfo>();
 		JSONObject jsonObject = getEnvInfo(hdlPlatformsCmd);		
-        ArrayList<HdlPlatformInfo> platforms = new ArrayList<HdlPlatformInfo>();
-
+ 
         if(jsonObject == null) {
 			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show hdl platforms.");
-			return platforms;
+			return;
         }
 
         @SuppressWarnings("unchecked")
@@ -212,29 +241,28 @@ public class EnvBuildTargets {
         for(String key : keys) {
         	 JSONObject platformObj = (JSONObject) jsonObject.get(key);
         	 HdlPlatformInfo platform = new HdlPlatformInfo(key, platformObj);
-        	 platforms.add(platform);
+        	 hdlPlatformList.put(key,platform);
         }
-		return platforms;
 	}
-	public List<RccPlatformInfo> getRccPlatforms() {
-        ArrayList<RccPlatformInfo> rccPlatforms = new ArrayList<RccPlatformInfo>();
+	
+	void buildRccPlatforms() {
+		rccPlatformList = new TreeMap<String, RccPlatformInfo>();
 		JSONObject jsonObject = getEnvInfo(rccPlatformsCmd);		
 		if(jsonObject == null) {
 			AvpsResourceManager.getInstance().writeToNoticeConsole("Null JSON object returned from the environment. Something is wrong with ocpidev show rcc platforms.");
-			return rccPlatforms;
+			return;
 		}
 
 		@SuppressWarnings("unchecked")
 		Set<String> keys = jsonObject.keySet();
 		if(keys == null)
-			return rccPlatforms;
+			return;
         
         for(String key : keys) {
         	 JSONObject platformObj = (JSONObject) jsonObject.get(key);
         	 RccPlatformInfo platform = new RccPlatformInfo(key, platformObj);
-        	 rccPlatforms.add(platform);
+        	 rccPlatformList.put(key, platform);
         }
-		return rccPlatforms;
 	}
 	
 	protected String [] hdlTargetsCmd = {"ocpidev", "show", "hdl", "targets", "--json"};

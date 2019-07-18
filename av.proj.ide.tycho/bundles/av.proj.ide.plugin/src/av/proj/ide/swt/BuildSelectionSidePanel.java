@@ -122,7 +122,6 @@ public class BuildSelectionSidePanel  extends Composite  {
 		hdlPanel.setLayoutData(data);
 		
 		hdlTarPanel = new Group(this,   SWT.H_SCROLL | SWT.V_SCROLL);
-		hdlTarPanel.setText("HDL Targets");
 		glayout = new GridLayout(1, false);
 		hdlTarPanel.setLayout(glayout);
 		
@@ -177,12 +176,18 @@ public class BuildSelectionSidePanel  extends Composite  {
 	public void toggleHdlSelection() {
 		
 		if(hdlView == HdlBuildSelection.HDL_PLATFORMS){
-			 hdlPanel.setLayoutData(hide);
-			 hdlTarPanel.setLayoutData(show);
-			 hdlView = HdlBuildSelection.HDL_TARGETS;
+			// For using an updated exlipse env, the text
+			// in the hidden panel didn't hide.
+			hdlPanel.setText("");
+			hdlPanel.setLayoutData(hide);
+			hdlTarPanel.setText("HDL Targets");
+			hdlTarPanel.setLayoutData(show);
+			hdlView = HdlBuildSelection.HDL_TARGETS;
 		}
 		else {
+			hdlTarPanel.setText("");
 			hdlTarPanel.setLayoutData(hide);
+			hdlPanel.setText("HDL Platforms");
 			hdlPanel.setLayoutData(show);
 			hdlView = HdlBuildSelection.HDL_PLATFORMS;
 		}
@@ -240,12 +245,10 @@ public class BuildSelectionSidePanel  extends Composite  {
 		for(HdlVendor info : targets) {
 			level1 = new TreeItem(hdlTargets, SWT.NONE);
 			level1.setText(info.getVendor());
-			String[] targs = info.getTargets();
-			int len = targs.length;
 			TreeItem item;
-			for(int i = 0; i<len; i++){
+			for(String targ : info.getTargets()){
 				item = new TreeItem(level1, SWT.NONE); 
-				item.setText(targs[i]);
+				item.setText(targ);
 			}
 		}
 	}

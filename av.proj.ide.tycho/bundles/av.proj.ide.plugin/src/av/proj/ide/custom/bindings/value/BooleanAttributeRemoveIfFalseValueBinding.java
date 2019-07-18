@@ -22,7 +22,7 @@ package av.proj.ide.custom.bindings.value;
 
 import org.eclipse.sapphire.modeling.xml.XmlElement;
 
-public class BooleanAttributeRemoveIfFalseValueBinding extends GenericDualCaseXmlValueBinding {
+public class BooleanAttributeRemoveIfFalseValueBinding extends CaseInsenitiveAttributeValueBinding {
  
 	@Override
     public String read()

@@ -54,19 +54,16 @@ public class AddViewControls {
 		opsDisplay.buildSelectPanel.getHdlPlatformsWidgit().addSelectionListener(new SelectionAdapter() {
 		public void widgetSelected(SelectionEvent event) {
 			opsDisplay.buildTargetsChanged = true;
-			opsDisplay.selectionPanel.text.setText("");
 		}
 		});
 		opsDisplay.buildSelectPanel.getRccPlatformsWidgit().addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				opsDisplay.buildTargetsChanged = true;
-				opsDisplay.selectionPanel.text.setText("");
 			}
 		});
 		opsDisplay.buildSelectPanel.getHdlTargetsWidgit().addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent event) {
 				opsDisplay.buildTargetsChanged = true;
-				opsDisplay.selectionPanel.text.setText("");
 			}
 		});
 		

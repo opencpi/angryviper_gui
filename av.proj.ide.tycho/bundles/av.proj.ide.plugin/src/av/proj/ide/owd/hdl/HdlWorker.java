@@ -20,14 +20,18 @@
 
 package av.proj.ide.owd.hdl;
 
+import org.eclipse.sapphire.ElementHandle;
 import org.eclipse.sapphire.ElementList;
+import org.eclipse.sapphire.ElementProperty;
 import org.eclipse.sapphire.ElementType;
 import org.eclipse.sapphire.ListProperty;
 import org.eclipse.sapphire.Type;
 import org.eclipse.sapphire.Value;
 import org.eclipse.sapphire.ValueProperty;
+import org.eclipse.sapphire.modeling.annotations.Enablement;
 import org.eclipse.sapphire.modeling.annotations.Label;
 import org.eclipse.sapphire.modeling.annotations.Service;
+import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlElementBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlListBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlRootBinding;
 import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
@@ -35,7 +39,9 @@ import org.eclipse.sapphire.modeling.xml.annotations.CustomXmlValueBinding;
 import av.proj.ide.custom.bindings.list.ControlOperationsListBinding;
 import av.proj.ide.custom.bindings.list.OWDStreamInterfaceXmlListBinding;
 import av.proj.ide.custom.bindings.root.HdlWorkerRootXmlBinding;
-import av.proj.ide.custom.bindings.value.GenericMultiwordXmlValueBinding;
+import av.proj.ide.custom.bindings.value.BooleanAttributeRemoveIfFalseValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsenitiveAttributeValueBinding;
+import av.proj.ide.custom.bindings.value.CaseInsensitiveSingleElementBinding;
 import av.proj.ide.owd.ControlOperation;
 import av.proj.ide.owd.Worker;
 import av.proj.ide.services.HdlControlOperationsPossibleValueService;
@@ -44,6 +50,10 @@ import av.proj.ide.services.HdlControlOperationsPossibleValueService;
 
 public interface HdlWorker extends Worker {
 	ElementType TYPE = new ElementType( HdlWorker.class );
+
+	/***
+	 * Additional HDL Worker Attributes
+	 */
 	
 	// *** ControlOperations ***
 	@Label(standard = "ControlOperations")
@@ -56,21 +66,118 @@ public interface HdlWorker extends Worker {
 	ElementList<ControlOperation> getControlOperations();
 	
 	// *** DataWidth *** 
-	@CustomXmlValueBinding( impl=GenericMultiwordXmlValueBinding.class )
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
 	@Label(standard = "DataWidth") 
 		
 	ValueProperty PROP_DATA_WIDTH = new ValueProperty(TYPE, "DataWidth");
 
 	Value<String> getDataWidth();
 	void setDataWidth(String value);
+
+	// *** Raw Properties ***
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Raw Properties" )
+	@Enablement(expr="false")
+		
+	ValueProperty PROP_RAW_PROPERTIES = new ValueProperty(TYPE, "RawProperties");
+		
+	Value<Boolean> getRawProperties();
+	void setRawProperties( String value );
+	void setRawProperties( Boolean value );
+
+	// *** Clock *** 
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "First Raw Property")
+	@Enablement(expr = "${ RawProperties == null }")
+			
+	ValueProperty PROP_FIRST_RAW_PROPERTY = new ValueProperty(TYPE, "FirstRawProperty");
+
+	Value<String> getFirstRawProperty();
+	void setFirstRawProperty(String value);
+
+	/***
+	 * Infrastructure HDL Worker Attributes
+	 */
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Outer" )
+		
+	ValueProperty PROP_OUTER = new ValueProperty(TYPE, "Outer");
+		
+	Value<Boolean> getOuter();
+	void setOuter( String value );
+	void setOuter( Boolean value );
+
+	// These two have yet to be supported.  Leave them.
+	// *** Clock *** 
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Pattern")
+			
+	ValueProperty PROP_PATTERN = new ValueProperty(TYPE, "Pattern");
+
+	Value<String> getPattern();
+	void setPattern(String value);
 	
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "Port Pattern")
+			
+	ValueProperty PROP_PORT_PATTERN = new ValueProperty(TYPE, "PortPattern");
+
+	Value<String> getPortPattern();
+	void setPortPattern(String value);
+	
+
+	@CustomXmlValueBinding( impl=CaseInsenitiveAttributeValueBinding.class )
+	@Label(standard = "SizeOfConfigSpace")
+			
+	ValueProperty PROP_SIZEOF_CONFIG_SPACE = new ValueProperty(TYPE, "SizeOfConfigSpace");
+
+	Value<String> getSizeOfConfigSpace();
+	void setSizeOfConfigSpace(String value);
+	
+	@Type( base = Boolean.class )
+	@CustomXmlValueBinding( impl=BooleanAttributeRemoveIfFalseValueBinding.class )
+	@Label( standard = "Sub32BitConfigProperties" )
+		
+	ValueProperty PROP_SUB32_BIT_CONFIG_PROPERTIES = new ValueProperty(TYPE, "Sub32BitConfigProperties");
+		
+	Value<Boolean> getSub32BitConfigProperties();
+	void setSub32BitConfigProperties( String value );
+	void setSub32BitConfigProperties( Boolean value );
+	
+	/***
+	 * Additional HDL Worker Elements
+	 */
+	
+	// *** ControlInterface ***
+	// Experimenting - using ElementHandle - believe just declaring the element type
+	// return uses ElementHandle by default (seen below with TimeInterface.
+ 	@Type( base = ControlInterface.class )
+	@CustomXmlElementBinding(impl = CaseInsensitiveSingleElementBinding.class)
+	@Label( standard = "ControlInterface" )
+
+	ElementProperty PROP_CONTROL_INTERFACE = new ElementProperty( TYPE, "ControlInterface" );
+	
+    ElementHandle<ControlInterface> getControlInterface();
+	
+	// *** TimeInterface ***
+	@Type( base = TimeInterface.class )
+	@CustomXmlElementBinding(impl = CaseInsensitiveSingleElementBinding.class)
+	@Label( standard = "TimeInterface" )
+	
+	ElementProperty PROP_TIME_INTERFACE = new ElementProperty( TYPE, "TimeInterface" );
+	
+    TimeInterface getTimeInterface();
+    
 	// *** StreamInterfaces ***
 	@Type( base = StreamInterface.class )
-	//@XmlListBinding( mappings = { @XmlListBinding.Mapping( element = "StreamInterface", type = StreamInterface.class ), @XmlListBinding.Mapping( element = "streaminterface", type = StreamInterfaceLower.class ) } )
 	@CustomXmlListBinding(impl=OWDStreamInterfaceXmlListBinding.class)
 	@Label( standard = "StreamInterfaces" )
 				
 	ListProperty PROP_STREAM_INTERFACES = new ListProperty( TYPE, "StreamInterfaces" );
 				
 	ElementList<StreamInterface> getStreamInterfaces();
+	
+	
 }

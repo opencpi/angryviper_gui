@@ -39,7 +39,7 @@ import org.eclipse.sapphire.modeling.xml.XmlPath;
 import org.eclipse.sapphire.modeling.xml.XmlResource;
 import org.eclipse.sapphire.util.ListFactory;
 
-import av.proj.ide.ops.Member;
+import av.proj.ide.ocs.Member;
 
 public class OPSMemberXmlListBinding extends StandardXmlListBindingImpl {
 	

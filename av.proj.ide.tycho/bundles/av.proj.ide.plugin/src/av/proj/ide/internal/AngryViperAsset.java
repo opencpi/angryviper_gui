@@ -42,18 +42,17 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class AngryViperAsset {
 	
-	public String buildName = null;
 	public ProjectLocation projectLocation;
 	public OpenCPICategory category;
 	
 	// Name is used for leaf assets.
 	public String assetName;
+	public String qualifiedName = null;
+	public String buildName = null;
 	public String libraryName = null;
 	public boolean buildable = true;
+	public Object assetDetails;
 	
-	// Not used yet.  This was intended to hold worker build
-	// information.
-	public AssetDetails assetDetails;
 	public TreeItem assetUiItem;
 	public AngryViperAsset parent;
 	
@@ -120,7 +119,7 @@ public class AngryViperAsset {
 			AngryViperAsset other = (AngryViperAsset)asset;
 			return this.category == other.category &&
 					this.assetName.equals(other.assetName) &&
-					this.projectLocation.projectName.equals(other.projectLocation.projectName) &&
+					//this.projectLocation.projectName.equals(other.projectLocation.projectName) &&
 					this.projectLocation.projectPath.equals(other.projectLocation.projectPath) &&
 					(this.libraryName == null ? true : this.libraryName.equals(other.libraryName));
 		}

@@ -20,19 +20,29 @@
 
 package av.proj.ide.avps.internal;
 
+import org.eclipse.swt.widgets.TreeItem;
+
 /**
- * Used to setup a new status bar for an execution. StopBuild
- * is an interface to tie the stop selection back to the execution
- * thread.
+ * Part of the status notification interface to update the status bar of an execution.
+ * It is currently used to update time info in the main status and the details lines
+ * (third column.  See StatusRegistration for more information.
  */
 public class OcpiBuildStatus {
-	public String asset;
-	public String project;
-	public String lib;
-	public String buildString;
+	String   statusUpdate = null;
+	int[]    lineIdx = null;
+	String[] lineUpdates;
 	
-	public interface StopBuild {
-		public void stop();
+	public void updateRunStatusLine(TreeItem line) {
+		if(statusUpdate != null) {
+			String current = line.getText(2);
+			line.setText(2, current + statusUpdate);
+		}
+		if (lineIdx == null) return;
+		int i = 0;
+		for(int detailIdx : lineIdx) {
+			TreeItem detailLine = line.getItem(detailIdx);
+			detailLine.setText(2, lineUpdates[i]);
+			i++;
+		}
 	}
-	StopBuild   stop;
 }

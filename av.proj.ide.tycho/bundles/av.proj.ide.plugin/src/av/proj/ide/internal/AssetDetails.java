@@ -39,6 +39,8 @@ public class AssetDetails {
 			case assemblies:
 				return HDL;
 				
+			case device:
+			case card:
 			case worker:
 				if(asset.assetName.toLowerCase().endsWith(".rcc")) {
 					return RCC;

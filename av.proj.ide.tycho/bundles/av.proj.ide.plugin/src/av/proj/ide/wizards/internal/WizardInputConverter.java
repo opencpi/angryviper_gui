@@ -23,14 +23,15 @@ package av.proj.ide.wizards.internal;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 
+import av.proj.ide.internal.AssetDetails.AuthoringModel;
 import av.proj.ide.internal.AngryViperAssetService;
 import av.proj.ide.internal.CreateAssetFields;
 import av.proj.ide.internal.CreateProjectFields;
 import av.proj.ide.internal.CreateWorkerFields;
 import av.proj.ide.internal.HdlPlatformFields;
 import av.proj.ide.internal.OpenCPICategory;
+import av.proj.ide.internal.OpencpiEnvService;
 import av.proj.ide.internal.UiComponentSpec;
-import av.proj.ide.internal.AssetDetails.AuthoringModel;
 
 public class WizardInputConverter {
 	
@@ -56,7 +57,8 @@ public class WizardInputConverter {
 			am = AuthoringModel.HDL;
 		}
 		String selectedSpec = specCombo.getItem(specCombo.getSelectionIndex());
-		UiComponentSpec spec = AngryViperAssetService.getInstance().getUiSpecByDisplayName(selectedSpec);
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		UiComponentSpec spec = srv.getUiSpecByDisplayName(selectedSpec);
 		CreateWorkerFields wf = 
 			new  CreateWorkerFields(destinationProject, null, givenAssetName, spec.getOwdReference(),am, lang);
 		wf.setLibrary(lib);
@@ -93,7 +95,8 @@ public class WizardInputConverter {
 		String library = libraryCombo.getItem(libraryCombo.getSelectionIndex());
 		String specSelect = specCombo.getItem(specCombo.getSelectionIndex());
 
-		String componentName = AngryViperAssetService.getInstance().getComponentName(specSelect);
+		OpencpiEnvService srv = AngryViperAssetService.getInstance().getEnvironment();
+		String componentName = srv.getComponentName(specSelect);
 		CreateAssetFields inputs = 
 				new CreateAssetFields(OpenCPICategory.test, destinationProject, null, 
 						componentName);

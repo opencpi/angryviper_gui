@@ -21,6 +21,7 @@
 package av.proj.ide.swt;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -109,7 +110,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 			}
 			assetSelections.add(asset);
 			selectionsChanged = true;
-			selectionPanel.text.setText("");
 			if(selectionPanel.selectedComponents.indexOf(item) <1) {
 				TreeItem copy = new TreeItem(selectionPanel.selectedComponents, SWT.NONE);
 				makeCopy(item, copy);
@@ -361,9 +361,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 	
 	protected void doNewBuild(ProjectBuildService pb, OcpidevVerb verb) {
 		UserBuildSelections userSelections = getUserSelections();
-		if(userSelections.buildDescription == null) {
-			userSelections.buildDescription = makeBuildLabel(userSelections);
-		}
 		userSelections.verb = verb;
 		int buildNumber = pb.processBuildRequest(userSelections);
 		if(buildNumber == -1) {
@@ -412,7 +409,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		TreeItem[] selectedItems = selectionPanel.selectedComponents.getSelection();
 		if(selectedItems.length > 0) {
 			selectionsChanged = true;			
-			selectionPanel.text.setText("");
 		}
 
 		for (TreeItem item : selectedItems){
@@ -427,7 +423,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 		if(itemCount > 0) {
 			assetSelections.clear();
 			selectionsChanged = true;			
-			selectionPanel.text.setText("");
 			selectionPanel.selectedComponents.removeAll();
 		}
 	}
@@ -462,14 +457,15 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 	}
 	
 	protected void populateBuildTypes() {
-		AngryViperAssetService mgr = AngryViperAssetService.getInstance();
-		List<HdlPlatformInfo> hdlPlatforms = mgr.getHdlPlatforms();
+		
+		AngryViperAssetService srv = AngryViperAssetService.getInstance();
+		Collection<HdlPlatformInfo> hdlPlatforms = srv.getHdlPlatforms();
 		buildSelectPanel.setHdlPlatforms(hdlPlatforms);
 		
-		List<RccPlatformInfo> rccPlatforms = mgr.getRccPlatforms();
+		Collection<RccPlatformInfo> rccPlatforms = srv.getRccPlatforms();
 		buildSelectPanel.setRccPlatforms(rccPlatforms);
 		
-		List<HdlVendor> hdlVendors = mgr.getHdlTargets();
+		Collection<HdlVendor> hdlVendors = srv.getHdlTargets();
 		buildSelectPanel.setHdlTargets(hdlVendors);
 	}
 	
@@ -504,11 +500,6 @@ public class MainOperationSwtDisplayV1 extends Composite implements SelectionsIn
 			asset  =  (AngryViperAsset)selection.getData();
 			selections.assetSelections.add(asset);
 		}
-		String descript = selectionPanel.text.getText();
-		if(descript.length() == 0) {
-			descript = null;
-		}
-		selections.buildDescription = descript;
 		return selections;
 	}
 	public UserTestSelections getUserTestSelections() {
